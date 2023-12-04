@@ -1,0 +1,60 @@
+project:
+  title: "mk68-2023-24-public"
+  output-dir: _output
+
+author:
+  - name: "Eduard Bukin"
+    url: "https://www.uni-giessen.de/faculties/f09/institutes/agri/policy/team/bukin"
+    email: "eduard.bukin@agrar.uni-giessen.de"
+    affiliations:
+      - name: "Justus Liebig University Giessen"
+        department: "Institute of Agricultural Policy and Market Research"
+        url: "https://www.uni-giessen.de/faculties/f09/institutes/agri/policy"
+
+subtitle: "Part 2: Statistics and Econometrics. MK68-2023/24"
+course: "MK-068-EN (TM) WS2023/24. Empirical Research Methods"
+institute: "Institute of Agricultural Policy and Market Research"
+footer: "MK-068-EN (TM) WS2023/24. (c) Eduard Bukin"
+logo: "./img/jlu-logo.png"
+
+editor: source
+
+format: 
+  revealjs:
+    theme: [default, "../eddies-theme.scss"]
+    transition: fade
+    slide-number: c/t
+    show-slide-number: all
+    preview-links: auto
+    scrollable: true
+    incremental: false 
+    overview: true
+    menu: true
+    chalkboard: true
+    progress: true
+    self-contained: false
+    toc: true
+    toc-depth: 1
+    toc-title: Content
+  html:
+    theme:
+      light: [cosmo]
+      dark: [cosmo]
+    mainfont: "Roboto"
+    code-copy: true
+    code-overflow: wrap
+    toc: true
+
+  
+execute:
+  freeze: auto
+  
+bibliography: 
+  - "../references.bib"
+
+editor_options: 
+  chunk_output_type: console
+
+  
+
+
