@@ -1,0 +1,62 @@
+---
+title: "Week 00. Prerequisites for part on quantitative research methods"
+date: "Latest update on: `r Sys.Date()`"
+format: pdf
+editor_options: 
+  chunk_output_type: console
+---
+
+## Week 1 Prerequisites
+
+Key prerequisite for this week is the undergraduate level of knowledge in statistics. This includes, but not limited to understanding the following concepts:
+
+-   Mean, Median, Mode, Maximum, Minimum, Quantiles, Quartiles, Percentiles;
+-   Box plot and Histogram;
+-   Distribution, skew and kurtosis;
+-   Power ($x^a=b$) and the logarithm transformation $\log_a b = x$. Properties of the logarithm: $\log_a 1=0$ and $\log_a 0 = -\infty$ .
+
+To bridge any of the knowledge gaps, you may follow materials prerecorded for you and available on Ilias:
+
+1.  [Introduction to statistics and scale levels](https://ilias.uni-giessen.de/goto.php?target=xcam_326526&client_id=JLUG). [Slides](https://ilias.uni-giessen.de/goto.php?target=file_326527&client_id=JLUG) and [Exercises](https://ilias.uni-giessen.de/goto.php?target=file_326539&client_id=JLUG)
+2.  [Basic measures](https://ilias.uni-giessen.de/goto.php?target=xcam_326528&client_id=JLUG). [Slides](https://ilias.uni-giessen.de/goto.php?target=file_326529&client_id=JLUG)
+3.  [Understanding and visualizing data I](https://ilias.uni-giessen.de/goto.php?target=xcam_326531&client_id=JLUG). [Slides](https://ilias.uni-giessen.de/goto.php?target=file_326530&client_id=JLUG) and [Exercises](https://ilias.uni-giessen.de/goto.php?target=file_326539&client_id=JLUG)
+4.  [Understanding and visualizing data II](https://ilias.uni-giessen.de/goto.php?target=xcam_326532&client_id=JLUG). [Slides](https://ilias.uni-giessen.de/goto.php?target=file_326533&client_id=JLUG) and [Exercises](https://ilias.uni-giessen.de/goto.php?target=file_326539&client_id=JLUG)
+
+### Optional materials
+
+If materials mentioned above are insufficient, consider following the unit [Summarizing quantitative data](https://www.khanacademy.org/math/statistics-probability/summarizing-quantitative-data) and [Displaying and comparing quantitative data](https://www.khanacademy.org/math/statistics-probability/displaying-describing-data) from the [Khan academy](https://www.khanacademy.org/). Specifically, you are encourage to pay close attention to:
+
+-   [Measuring center in quantitative data](https://www.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/mean-median-basics/v/statistics-intro-mean-median-and-mode)
+-   [Interquartile range (IQR)](https://www.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/interquartile-range-iqr/v/calculating-interquartile-range-iqr)
+-   [Box and whisker plots](https://www.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/box-whisker-plots/v/box-and-whisker-plot-exercise-example)
+-   [Displaying quantitative data with graphs](https://www.khanacademy.org/math/statistics-probability/displaying-describing-data/quantitative-data-graphs/v/ways-to-represent-data) with specific focus on the videos:
+    -   "Creating a histogram", "Histograms" and "Interpreting a histogram".
+-   [Introduction to Logarithm](https://www.khanacademy.org/math/algebra-home/alg-exp-and-log/alg-introduction-to-logarithms/v/logarithms)
+    -   See also [Unit: Exponential & logarithmic functions](https://www.khanacademy.org/math/algebra-home/alg-exp-and-log)
+-   Finally, a wide range of text books is available in the library.
+
+## Week 2 Prerequisites
+
+-   Mean, Variance, Standard deviation;
+-   Probability;
+-   Normal Distribution and confidence intervals;
+
+Pre-recorded videos available on Ilias:
+
+5.  [Probability](https://ilias.uni-giessen.de/goto.php?target=xcam_326543&client_id=JLUG). [Slides](https://ilias.uni-giessen.de/goto.php?target=file_326534&client_id=JLUG) and [Exercises](https://ilias.uni-giessen.de/goto.php?target=file_326540&client_id=JLUG).
+6.  [Statistical distributions](https://ilias.uni-giessen.de/goto.php?target=xcam_326544&client_id=JLUG). [Slides](https://ilias.uni-giessen.de/goto.php?target=file_326535&client_id=JLUG) and [Exercises](https://ilias.uni-giessen.de/goto.php?target=file_326540&client_id=JLUG).
+7.  [Confidence intervals](https://ilias.uni-giessen.de/goto.php?target=xcam_326545&client_id=JLUG). [Slides](https://ilias.uni-giessen.de/goto.php?target=file_326536&client_id=JLUG) and [Exercises](https://ilias.uni-giessen.de/goto.php?target=file_326540&client_id=JLUG).
+
+### Optional materials
+
+-   [Variance and standard deviation of a population](https://www.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/variance-standard-deviation-population/v/range-variance-and-standard-deviation-as-measures-of-dispersion) (29 min) and [a sample](https://www.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/variance-standard-deviation-sample/v/sample-variance) (20 min)
+-   [More on standard deviation](https://www.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/more-on-standard-deviation/v/another-simulation-giving-evidence-that-n-1-gives-us-an-unbiased-estimate-of-variance) (15 min)
+-   [Basic theoretical probability](https://www.khanacademy.org/math/statistics-probability/probability-library#basic-theoretical-probability) (30 min)
+
+## Week 3 Only optional materials
+
+There no specific materials prerecorded on Ilias. However, to enhance learning experience, one may consider following Khan Academy module on [Modeling data distributions](https://www.khanacademy.org/math/statistics-probability/modeling-distributions-of-data) and specifically such topics as:
+
+-   [Percentiles](https://www.khanacademy.org/math/statistics-probability/modeling-distributions-of-data/percentiles/) (10 min)
+-   [Z-scores](https://www.khanacademy.org/math/statistics-probability/modeling-distributions-of-data/z-scores/) (11 min)
+-   [Normal distributions and the empirical rule](https://www.khanacademy.org/math/statistics-probability/modeling-distributions-of-data/normal-distributions-library/) (20 min)
