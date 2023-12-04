@@ -1,0 +1,22 @@
+FAO-WHO Gift data acknowledgment
+COD-00091
+
+The dataset you are going to download was shared through FAO/WHO GIFT by:
+University of Colorado School of Medicine, Anschutz Medical Campus and their collaborators in Kinshasa, Democratic Republic of the Congo.
+
+We thank them for their generous contribution
+
+By downloading this dataset you accept to:
+
+
+	&nbsp;comply with all applicable laws, including, without limitation, privacy laws, intellectual property laws, anti-spam laws;
+	not publicly represent or imply that FAO is participating in, or has sponsored, approved or endorsed the manner or purpose of your use of the database;
+	provide the following acknowledgment to the contributor whenever publishing or presenting publicly this data or its derivatives:&nbsp;
+
+
+University of Colorado School of Medicine, Anschutz Medical Campus and their collaborators in Kinshasa, Democratic Republic of the Congo; Sud-Ubangi, Democratic Republic of the Congo; 2014/2016; Women First Dietary Recall Data
+
+And shortly:
+
+Sud-Ubangi, Democratic Republic of the Congo; 2014/2016; Women First Dietary Recall Data
+

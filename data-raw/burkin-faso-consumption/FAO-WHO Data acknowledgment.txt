@@ -1,0 +1,27 @@
+FAO-WHO Gift data acknowledgment
+BFA-00001
+
+The dataset you are going to download was shared through FAO/WHO GIFT by:
+
+Institut de Recherche pour le D&eacute;veloppement (IRD);
+Institut de Recherche en Sciences de la Sant&eacute; (IRSS);
+HarvestPlus, International Food Policy Research Institute (IFPRI).
+
+We thank them for their generous contribution
+
+By downloading this dataset you accept to:
+
+-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;comply with all applicable laws, including, without limitation, privacy laws, intellectual property laws, anti-spam laws;
+
+-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; not publicly represent or imply that FAO is participating in, or has sponsored, approved or endorsed the manner or purpose of your use of the database;
+
+-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; provide the following acknowledgment to the contributor whenever publishing or presenting publicly the data or its derivatives:
+
+Institut de Recherche pour le D&eacute;veloppement (IRD); Institut de Recherche en Sciences de la Sant&eacute; (IRSS); HarvestPlus, International Food Policy Research Institute (IFPRI), 2016, &quot;The 2010 Food consumption and iron status survey in two provinces of rural Burkina Faso&quot;, doi:10.7910/DVN/5CXCLX
+
+Or shortly:
+
+Burkina Faso; IRD, IRSS, HarvestPlus - IFPRI; 2010
+
+&nbsp;
+
