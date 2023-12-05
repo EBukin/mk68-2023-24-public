@@ -2,6 +2,7 @@
 
 library(pacman)
 # devtools::install_github("nicolash2/ggbrace")
+# remotes::install_github("datalorax/equatiomatic")
 pacman::p_load(here, tidyverse, stringi, glue, pins, 
                lubridate, janitor, knitr, patchwork,
                scales, ggpubr, cowplot, matrixStats,

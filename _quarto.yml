@@ -24,10 +24,12 @@ format:
     theme: [default, "../eddies-theme.scss"]
     transition: fade
     slide-number: c/t
+    width: 1280
+    height: 800
     show-slide-number: all
     preview-links: auto
     scrollable: true
-    incremental: false 
+    incremental: true 
     overview: true
     menu: true
     chalkboard: true
