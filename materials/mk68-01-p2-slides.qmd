@@ -1,0 +1,637 @@
+---
+title: "Week 01. Part 2. Descriptive statistics"
+subtitle: "Univariate Data. Central tendency. Box plot."
+editor: source
+format: revealjs
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+source(here::here("materials", "00-setup.R"), local = TRUE)
+```
+
+# The Univariate Data
+
+-   Data that consists of a **single variable**.
+
+-   **Univariate data analysis**:
+
+    -   descriptive analysis of a single variable.
+
+-   What measures are used to describe a variable?
+
+    -   Central Tendency
+    -   Variance
+
+# The Central Tendency
+
+-   It is a single value that describes where values $\{x_1, x_2, x_3, ..., x_n\}$ of a variable $x$ cluster around
+
+-   Most commonly measures are:
+
+    -   Median;
+    -   Mode;
+    -   Arithmetic Mean;
+    -   Weighted Mean;
+    -   [Other measures](https://en.wikipedia.org/wiki/Central_tendency) of the center;
+
+## Individuals' consumption of nutrients in the DR Congo {.smaller}
+
+-   We use the survey of 395 individuals from the Democratic Republic of Congo;
+-   It covers daily consumption of key nutrients and energy intake by population:
+-   Key variables are
+    -   `ENERGY_kcal` - energy consumption in kilo calories per day;
+    -   `PROTEIN_g` - protein consumption in grams;
+    -   `FAT_g` - fat consumption in grams;
+    -   `HEIGHT` and `WEIGHT` respondents height and weight in cm and kg respectively;
+    -   `SEX` - dummy variable that is 1 when respondent is a female and 0 if it is a male;
+-   Data source: "FAO/WHO GIFT \| Global Individual Food" survey data [available here](https://www.fao.org/gift-individual-food-consumption/data-and-indicator/en/).
+
+```{r}
+nnew <- 15
+set.seed(122)
+congo_food <- 
+  here("materials", "data", "congo-nutrition.rds") %>%
+  read_rds() %>% 
+  bind_rows(
+    tibble(
+      ENERGY_kcal = c(rnorm(nnew, 8000, 2000)),
+      PROTEIN_g = c(rnorm(nnew, 300, 50)),
+      CARBOH_g = c(rnorm(nnew, 1220, 250)),
+      FAT_g = c(rnorm(nnew, 250, 80)),
+      SEX = sample(c("Male", "Female"), nnew, replace = T),
+      AREA_TYPE = sample(c("Rural", "Urban"), nnew, replace = T)
+      )
+    )
+```
+
+## Distributions
+
+```{r}
+congo_food_dta <- 
+  congo_food %>% 
+  mutate(SEX = ifelse(SEX == "Female", 1, 0)) %>%
+  pivot_longer(
+    c(ENERGY_kcal, PROTEIN_g, FAT_g, CARBOH_g),
+    names_to = "Variable",
+    values_to = "val"
+  ) |> 
+  select(Variable, val)
+
+drc_plot <- 
+  congo_food_dta |> 
+  ggplot() + 
+  aes(x = val, fill = Variable ) + 
+  geom_histogram(colour = "black") +
+  facet_wrap(. ~ Variable, scales = "free") + 
+  ylab("Frequency") + 
+  xlab("Nutrient consumption") +
+  labs(title = "The DR Congo. Individuals' daily nutrients consumption") + 
+  guides(fill = "none")
+
+drc_plot
+```
+
+::: notes
+How can we describe there four distributions? What are the central tendencies there?
+:::
+
+## The Median
+
+```{r}
+congo_food_dta_summ <- 
+  congo_food_dta |> 
+  group_by(Variable) |> 
+  summarise(median = median(val),
+            mean = mean(val))
+
+dcr_median <-
+  drc_plot +
+  geom_vline(
+    data = congo_food_dta_summ,
+    aes(xintercept = median, linetype = "Median"),
+    colour = "black",
+    size = 1
+  ) + 
+  theme(legend.position = "top") + 
+  guides(linetype = guide_legend(title = "Central tendency")) 
+
+dcr_mean <- 
+  dcr_median +
+  geom_vline(
+    data = congo_food_dta_summ,
+    aes(xintercept = mean, linetype = "Mean"),
+    colour = "black",
+    size = 1
+  ) 
+```
+
+::: columns
+::: {.column width="70%"}
+```{r}
+#| fig-width: 8 
+dcr_median
+```
+:::
+
+::: {.column width="30%"}
+::: incremental
+-   Median is the value of the observation in the center.
+
+-   Less susceptible to the extreme and influential observations.
+:::
+:::
+:::
+
+## The Arithmetic Mean (The Mean)
+
+::: callout-important
+$$
+\bar{x} = \frac{\sum_{i=1}^N {x}_i}{N},
+$$
+
+where,
+
+
+::: nonincremental
+
+-   $\bar{x}$ is the central value of $x$, $x$ could take any values.
+
+-   $N$ is the total number of observations.
+:::
+::: 
+
+-   The Arithmetic Mean is affected by the outliers and may be misleading if the distribution is skewed.
+
+------------------------------------------------------------------------
+
+### The Mean (1) {.smaller}
+
+::: r-stack
+::: fragment
+```{r}
+dcr_median
+```
+:::
+
+::: fragment
+```{r}
+dcr_mean
+```
+:::
+:::
+
+------------------------------------------------------------------------
+
+### The Mean (2) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+```{r}
+congo_food %>% 
+  mutate(SEX = ifelse(SEX == "Female", 1, 0)) %>%
+  pivot_longer(c(ENERGY_kcal, PROTEIN_g, FAT_g, CARBOH_g, SEX),
+               names_to = "Variable", values_to = "val") %>% 
+  group_by(Variable) %>% 
+  summarise(
+    across("val", ~ mean(., na.rm = TRUE), .names = "Mean"),
+    across("val", ~ median(., na.rm = TRUE), .names = "Median")
+    ) %>% 
+  kable(caption = "Summary statistics", digits = 2)
+```
+:::
+
+::: {.column width="50%"}
+::: incremental
+-   How to interpret the means of variables `ENERGY_kcal`, `PROTEIN_g`, `FAT_g`, `CARBOH_g`?
+
+-   Why means are different from medians?
+
+-   How to interpret the median?
+
+-   What about `SEX` variable?
+
+    -   What does the mean of this variable stands for?
+
+    -   Why median is equal to 1?
+:::
+:::
+:::
+
+## Extreme/influential observations/outlier {.smaller}
+
+::: columns
+::: {.column width="70%"}
+::: r-stack
+```{r}
+#| fig-width: 8
+condo_food_mean <-
+  congo_food %>%
+  mutate(SEX = ifelse(ENERGY_kcal > 3500, "Male", SEX))
+condo_food_mean_sum <-
+  condo_food_mean %>%
+  bind_rows(., mutate(., SEX = "Both")) %>%
+  group_by(SEX) %>%
+  summarise(ENERGY_kcal = mean(ENERGY_kcal)) %>%
+  mutate(`Mean of` = SEX)
+congo_skew_1 <- 
+  condo_food_mean %>%
+  ggplot() +
+  aes(x = ENERGY_kcal, fill = SEX ) +
+  geom_histogram(colour = "black") +
+  ylab("Frequency") +
+  xlab("Energy consumption in kcal/person/day") +
+  labs(title = "DRC nutrients consumption")
+congo_skew_1
+```
+
+::: {.fragment fragment-index="1"}
+```{r}
+#| fig-width: 8
+congo_skew_1 +
+  geom_vline(
+    data = condo_food_mean_sum %>% filter(SEX %in% c("Female", "Male")),
+    aes(xintercept = ENERGY_kcal , linetype = `Mean of`),
+    colour = "black",
+    size = 1
+  )
+```
+:::
+:::
+:::
+
+::: {.column width="30%"}
+Arithmetic mean is very sensitive to the extreme or outlining observations and skewed distributions.
+
+Population may contain extreme values of $x$, however, when such appear in the sample, the may substantially bias our estimates.
+:::
+:::
+
+## Dealing with extreme observations
+
+::: incremental
+1.  Document:
+
+    -   Why?
+    -   Describe why such extreme observation occurred.
+
+2.  Analyze:
+
+    -   Measurement error? Is this the true incidence in the population or an entry error? Is this a systematic entry error?
+    -   Sampling error? Is this observation prevalent in the population or is this a random sampling error? Is it systematic?
+
+3.  Keep, adjust statistical method, and generalization level:
+
+4.  Remove only in exceptional cases
+:::
+
+## The Weighted Average (The Weighted Mean)
+
+::: callout-important
+$$
+\bar{x} = \frac{\sum_{i=1}^N {x}_i w_i}{\sum_{i=1}^N w_i},
+$$
+
+where,
+
+::: nonincremental
+-   $\bar{x}$ is the **estimate** of the central value of $x$, $x$ could take any values.
+-   $N$ is the total number of observations.
+-   $x$ is the weight that each observation has in the data.
+:::
+:::
+
+::: incremental
+-   the arithmetic average is essentially a weighted average, where the weight of each observations is equal to 1.
+:::
+
+## The Weighted Average example
+
+::: incremental
+Let us measure the level of extreme poverty in the World.
+
+-   poverty is the state of livelihood when by income or consumption individual is living below the poverty line;
+
+-   it measures:
+
+    -   the % of people that by their income (or consumption) live below **a poverty line**,
+
+    -   poverty line **per person per day** is country-specific or international in the international currency (e.g. [Purchasing Poverty Parity - PPP](https://en.wikipedia.org/wiki/Purchasing_power_parity))
+
+-   extreme poverty is the poverty level given extremely low poverty line of 2.15 US\$ PPP per day.
+
+-   Data: World Bank [World Development Indicators](http://wdi.worldbank.org/table);
+:::
+
+------------------------------------------------------------------------
+
+### The Data
+
+<iframe src="https://ourworldindata.org/grapher/total-population-in-extreme-poverty?country=IND~CHN~MDG~NGA~BGD" loading="lazy" style="width: 100%; height: 600px; border: 0px none;" data-external="1">
+
+</iframe>
+
+::: footer
+Source: [Global Extreme Poverty](https://ourworldindata.org/extreme-poverty). See also: [Poverty and inequality platform](https://pip.worldbank.org/home). </br> [Understanding poverty](https://www.worldbank.org/en/topic/poverty/overview) and [Macro Poverty Outlook](https://www.worldbank.org/en/publication/macro-poverty-outlook).
+:::
+
+::: notes
+Speaker's notes:
+
+-   Poverty is measured for each country!
+-   How do we come to this single number?
+:::
+
+## Average extreme poverty in the world (1) {.smaller}
+
+```{r}
+#| echo: false
+pov_pop_dta <- here("materials", "data", "poverty-population.csv") %>% read_csv()
+pov_mean <- pov_pop_dta$`Extreme poverty` |> mean(na.rm = TRUE)
+pov_median <- pov_pop_dta$`Extreme poverty` |> median(na.rm = TRUE)
+pov_mean_weight <- stats::weighted.mean(x =  pov_pop_dta$`Extreme poverty`,
+                                        w =  pov_pop_dta$Population, 
+                                        na.rm = TRUE)
+pov_pop_summary <-
+  pov_pop_dta %>% 
+  summarise(`Mean` = mean(`Extreme poverty`, na.rm = TRUE), 
+            `Median` = median(`Extreme poverty`, na.rm = TRUE))
+```
+
+::: columns
+::: {.column width="50%"}
+```{r}
+set.seed(12231)
+pov_pop_dta %>% 
+  sample_n(12) %>% 
+  kable(caption = "First 12 observations of the country-specific data")
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+What is the meaning of "NA" in the data?
+:::
+
+::: fragment
+**Arithmetic mean of the country-specific poverty rates**
+
+```{r}
+kable(pov_pop_summary)
+```
+
+::: incremental
+-   Is any of those the right measure of poverty?
+
+-   Can we use any of those?
+
+-   ::: callout-important
+    Neither of those is correct because every country has a different size.
+    :::
+:::
+:::
+:::
+:::
+
+## Average extreme poverty in the world (2)
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+1% extreme poverty rate in China (1.4B people):
+
+-   implies 14 million people living in poverty.
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+49% poverty in Turkmenistan (6.1 M people):
+
+-   is 3 million people living in poverty.
+:::
+:::
+:::
+
+::: incremental
+-   The arithmetic mean of these two is:
+
+    -   (1 % + 49 %) / 2 = 25 %;
+    -   but, 25% of their total population is 0.25 \* 1.406B = 351.5 M...
+
+-   Arithmetic mean implies that there is 351.5 M people living in poverty, but the sum of the number of poor people is 14M + 3 = 17.05M people.
+:::
+
+## Average extreme poverty in the world (3)
+
+-   Arithmetic means, **without accounting for the size/weight** of the country measures of the central tendency of poverty inappropriately.
+
+::: incremental
+-   We must weight country-specific poverty level by the country's population.
+
+-   Other examples, where weighting is essential:
+
+    -   Analysis of the representative Individuals/Household surveys with the population weights.
+
+    -   Macro-level data aggregation.
+:::
+
+## Country sizes matters
+
+::: r-stack
+::: fragment
+![](img/world-map-population.png)
+:::
+
+::: fragment
+![](img/asia-map-population.png)
+:::
+:::
+
+::: footer
+Source: [The map we need if we want to think about how global living conditions are changing](https://ourworldindata.org/world-population-cartogram)
+:::
+
+::: notes
+Arithmetic mean implies that every country has equal size, but this is not true!
+:::
+
+------------------------------------------------------------------------
+
+## Exam problems on the central tendency (DIY) {.smaller}
+
+-   When the mean may not be the best measure of the central tendency in our data?
+
+-   What measures of the central tendency we most often apply in social sciences?
+
+-   The estimated arithmetic mean of the household size in our survey of 22 observations is 7.5 person, while the median size is 4.
+
+    -   Which measure of the central tendency would you use to describe the average family size?
+    -   Why do you suggest using this measure?
+    -   What is the total number of individuals (not households) that is represented in our survey?
+
+------------------------------------------------------------------------
+
+### At home: a complex question on central tendncy {.smaller}
+
+::: callout-note
+A representative household survey was collected from the population of all households in the country. Data contains many variables on various socioeconomic measures of the household along with the variable "Population weights".
+
+-   What do those "Population weights" mean?
+
+-   How using the weighted statistics by "Population weights" may change estimates of the central tendency?
+
+-   What difference the weighted and non-weighted mean makes for the conclusions and generalization of the estimates of the central tendency?
+:::
+
+------------------------------------------------------------------------
+
+### At home: Calculate question
+
+::: columns
+::: {.column width="50%"}
+```{r}
+set.seed(121311)
+pov_pop_dta_2 <- 
+  pov_pop_dta %>% 
+  sample_n(5) %>% 
+  bind_rows(pov_pop_dta %>% filter(`Extreme poverty` == 0) %>% sample_n(1)) %>% 
+  select(-Country)
+
+pov_pop_dta_2 %>% kable()
+```
+:::
+
+::: {.column width="50%"}
+Calculate:
+
+-   arithmetic average of `Extreme poverty` and
+-   average of `Extreme poverty` weighted by the `Population`:
+
+::: fragment
+```{r}
+pov_pop_dta_2 %>% 
+  summarise(`Arithmetic average` = mean( `Extreme poverty`, na.rm = TRUE),
+         `Weighted average` = weighted.mean(`Extreme poverty`, Population, na.rm = TRUE)) %>% 
+  mutate(across(everything(), ~ round(., 1))) %>% 
+  kable()
+```
+:::
+:::
+:::
+
+# The Box Plot
+
+-   Summaries the numeric variables in one chart
+
+::: incremental
+-   Presents key statistics about the distribution and central tendency:
+
+    -   Median;
+    -   upper (Q3) and lower (Q1) [quartiles](https://en.wikipedia.org/wiki/Quartile);
+    -   IQR - [interquartile range](https://en.wikipedia.org/wiki/Interquartile_range), where 50% of observations are;
+    -   Whiskers and outliers
+
+-   [THE BOXPLOT AND ITS PITFALLS](https://www.data-to-viz.com/caveat/boxplot.html)
+
+-   [Wiki: the box plot](https://en.wikipedia.org/wiki/Box_plot)
+:::
+
+## The Box Plot
+
+![](img/boxplot-anatomy.png)
+
+::: footer
+[Image source](https://www.leansigmacorporation.com/box-plot-with-minitab/)
+:::
+
+## Single variable description with a Box Plot
+
+::: columns
+::: {.column width="70%"}
+```{r}
+#| fig-width: 8
+condo_food_mean %>% 
+  ggplot() +
+  aes(x = ENERGY_kcal) +
+  geom_boxplot() +
+  # geom_histogram(colour = "black") +
+  # ylab("Frequency") +
+  xlab("Energy consumption in kcal/person/day") +
+  labs(title = "The DRC caloric intake")
+```
+:::
+
+::: {.column width="30%"}
+::: incremental
+-   The central tendency;
+-   Where are the 50% of all observations?
+-   Dispersion of the values: **the Variance**;
+-   Min/Max;
+-   (Suspected) outliers;
+:::
+:::
+:::
+
+## Comparing distributions with Box Plots (2)
+
+::: columns
+::: {.column width="70%"}
+```{r}
+#| fig-width: 8
+condo_food_mean %>% 
+  ggplot() +
+  aes(x = ENERGY_kcal, colour = SEX, y = SEX) +
+  geom_boxplot() +
+  xlab("Energy consumption in kcal/person/day") +
+  ylab("Gender") +
+  labs(title = "The DRC caloric intake ") +
+  guides(fill = guide_legend(titel = "Gender"))
+```
+:::
+
+::: {.column width="30%"}
+::: incremental
+-   Variance;
+-   Central tendency;
+-   (Suspected) outliers;
+:::
+:::
+:::
+
+# Takeaways checklist
+
+## Homework
+
+::: nonincremental
+
+Read the paper below **before week 4**: [@Kuchenbecker2017]
+
+-   Kuchenbecker, J., Reinbott, A., Mtimuni, B., Krawinkel, M. B., & Jordan, I. (2017). Nutrition education improves dietary diversity of children 6-23 months at community-level: Results from a cluster randomized controlled trial in Malawi. PLOS ONE, 12, e0175216.
+
+:::
+
+## Key concepts covered in the lecture {.smaller}
+
+Univariate data 
+
+The Histogram:
+
+-   bars, frequencies.
+
+The Central tendency:
+
+-   Median and mode.
+-   Mean, mean of a dummy vs continuous variable;
+-   Extreme and influential observations and how to deal with it.
+-   Weighted average.
+
+Box plot:
+
+-   Key elements and messages and how to construct it.
+-   Comparing distributions with the box plot.
+
+
+# References
