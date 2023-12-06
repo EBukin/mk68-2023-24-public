@@ -1,5 +1,6 @@
 ---
-title: "Week 01 part 1. Introduction: Population and Sample. Description and Inference."
+title: "Week 01. Part 1. Introduction"
+subtitle: "Population and Sample. Description and Inference."
 editor: source
 format: revealjs
 editor_options: 
@@ -39,23 +40,30 @@ It is generally impossible to have data for the entire population
 Source: [@Dowdy2004].
 :::
 
-## Examples of a population by research questions
+## Examples of a population by research questions 
 
 Discuss what are the (1) populations; (2) variables of interest; (3) true population value of the parameter based on the exemplary research questions below:
 
 1.  What is the average poverty headcount rate in the world?
-
 2.  What is the average wheat yield in 100 kg per ha?
 
-3.  How does access to education impact income inequality?
+## Examples of a population by research questions 
 
-4.  What are the factors influencing malnutrition rates among children in a specific region?
+::: {.smaller}
+::: {.nonincremental}
 
-5.  How does access to clean water and sanitation facilities impact child mortality rates?
+At home, consider following research questions:
 
-6.  What are the barriers to accessing healthcare services among marginalized communities?
+-   How does access to education impact income inequality?
+-   What are the factors influencing malnutrition rates among children in a specific region?
+-   How does access to clean water and sanitation facilities impact child mortality rates?
+-   What are the barriers to accessing healthcare services among marginalized communities?
+:::
+:::
 
--   **How to answer such research questions?**
+. . .
+
+**How to actually answer such research questions?**
 
 ::: notes
 1.  all people/households.
@@ -69,11 +77,13 @@ Discuss what are the (1) populations; (2) variables of interest; (3) true popula
 5.  Children under the age of five in areas with varying levels of access to clean water and sanitation.
 :::
 
-# The Sampling
+# The Sampling 
 
+::: {.nonincremental}
 -   See also book "Sampling" by [@Thompson2012]
 
 -   The World Bank. Development Research in Practice (DIME) <https://dimewiki.worldbank.org/Sampling>
+:::
 
 ## Simple Random Sample (1)
 
@@ -183,14 +193,11 @@ bind_rows(bmi_samples) %>%
 
 -   What is **"the correct"** average yields?
 
-    -   What is the population average of the wheat yields?
-
 -   Which sample estimates **"the correct"** average yield?
 
     -   How to pick one?
 
     -   Can we pick one?
-:::
 :::
 
 ::: {.column width="50%"}
@@ -200,7 +207,6 @@ set.seed(13152)
 bmi_gg_2
 ```
 :::
-
 :::
 
 ## The power of a random sample
@@ -215,7 +221,11 @@ A sample can approximate the population
 
 . . .
 
-This property is based on the **Law of Large Numbers** (LLN)
+This is the **Law of Large Numbers** (LLN)!
+
+. . .
+
+LLN makes random samples a powerful tool for understanding the population.
 
 ## Law of Large Numbers: action {.smaller}
 
@@ -223,6 +233,8 @@ This property is based on the **Law of Large Numbers** (LLN)
 ::: {.column width="50%"}
 ::: {.fragment fragment-index="1"}
 Let us gradually increase the sample size!
+
+What will be difference between samples?
 :::
 
 ::: {.fragment fragment-index="4"}
@@ -241,6 +253,11 @@ bind_rows(bmi_samples2) %>%
   kable(digits = 2)
 ```
 :::
+
+::: {.fragment fragment-index="5"}
+With increasing size, the sample becomes more alike the population!
+:::
+
 :::
 
 ::: {.column width="50%"}
@@ -294,9 +311,11 @@ Each sample is still a random draw!
 ::: callout-tip
 ### Solutions:
 
+::: {.nonincremental}
 -   Apply appropriate sampling techniques!
 
 -   Embrace uncertainty and use inferential statistics.
+:::
 :::
 :::
 
@@ -341,18 +360,15 @@ Key problems:
 
 Those exist to balance between data quality and data collection costs.
 
+::: {.nonincremental}
 -   Simple;
-
 -   Stratified;
-
 -   Cluster;
-
 -   Multistage sampling;
+-   Population-weighted sampling and statistics;
+:::
 
 To read more, see for example the book: Sampling by [@Thompson2012]
-
--   Population-weighted sampling and statistics.
-
 
 ## Stratified sampling
 
@@ -396,16 +412,13 @@ Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/op
 Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/openintro-statistics) [@Diez2022]
 :::
 
-# Common examples of populaiton and samples
+# Populaiton and samples by research question
 
 1.  What is the average poverty headcount rate in the world/a country?
 
     -   Population: people or households;
-    
-    -   Sample examples: household surveys. For example:
-        
-        -   The Living Standards Measurement Study (LSMS) <https://www.worldbank.org/en/programs/lsms>
-
+    -   Sample examples: household surveys. 
+    -   Data source: The Living Standards Measurement Study (LSMS) <https://www.worldbank.org/en/programs/lsms>
 . . .
 
 **At home:** discuss the same for other research questions mentioned earlier.
@@ -416,15 +429,23 @@ Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/op
 
 -   But the population is **never available**, instead **we have RANDOM samples**.
 
--   Random sample are different: result with different estimates.
+-   Random samples are all different: result with different estimates.
 
-    -   Thus, descriptive statistics derived from each sample is not identical to the population.
+    -   Thus, descriptive statistics based on each sample is not identical to one based on the population.
 
 . . .
 
-**How to conclude about population using random samples and statics?**
+# How to conclude about population using random samples and statics?
 
-# Descriptive statistics
+-   Any ideas?
+
+-   There are:
+
+    -   Descriptive statistics
+    
+    -   Inferential statistics
+
+## Descriptive statistics
 
 -   AKA Data Analysis:
 
@@ -434,7 +455,7 @@ Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/op
 
     -   **descriptive statistics** does not tell us much about the **population**...
 
-# Inferential statistics
+## Inferential statistics
 
 -   Answers questions **about the population** using:
 
@@ -506,7 +527,25 @@ To infer that {$\text{mean}$, $\text{median}$, $\text{variance}$} in the populat
         -   without implying that H0 is the right hypothesis (Type II error);
 :::
 
-# Example of statistical inference in a research
+## Goals of the Part 2: Quantitative Research Methods
+
+::: incremental
+-   Grasp the difference between description and inference.
+
+-   Learn how to:
+
+    -   apply basic methods of descriptive statistics, and
+
+    -   perform statistical inference.
+
+    -   concludes based on their results.
+
+    -   communicate consistent stories
+:::
+
+# At home: Example of statistical inference in a research
+
+Scan through the example.
 
 ::: incremental
 1.  Research question
@@ -621,21 +660,6 @@ To conclude about the effect of intervention, we need to
 -   perform statistical inference, 
 -   consider **Variance** not only point-estimates.
 
-## Goals of the Part 2: Quantitative Research Methods
-
-::: incremental
--   Grasp the difference between description and inference.
-
--   Learn how to:
-
-    -   apply basic methods of descriptive statistics, and
-
-    -   perform statistical inference.
-
-    -   concludes based on their results.
-
-    -   communicate consistent stories
-:::
 
 # Takeaways checklist
 
