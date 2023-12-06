@@ -154,14 +154,12 @@ $$
 
 where,
 
-
 ::: nonincremental
-
 -   $\bar{x}$ is the central value of $x$, $x$ could take any values.
 
 -   $N$ is the total number of observations.
 :::
-::: 
+:::
 
 -   The Arithmetic Mean is affected by the outliers and may be misleading if the distribution is skewed.
 
@@ -474,7 +472,7 @@ Arithmetic mean implies that every country has equal size, but this is not true!
 
 ------------------------------------------------------------------------
 
-### At home: a complex question on central tendncy {.smaller}
+### At home: a complex question on central tendency {.smaller}
 
 ::: callout-note
 A representative household survey was collected from the population of all households in the country. Data contains many variables on various socioeconomic measures of the household along with the variable "Population weights".
@@ -606,16 +604,14 @@ condo_food_mean %>%
 ## Homework
 
 ::: nonincremental
-
 Read the paper below **before week 4**: [@Kuchenbecker2017]
 
 -   Kuchenbecker, J., Reinbott, A., Mtimuni, B., Krawinkel, M. B., & Jordan, I. (2017). Nutrition education improves dietary diversity of children 6-23 months at community-level: Results from a cluster randomized controlled trial in Malawi. PLOS ONE, 12, e0175216.
-
 :::
 
 ## Key concepts covered in the lecture {.smaller}
 
-Univariate data 
+Univariate data
 
 The Histogram:
 
@@ -632,6 +628,5 @@ Box plot:
 
 -   Key elements and messages and how to construct it.
 -   Comparing distributions with the box plot.
-
 
 # References

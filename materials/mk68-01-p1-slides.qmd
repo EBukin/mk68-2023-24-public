@@ -669,6 +669,12 @@ To conclude about the effect of intervention, we need to
 Study all prerequisites on your own: see Ilias.
 :::
 
+-   Familiarize with the World Bank DIME initiative <https://www.worldbank.org/en/research/dime>
+
+    -   And Dime knowledge base: <https://www.worldbank.org/en/research/dime>
+    
+    -   Find one project on their website and try to understand what type of data collection was used there and how it was implemented.
+
 ## Key concepts covered in the lecture
 
 -   The population and a sample;
