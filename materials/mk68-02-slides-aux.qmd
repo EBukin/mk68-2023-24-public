@@ -1,0 +1,943 @@
+---
+title: "Week 02. Auxiliary materials"
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+source(here::here("materials", "00-setup.R"), local = TRUE)
+```
+
+# The Histogram
+
+## How old are people across the world?
+
+-   What is the population, unit of observations, and the variable of interest here?
+
+-   **Suppose that we have collected data for the entire population**
+
+    -   7.8 billion observations and two variables: `age` and `gender`
+
+### Variables `age` and `gender` in our data
+
+::: columns
+::: {.column width="30%"}
+```{r}
+#| echo: false
+tibble(age = sample(1:80, 1000, replace = TRUE),
+       gender = sample(0:1, 1000, replace = TRUE)) %>% 
+  mutate(gender = ifelse(gender == 1,"Female", "Male")) %>% 
+  sample_n(8) %>% 
+  kable()
+  # print(n = 15)
+```
+:::
+
+::: {.column width="70%"}
+::: incremental
+-   What kind of variables are those?
+
+    -   Nominal / Ordinal / Interval / Ratio
+    -   (Check prerequisites to refresh)
+
+-   How are the **frequencies** of the variable `age` distributed?
+
+    -   Let us draw it schematically on the chalkboard.
+:::
+:::
+:::
+
+::: notes
+The drawing: How many people are in each age group? - This is a Histogram!
+:::
+
+## Histogram
+
+-   Describes how **frequent** different values are distributed in the variable.
+
+-   Shows: what values are common and uncommon.
+
+-   Further reading:
+
+    -   [@wilke2019fundamentals] [Ch. 7 Visualizing distributions](https://clauswilke.com/dataviz/histograms-density-plots.html)
+
+    -   see [from Data to Viz: Histogram](https://www.data-to-viz.com/graph/histogram.html)
+
+    -   see also prerequisites on Ilias.
+
+## Histogram (1)
+
+```{r}
+#| echo: false
+pop_dta <- here("materials", "data", "un-population.rds") %>% read_rds()
+asia_reg <- 
+  pop_dta %>% 
+  filter(Variable == "Total", 
+         LocTypeName == "Subregion",
+         str_detect(Location, "Asia")) %>% 
+  distinct(LocID, Location)
+
+pop_asia <-
+  pop_dta %>% 
+  left_join(
+    asia_reg %>% rename(Subregion = Location), 
+    c("ParentID" = "LocID")) %>% 
+  filter(!is.na(Subregion))
+
+pop_dist <- 
+  pop_asia %>% 
+  filter(Subregion == "Central Asia", Year == 2020, 
+         Variable == "Total") %>%
+  ggplot() + 
+  aes(x = Age, 
+      # y = ..density..,
+      weight = Population, 
+      fill = Variable, 
+      colour = Variable
+      ) + 
+  # facet_wrap(Subregion ~ Year) +
+  scale_fill_viridis_d(begin = 0.5) + 
+  scale_color_viridis_d(begin = 0.5) + 
+  ylab("Frequency") + 
+  scale_y_continuous(
+    labels = label_number(suffix = " M", scale = 1e-3)
+    ) +
+  scale_x_continuous(breaks = seq(0, 100, 10)) +
+  theme(legend.position = "none")
+
+dist_asia_1 <- 
+  pop_dist +
+  geom_histogram(breaks = seq(-0.001, 100, 1), alpha = 0.8) + 
+  labs(title = "Population distribution by age \nin Central Asia, 2020") 
+```
+
+
+::: columns
+::: {.column width="75%"}
+```{r}
+#| fig-width: 6 
+dist_asia_1
+```
+::: 
+::: {.column width="25%"}
+-   What does it show? What does each bar stands for? Can we conclude anything about the average age?
+-   What can we conclude about the distribution?
+::: 
+::: 
+
+::: footer
+Data source: [UN World Population Prospects 2022](https://population.un.org/wpp/Download/Standard/Population/)
+:::
+
+::: notes
+What does it show? What does each bar stands for? Can we conclude anything about the average age?
+
+What can we conclude about the distribution?
+
+-   Age is not distributed equally.
+-   The birth rate varied over time.
+-   WWI and II bumps + 1990th recession.
+-   Current birth rate is higher then in the past 20 years.
+:::
+
+## Histogram (2): bins width (1) (it is important)
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig-width: 6 
+dist_asia_1
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+```{r}
+#| fig-width: 6
+pop_dist +
+  geom_histogram(breaks = seq(0, 100, 20), alpha = 0.8) + 
+  scale_x_continuous()
+```
+:::
+:::
+:::
+
+::: notes
+Relate 30-40 Years spike to
+:::
+
+## Histogram (2): bins width (2) (still important)
+
+![](img/titanic-ages-hist-grid-1.png)
+
+::: footer
+Source: [@wilke2019fundamentals]
+:::
+
+## Histogram (3): skewed distributions (1)
+
+-   Data: "FAO/WHO GIFT Global Individual Food" survey data [available here](https://www.fao.org/gift-individual-food-consumption/data-and-indicator/en/). (Source: POF Consumo Alimentar 2008-2009).
+
+    -   Brazil
+    -   Observations number: 31 thousand
+    -   Observation units: individuals
+    -   Population: **all people in Brazil**
+    -   Variable: "Sugar consumption in gram per person per day"
+
+::: notes
+Let us recap. What is the
+
+-   units of observations, and
+-   the population, and
+-   the variable that we are going to measure.
+:::
+
+------------------------------------------------------------------------
+
+### Skewed data example: daily sugar consumption {.smaller}
+
+```{r}
+#| echo: false
+brz_food <- 
+  here("materials", "data", "brazil-nutrition.rds") %>% 
+  read_rds() %>% 
+  filter(SUGAR_g < 1050) 
+brz_f0 <- 
+  brz_food %>% 
+  ggplot() +
+  aes(x = SUGAR_g, fill = "Whole population", colour = "black") + 
+  scale_fill_viridis_d(begin = 0.5) + 
+  scale_color_viridis_d(begin = 0.5) + 
+  scale_x_continuous(breaks = seq(0, 1000, 100)) + 
+  scale_y_continuous(n.breaks = 8) +
+  theme(legend.position = "none") +
+  ylab("Frequency") + 
+  xlab("Sugar consumption, grams/day/person") + 
+  labs(
+    title = "Daily sugar consumption in Brazil, 2008-2009",
+    caption = "Source: calculated based on data from POF Consumo Alimentar 2008-2009"
+  )
+
+brz_f1 <-
+  brz_f0 + geom_histogram(binwidth = 10, alpha = 0.6)
+brz_f1a <-
+  brz_f0 + geom_histogram(binwidth = 50, alpha = 0.6)
+brz_f2 <- 
+  brz_f0 + geom_histogram(breaks = c(0, 2 ^ (0:10)), alpha = 0.6) + 
+  scale_x_continuous(breaks = 2 ^ c(0, 5:10)) 
+brz_f3 <-
+  brz_f0 + 
+  geom_histogram(breaks = c(0, 2 ^ (0:10)), alpha = 0.6) + 
+  scale_x_continuous(breaks = 2 ^ c(0,1:10), trans = "log2",
+                     labels = label_math(2^.x)(0:10))
+
+brz_f3a <-
+  brz_f0 + 
+  geom_histogram(breaks = c(0, 2 ^ (0:10)), alpha = 0.6) + 
+  scale_x_continuous(breaks = 2 ^ c(0,1:10), trans = "log2")
+```
+
+::: columns
+::: {.column width="50%"}
+::: r-stack
+```{r}
+#| fig-width: 5
+brz_f1
+```
+
+::: {.fragment fragment-index="2"}
+```{r}
+#| fig-width: 5
+brz_f1a
+```
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: {.fragment fragment-index="1"}
+-   Histogram of a **skewed distribution** is unclear.
+
+    -   What is the average sugar consumption?
+    -   How is sugar consumption distributed when its consumption level is small?
+:::
+
+::: {.fragment fragment-index="3"}
+-   Bins width does not help much.
+:::
+:::
+:::
+
+------------------------------------------------------------------------
+
+### Making skewed data informative (1) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+::: r-stack
+```{r}
+#| fig-width: 5
+brz_f1a
+```
+
+::: {.fragment fragment-index="2"}
+```{r}
+#| fig-width: 5
+brz_f2
+```
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: {.fragment fragment-index="1"}
+Instead of the fixed bins size:
+
+-   \[0;50), \[50;100), \[100;150)
+
+we can adopt **variable size**:
+
+-   \[0;25), \[25;250), \[250;1000)
+-   $\log_{10}$ : \[0;1), \[1;10), \[10;100).
+-   $\log_2$ : \[0;1), \[1;2), \[2;4), \[4;8) \].
+-   natural log: $\log_e$.
+:::
+:::
+:::
+
+## Logarithm transformation with base 2 (1)
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| echo: false
+#| fig-width: 5
+brz_f2
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+```{r}
+#| echo: false
+#| fig-width: 5
+brz_f3
+```
+:::
+:::
+:::
+
+::: notes
+Here we can observe the gradual change in the lower bins.
+:::
+
+## Logarithm transformation with base 2 (2)
+
+::: r-stack
+```{r}
+#| echo: false
+brz_f3
+```
+
+::: fragment
+```{r}
+#| echo: false
+brz_f3a
+```
+:::
+:::
+
+## Logarithm transformation with base 10 (2)
+
+::: r-stack
+```{r}
+#| echo: false
+brz_f4 <-
+  brz_f0 + 
+  geom_histogram(breaks = c(0, 10 ^ c(0, 1, 2, 3)), alpha = 0.6) + 
+  scale_x_continuous(breaks = 10 ^ c(0, 1, 2, 3), trans = "log10",
+                     labels = label_math(10^.x)(c(0, 1, 2, 3)))
+
+brz_f4a <-
+  brz_f0 + 
+  geom_histogram(breaks = c(0, 10 ^ c(0, 1, 2, 3)), alpha = 0.6) + 
+  scale_x_continuous(breaks = 10 ^ c(0, 1, 2, 3), trans = "log10")
+brz_f4
+```
+
+::: fragment
+```{r}
+#| echo: false
+brz_f4a
+```
+:::
+:::
+
+## Histogram Summary
+
+-   When making a histogram, **always explore multiple bin widths**
+
+-   Use the **linear transformation** (especially $log_{10}$) to vary bin width
+
+-   Search for abnormalities such as:
+
+    -   **Bi modality**
+    -   **Hidden/underlining patterns**
+    -   High density areas / Skewness.
+
+-   Use histograms to relate to the real phenomena.
+
+## Exam problems on histograms
+
+-   Define the univariate data.
+
+-   What does the histogram show us?
+
+-   What is the meaning of the bin-width in the histogram?
+
+------------------------------------------------------------------------
+
+### Population Distribution by Age and Gender (DIY)
+
+::: smaller
+::: columns
+::: {.column width="60%"}
+![](img/torado-fig-6.4.png)
+:::
+
+::: {.column width="40%"}
+::: smaller
+-   Why distributions are so different between the countries?
+-   Why these distributions are so different?
+-   What distribution in 'developing' countries says about the current population growth compared to 40 years ago?
+-   How variances are different between these distributions?
+:::
+:::
+:::
+:::
+
+::: footer
+Source: [@Todaro2014]
+:::
+
+# The Density Plot
+
+::: incremental
+-   Describes the **probability distribution** of values in the variable `x`.
+
+-   Is also called `Kernel` density function:
+
+    -   A [`kernel` smoother](https://en.wikipedia.org/wiki/Kernel_smoother) is a **non-parametric** method of estimating a real valued function as the weighted average of neighboring observed data. (A type of weighted moving average.)
+
+-   Further reading:
+
+    -   [@wilke2019fundamentals] [Ch. 7 Visualizing distributions: Histograms and density plots](https://clauswilke.com/dataviz/histograms-density-plots.html)
+
+    -   [from Data to Viz: Density](https://www.data-to-viz.com/graph/density.html)
+:::
+
+::: footer
+See also prerequisites materials
+:::
+
+## Density plot (1): construction {.smaller}
+
+```{r}
+#| echo: false
+#| fig-width: 7
+age_hist <- 
+  pop_dist +
+  geom_histogram(breaks = seq(-0.001, 100, 1), alpha = 0.5)+
+  theme(legend.position = "none")+ 
+  labs(title = "Population distribution by age in Central Asia, 2020") 
+
+age_dens <- 
+  pop_dist +
+  geom_density(#aes(y = ..scaled..),
+    alpha = 0.05) +
+  ylab("Density") +
+  scale_y_continuous(#expand = expansion(mult = c(0, 0.05)), 
+                     position = "right")  +
+  theme_half_open(11, rel_small = 1) + 
+  theme_minimal() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "none")+
+  rremove("x.axis")+
+  rremove("xlab") +
+  rremove("x.text") +
+  rremove("x.ticks") +
+  rremove("legend") 
+aligned_plots <- align_plots(age_hist, age_dens, align="hv", axis="tblr")
+age_hist_dens <- ggdraw(aligned_plots[[1]]) + draw_plot(aligned_plots[[2]])
+```
+
+::: columns
+::: {.column width="70%"}
+::: r-stack
+::: fragment
+```{r}
+#| fig-width: 8
+age_hist
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 8
+age_hist_dens
+```
+:::
+:::
+:::
+
+::: {.column width="30%"}
+::: fragment
+-   The curve shows **density/probability** of observing specific values.
+:::
+
+::: fragment
+-   Area under density curve is equal to 1.
+:::
+
+::: fragment
+-   It is often a very practical method, when sample size is large.
+:::
+:::
+:::
+
+## Density plot (2): bandwidth is important
+
+![](img/titanic-ages-dens-grid-1.png)
+
+::: footer
+Source: [@wilke2019fundamentals]
+:::
+
+# The Cumulative Distribution
+
+::: incremental
+-   Show all the data points at once with their contribution to the distribution of the value `x`
+
+-   Further reading:
+
+    -   [Ch. 8 Visualizing distributions: Empirical cumulative distribution functions and q-q plots](https://clauswilke.com/dataviz/ecdf-qq.html) in Fundamentals of Data Visualization [@wilke2019fundamentals]
+:::
+
+::: footer
+See also prerequisites materials
+:::
+
+## From a density to cumulative distribution
+
+::: columns
+::: {.column width="30%"}
+::: incremental
+How to:
+
+-   Order all observation ascendingly.
+
+-   Plot cumulative frequency for every existing observation on Y axis.
+:::
+:::
+
+::: {.column width="70%"}
+::: r-stack
+::: fragment
+```{r}
+#| fig-width: 8
+inc_dist_2
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 8
+inc_dist_2 + 
+  expand_limits(y = c(0, 6000000)) +
+  stat_ecdf(geom = "step")
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 8
+aaa <- ggplot_build(inc_dist_2)
+inc_dist_2 +
+  geom_step(aes(x = 10 ^ (x), y = y, weight = NA),
+            data = aaa$data[[1]] %>%
+              as_tibble() %>%
+              mutate(y = cumsum(y)),
+            size = 1, 
+            color = "blue")
+```
+:::
+:::
+:::
+:::
+
+## Cumulative distribution of income (1)
+
+```{r}
+cum_dta0 <- 
+  inc_dta %>% 
+  # filter(year == 1998) %>% 
+  group_by(year, income) %>% 
+  summarise(freq = sum(freq)) %>% 
+  arrange(year, income) %>% 
+  filter(income > 0, freq > 0) %>% 
+  mutate(cum_dens = cumsum(freq) / sum(freq),
+         cum_freq = cumsum(freq),
+         cum_freq_share = cum_freq / max(cum_freq),
+         cum_income_share = cumsum(income) / max(cumsum(income)),
+         income_share = income / max(income),
+         cum_equal = row_number() / max(row_number()),
+         year = as.factor(year)) %>% 
+  ungroup() 
+
+cum_dta <- cum_dta0 %>% filter(year == 1998, income > 0, freq > 0)
+
+cum_hist <-
+  inc_dist_1 + 
+  geom_path(data = filter(cum_dta, income < 100),
+            mapping = aes(x = income, y = cum_dens),
+            inherit.aes = FALSE, size = 1) +
+  scale_x_continuous(
+    n.breaks = 15,
+    labels = label_number(big.mark = " ")
+  ) +
+  scale_y_continuous(
+    n.breaks = 10, 
+    limits = c(0, 1900000),
+    labels = label_number(suffix = " M", scale = 1e-3),
+    sec.axis = 
+      sec_axis(~ . / 1900000, 
+               labels = label_percent(), name = "% of all people", 
+               breaks = seq(0, 1, 0.1))
+    ) 
+
+cum_dens_1 <- 
+  cum_hist + 
+  geom_path(data = filter(cum_dta, income < 500), 
+            mapping = aes(x = income, y = cum_dens* 1900000), 
+            inherit.aes = FALSE, size = 1)
+
+cum_dens_2 <-
+  cum_hist + 
+  geom_path(data = filter(cum_dta, income < 1500), 
+            mapping = aes(x = income, y = cum_dens * 1900000), 
+            inherit.aes = FALSE, size = 1) 
+
+cum_dens_3 <- 
+  cum_hist + 
+  geom_path(data = filter(cum_dta, income < 3000), 
+            mapping = aes(x = income, y = cum_dens * 1900000), 
+            inherit.aes = FALSE, size = 1) 
+
+cum_dens_3.2 <- 
+  cum_hist + 
+  geom_path(data = filter(cum_dta, income < 10000), 
+            mapping = aes(x = income, y = cum_dens * 1900000), 
+            inherit.aes = FALSE, size = 1) 
+
+cum_dens_3.4 <- 
+  cum_hist + 
+  geom_path(data = filter(cum_dta, income < 15000), 
+            mapping = aes(x = income, y = cum_dens * 1900000), 
+            inherit.aes = FALSE, size = 1) 
+
+
+cum_dens_4 <-
+  cum_hist + 
+  geom_path(data = filter(cum_dta, income < 55000), 
+            mapping = aes(x = income, y = cum_dens * 1900000), 
+            inherit.aes = FALSE, size = 1) 
+
+
+```
+
+::: r-stack
+::: fragment
+```{r}
+cum_hist
+```
+:::
+
+::: fragment
+```{r}
+cum_dens_1
+```
+:::
+
+::: fragment
+```{r}
+cum_dens_2
+```
+:::
+
+::: fragment
+```{r}
+cum_dens_3
+```
+:::
+
+::: fragment
+```{r}
+cum_dens_3.2
+```
+:::
+
+::: fragment
+```{r}
+cum_dens_3.4
+```
+:::
+
+::: fragment
+```{r}
+cum_dens_4
+```
+:::
+:::
+
+## Income distribution
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig-width: 5
+cum_dens_4 + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0))
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+```{r}
+#| fig-width: 5
+# cum_dens_4
+inc_dist_2 + 
+  geom_path(data = filter(cum_dta, income < 100000),
+            mapping = aes(x = income, y = cum_dens* 400000),
+            inherit.aes = FALSE, size = 1) +
+  scale_y_continuous(
+    n.breaks = 10, 
+    # limits = c(0, 400000),
+    labels = label_number(suffix = " M", scale = 1e-3),
+    sec.axis = 
+      sec_axis(~ . / 400000, 
+               labels = label_percent(), name = "% of all people", 
+               breaks = seq(0, 1, 0.1))
+    )
+```
+:::
+:::
+:::
+
+## Application: (In)equality of income
+
+::: r-stack
+::: fragment
+```{r}
+# cum_dta2 <- cum_dta %>% 
+  # mutate(cum_equal = row_number() / max(row_number()),
+         # income_share = income / max(income, na.rm = TRUE))
+equal <- 
+  ggplot() + 
+  geom_path(
+    data = cum_dta,
+    mapping = aes(x = income, 
+                  y = cum_equal,
+                  color = "Equal income"),
+    inherit.aes = FALSE,
+    size = 1
+  ) +
+  scale_color_brewer(type = "qual") + 
+  scale_y_continuous(n.breaks = 10, labels = label_percent()) + 
+  ylab("Cumulative share of people, %") +
+  xlab("Cumulative Income/person/year in 2005 US$ adjusted to the PPP") +
+  labs(title = "Equally vs unequally distributed income") + 
+  theme(legend.position = "top") 
+equal
+```
+:::
+
+::: fragment
+```{r}
+equal  + 
+  geom_path(
+    data = cum_dta,
+    mapping = aes(x = income, 
+                  y = cum_freq_share ,
+                  color = "Unequal income"),
+    inherit.aes = FALSE,
+    size = 1
+  ) 
+```
+:::
+:::
+
+::: notes
+With equal income distribution, when increase of cumulative income by 1 unit is associated wit the 1 person increase.
+:::
+
+## Lorenz curve {.smaller}
+
+::: columns
+::: {.column width="30%"}
+The [Lorenz curve](https://en.wikipedia.org/wiki/Lorenz_curve):
+
+::: incremental
+-   It is a cumulative distribution function.
+
+-   Arrange all individuals by increasing income.
+
+-   Compute cumulative % of people by income level (0 to 100% of all people).
+
+-   Convert income to % share of maximum income.
+
+-   see [Graphical representation of the Lorenz curve](https://ourworldindata.org/income-inequality#the-gini-coefficient).
+:::
+:::
+
+::: {.column width="70%"}
+::: r-stack
+::: fragment
+```{r}
+#| fig-width: 8
+equal2 <- 
+  ggplot() + 
+  geom_path(
+    data = cum_dta,
+    mapping = aes(x = income_share , 
+                  y = cum_equal),
+    inherit.aes = FALSE,
+    size = 1
+  ) +
+  scale_color_brewer(type = "qual") + 
+  scale_y_continuous(n.breaks = 10, labels = label_percent()) + 
+  scale_x_continuous(n.breaks = 10, labels = label_percent()) + 
+  ylab("Cumulative share of people, %") +
+  xlab("Cumulative share of income, %") +
+  labs(title = "Lorenz curve of the global income inequality") + 
+  theme(legend.position = c(.8, 0.1), 
+        legend.direction = "horizontal")
+equal2
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 8
+equal2a <-
+  equal2 + 
+  geom_path(
+    data = cum_dta,
+    mapping = aes(x = income_share, 
+                  y = cum_freq_share ,
+                  color = year),
+    inherit.aes = FALSE,
+    size = 1
+  )
+equal2a
+```
+:::
+:::
+:::
+:::
+
+::: notes
+How to read it?
+:::
+
+## Lorenz curve: spot any differences
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig-width: 5
+equal2a
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+```{r}
+#| fig-width: 5
+equal2a + coord_flip()
+```
+:::
+:::
+:::
+
+## Exam problems on the cumulative distribution
+
+## Lorenz curve: over time (exam) {.smaller}
+
+::: columns
+::: {.column width="80%"}
+```{r}
+#| fig-width: 9
+equal2  + 
+  geom_path(
+    data = cum_dta0 %>% filter(year %in% c("1988", "2003", "2011")),
+    mapping = aes(x = income_share, 
+                  y = cum_freq_share ,
+                  color = year),
+    inherit.aes = FALSE,
+    size = 1
+  ) 
+```
+:::
+
+::: {.column width="20%"}
+::: incremental
+-   How has income distribution changed between 1988 and 2011?
+-   What statistical concept is used in the backbone of the Lorenz curve computation?
+:::
+:::
+:::
+
+## Lorenz curve: comparing distributions drawing {.smaller}
+
+::: columns
+::: {.column width="80%"}
+```{r}
+#| fig-width: 9
+equal2 
+```
+:::
+
+::: {.column width="20%"}
+::: incremental
+-   Let us draw two Lorenz curves.
+-   How are those distributions comparable?
+:::
+:::
+:::
+
+## Lorenz curve: Inequality (DIY) {.smaller}
+
+::: columns
+::: {.column width="70%"}
+![](img/torado-fig-8.7.png)
+:::
+
+::: {.column width="30%"}
+-   What kind of plot is this?
+-   What does it show?
+-   Which of these two countries demonstrate more equal distribution?
+-   Why do you conclude this?
+:::
+:::
+
+::: footer
+Source: [@Todaro2014]
+:::
+
+# References

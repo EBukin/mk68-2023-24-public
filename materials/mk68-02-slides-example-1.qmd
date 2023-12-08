@@ -1,0 +1,419 @@
+---
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+source(here::here("materials", "00-setup.R"), local = TRUE)
+```
+
+### Example: Deciles (1) of Income Distribution
+
+```{r}
+inc_dta <- 
+  here("materials", "data", "income-distribution.rds") %>%  
+  read_rds() %>%
+  group_by(year, region) %>% 
+  mutate(freq_total = sum(freq)) %>% 
+  group_by(year, region, freq_total) %>% 
+  mutate(dens = freq / freq_total) %>% 
+  nest() %>% 
+  mutate(
+    model = map(data, ~{
+      # browser()
+      mod <- approxfun(x = .x$income, y = .x$dens)
+      dta <- 
+        tibble(income = c(seq(0, 150000, 25))) %>% 
+        mutate(dens = mod(income)) %>% 
+        replace_na(replace = list(dens = 0)) %>% 
+        mutate(dens = dens / sum(dens)) 
+      dta
+      })
+  ) %>% 
+  unnest(model) %>% 
+  mutate(freq = dens * freq_total)  %>% 
+  ungroup() %>% 
+  mutate(
+    region = 
+      ifelse(str_detect(region, "Russia"), "C.Asia Europe MENA", region),
+    region = ifelse(str_detect(region, "Latin"), "LAC", region),
+    region = region %>% 
+      factor(levels = c("China", "India", "Other Asia", "LAC", 
+                        "C.Asia Europe MENA", "Sub-Saharan Africa", 
+                        "Developed Countries")))
+
+inc_dist_0 <- 
+  inc_dta %>% 
+  filter(year == 1998, income > 0, freq > 0) %>% 
+  ggplot() + 
+  aes(x = income, weight = freq, fill = "All ocountries", colour = "All ocountries") + 
+  scale_fill_viridis_d(begin = 0.5) +
+  scale_color_viridis_d(begin = 0.5) +
+  scale_y_continuous(
+    n.breaks = 8, 
+    labels = label_number(suffix = " B", scale = 1e-6)
+    ) +
+  scale_x_continuous(n.breaks = 10) + 
+  theme(legend.position = "none") +
+  ylab("Frequency") +
+  xlab("Income/person/year in 2005 US$ adjusted to the PPP") +
+  labs(title = "Global income distribution in 1998")
+
+inc_dist_1 <- 
+  inc_dist_0 +
+  geom_histogram(binwidth = 2000, alpha = 0.6)
+
+inc_dist_2 <-
+  inc_dist_0 + 
+  geom_histogram(breaks =  10 ^ seq(1, 5, 0.1), alpha = 0.6) +
+  scale_x_continuous(
+    limits = c(50, 100000),
+    breaks = 10 ^ (1:5) %>% c(., (.)/2) %>% sort(),
+    trans = "log10", 
+    labels = label_number(big.mark = " "), 
+    minor_breaks =  c(
+        seq(50, 100, 10),
+        seq(100, 1000, 100),
+        seq(1000, 10000, 1000),
+        seq(10000, 100000, 10000)
+      )
+  ) +
+  annotation_logticks(sides = "b")
+
+inc_dist_3 <- 
+  inc_dist_2 + 
+  aes(fill = region, colour = "darkgrey") + 
+  scale_fill_brewer(type = "qual") + 
+  theme(legend.position = c(0.85, 0.9)) + 
+  guides(colour = "none",
+         fill = guide_legend(title=NULL))
+
+inc_deciles <-
+  inc_dta %>% 
+  filter(year == 1998, income > 0, freq > 0) %>% 
+  arrange(income) %>% 
+  # mutate(Decile = ntile(income, 10)) %>% 
+  mutate(Decile = statar::xtile(x = income, n = 10, wt = freq)) %>% 
+  group_by(Decile) %>% 
+  summarise(
+    min = min(income) %>% round(), 
+    max = max(income) %>% round(),
+    income_wsum = sum(income * freq, na.rm = T),
+    wsum = sum(freq, na.rm = T)
+  ) %>% 
+  mutate(
+    min = ifelse(Decile == 1, 0, min),
+    max = ifelse(Decile == max(Decile), Inf, max)
+  ) %>% 
+  mutate(
+    x = row_number(),
+    group = str_c(x, " decile\n(", scales::label_number(1)(min), " - \n", scales::label_number(1)(max), ")"),
+    inc_share = income_wsum / sum(income_wsum)
+  )
+
+inc_deciles_full <-
+  inc_dta %>% 
+  mutate(
+    Decile2 = cut(income, breaks = c(0, inc_deciles$max),  include.lower = TRUE),
+    Decile = as.numeric(Decile2)
+    ) %>%
+  group_by(year, Decile, region) %>% 
+  summarise(
+    income_wsum = sum(income * freq, na.rm = T),
+    wsum = sum(freq, na.rm = T)
+  ) %>% 
+  group_by(year) %>% 
+  mutate(inc_share = income_wsum / sum(income_wsum)) %>% 
+  left_join(
+    inc_deciles %>% select(Decile, group)
+  ) %>% 
+  filter(!is.na(Decile))
+
+inc_deciles_full_small <-
+  inc_deciles_full %>% 
+  group_by(year, Decile, group) %>% 
+  summarise(
+    across(c(income_wsum, wsum, inc_share), ~ sum(., na.rm = TRUE))
+  ) %>% 
+  ungroup()
+
+inc_deciles_full_small_year <-
+  inc_deciles_full_small %>% 
+  filter(year == 1998)
+
+# inc_deciles_full_small %>% group_by(year) %>% summarise(sum(inc_share))
+
+decile_gg_0 <- 
+  inc_deciles_full_small %>%
+  filter(year == 1998) %>% 
+  ggplot() + 
+  aes(x = Decile, y = inc_share, fill = "All ocountries", colour = "All ocountries") + 
+  scale_fill_viridis_d(begin = 0.5) +
+  scale_color_viridis_d(begin = 0.5) +
+  scale_x_continuous(
+    breaks = inc_deciles$x,
+    labels = inc_deciles$group) +
+  scale_y_continuous(
+    n.breaks = 8,
+    labels = label_percent(.01)
+    ) +
+  theme(legend.position = "none") +
+  xlab("Decile of market income") +
+  ylab("% of global income earned by each decile") +
+  labs(title = "Global income distribution in 1998") 
+
+decile_gg_0a <- 
+  decile_gg_0 + 
+  aes(y = sum(inc_deciles_full_small_year$wsum) / 10) +
+  ylab("Frequency of population in each decile, million") +
+  scale_y_continuous(n.breaks = 8,
+                     label = scales::label_number(accuracy = 1, scale = 0.001, suffix = "M")) + 
+  expand_limits(
+    y = c(0, sum(inc_deciles_full_small_year$wsum) / 10 * 1.05),
+    x = c(1, 10))
+
+decile_gg_0b <- decile_gg_0a + geom_col(alpha = 0.8)
+
+decile_gg_1 <- decile_gg_0 + geom_col(alpha = 0.8) 
+
+# filter(inc_deciles_full_small, year %in% c(1998, 2011)) %>%
+#   group_by(year) %>%
+#   summarise(sum(inc_share))
+# 
+# filter(inc_deciles_full_small, year %in% c(1998, 2011)) %>%
+#   select(inc_share, year, Decile) %>% 
+#   pivot_wider(values_from = "inc_share", names_from = "year" ) %>% 
+#   summarise(across(everything(), ~ sum(.)))
+
+decile_gg_1a <-
+  decile_gg_0 %+%
+  filter(inc_deciles_full_small, year %in% c(1998, 2011)) +
+  labs(title = "Global income distribution over time") + 
+  aes(x = Decile, 
+      y = inc_share, 
+      fill = as.factor(year),
+      colour =  as.factor(year),
+      group =  as.factor(year)) + 
+  ylab("% of global income earned by each decile") +
+  geom_col(position = ggplot2::position_dodge(width = 0.8), alpha = 0.8) + 
+  theme(legend.position = c(0.15, 0.8)) +
+  guides(fill = guide_legend(title = NULL),
+         color = guide_legend(title = NULL))
+
+decile_gg_2 <-
+  decile_gg_0 %+%
+  filter(inc_deciles_full, year %in% c(2011)) +
+  labs(title = "Global income distribution by couintries in 2011") + 
+  ylab("% of global income earned by each decile") +
+  scale_fill_brewer(type = "qual") + 
+  aes(x = Decile, 
+      y = inc_share, 
+      fill = as.factor(region),
+      group =  as.factor(region)) + 
+  geom_col(colour = "darkgrey", alpha = 0.8) + 
+  theme(legend.position = c(0.15, 0.7), 
+        legend.direction =  "vertical") +
+  guides(fill = guide_legend(title = NULL),
+         color = guide_legend(title = NULL))
+
+decile_gg_3 <- 
+  decile_gg_2 %+%
+  geom_col(position = "fill", colour = "darkgrey") +
+  theme(legend.position = "right", legend.direction =  "vertical") +
+  ylab("% of income in each decile") +
+  labs(title = "Global income distribution by couintries in 2011")
+
+inc_dist_3 <- 
+  inc_dist_2 + 
+  aes(fill = region, colour = "darkgrey") + 
+  scale_fill_brewer(type = "qual") + 
+  theme(legend.position = c(0.85, 0.9)) + 
+  guides(colour = "none",
+         fill = guide_legend(title=NULL))
+```
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+inc_dist_1
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+inc_dist_2
+```
+:::
+:::
+:::
+
+------------------------------------------------------------------------
+
+### Example: Deciles (2) of Income Distribution
+
+::: columns
+::: {.column width="30%"}
+::: fragment
+Is the histograms with `bins by deciles` useful? 
+:::
+
+::: fragment
+-   Let us draw it...
+
+-   the total population in 1998 was 6 billion
+:::
+:::
+
+::: {.column width="70%"}
+::: r-stack
+::: fragment
+```{r}
+#| fig-width: 6
+#| fig-height: 5
+decile_gg_0a
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 6
+#| fig-height: 5
+decile_gg_0b
+```
+:::
+:::
+:::
+:::
+
+------------------------------------------------------------------------
+
+### Example: Deciles (3). New insights
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig-width: 6
+#| fig-height: 5
+decile_gg_0b
+```
+
+::: fragment
+Let us plot % share of total income on Y axis.
+:::
+:::
+
+::: {.column width="50%"}
+::: r-stack
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 6
+decile_gg_0
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 6
+decile_gg_1
+```
+:::
+:::
+:::
+:::
+
+------------------------------------------------------------------------
+
+### Example: Deciles (4). New insights
+
+::: columns
+::: {.column width="70%"}
+```{r}
+#| fig-width: 6
+#| fig-height: 5
+decile_gg_1
+```
+:::
+
+::: {.column width="30%"}
+::: fragment
+What does it show?
+:::
+
+::: fragment
+Where is the global income generated and distributed?
+:::
+:::
+:::
+
+------------------------------------------------------------------------
+
+### Example: Deciles (5). Change over time
+
+::: fragment
+```{r}
+#| fig-width: 8
+#| fig-height: 4
+decile_gg_1a
+```
+:::
+
+::: fragment
+What had changed between 1998 and 2011?
+:::
+
+------------------------------------------------------------------------
+
+### Example: Deciles (6). By country
+
+::: columns
+::: {.column width="50%"}
+::: r-stack
+```{r}
+#| fig-width: 5
+#| fig-height: 6
+decile_gg_1a
+```
+
+::: {.fragment fragment-index="2"}
+```{r}
+#| fig-width: 5
+#| fig-height: 6
+inc_dist_3
+```
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: {.fragment fragment-index="1"}
+```{r}
+#| fig-width: 5
+#| fig-height: 6
+decile_gg_2
+```
+:::
+:::
+:::
+
+------------------------------------------------------------------------
+
+### Example: Deciles (7). By country
+
+```{r}
+#| fig-width: 9
+#| fig-height: 5
+decile_gg_3
+```
+

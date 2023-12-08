@@ -1,0 +1,1945 @@
+---
+title: "Week 02. TBD"
+subtitle: "TBD"
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+    incremental: false 
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+source(here::here("materials", "00-setup.R"), local = TRUE)
+```
+
+```{r}
+inc_dta <- 
+  here("materials", "data", "income-distribution.rds") %>%  
+  read_rds() %>%
+  group_by(year, region) %>% 
+  mutate(freq_total = sum(freq)) %>% 
+  group_by(year, region, freq_total) %>% 
+  mutate(dens = freq / freq_total) %>% 
+  nest() %>% 
+  mutate(
+    model = map(data, ~{
+      # browser()
+      mod <- approxfun(x = .x$income, y = .x$dens)
+      dta <- 
+        tibble(income = c(seq(0, 150000, 25))) %>% 
+        mutate(dens = mod(income)) %>% 
+        replace_na(replace = list(dens = 0)) %>% 
+        mutate(dens = dens / sum(dens)) 
+      dta
+      })
+  ) %>% 
+  unnest(model) %>% 
+  mutate(freq = dens * freq_total)  %>% 
+  ungroup() %>% 
+  mutate(
+    region = 
+      ifelse(str_detect(region, "Russia"), "C.Asia Europe MENA", region),
+    region = ifelse(str_detect(region, "Latin"), "LAC", region),
+    region = region %>% 
+      factor(levels = c("China", "India", "Other Asia", "LAC", 
+                        "C.Asia Europe MENA", "Sub-Saharan Africa", 
+                        "Developed Countries")))
+
+inc_dist_0 <- 
+  inc_dta %>% 
+  filter(year == 1998, income > 0, freq > 0) %>% 
+  ggplot() + 
+  aes(x = income, weight = freq, fill = "All ocountries", colour = "All ocountries") + 
+  scale_fill_viridis_d(begin = 0.5) +
+  scale_color_viridis_d(begin = 0.5) +
+  scale_y_continuous(
+    n.breaks = 8, 
+    labels = label_number(suffix = " B", scale = 1e-6)
+    ) +
+  scale_x_continuous(n.breaks = 10) + 
+  theme(legend.position = "none") +
+  ylab("Frequency") +
+  xlab("Income/person/year in 2005 US$ adjusted to the PPP") +
+  labs(title = "Global income distribution in 1998")
+
+inc_dist_0a <- 
+  inc_dist_0 %+%
+  (
+     inc_dta %>% 
+       filter(year == 1998) %>% 
+       group_by(year, income) %>% 
+       summarise(freq = sum(freq, na.rm = T))
+  )
+
+# inc_dist_1a <- 
+#   inc_dist_0 %+%
+#   (
+#      inc_dta %>% 
+#        filter(year == 1998) %>% 
+#        group_by(year, income) %>% 
+#        summarise(freq = sum(freq, na.rm = T))
+#   ) + 
+#   geom_histogram(breaks =  10 ^ seq(1, 6, 0.1), alpha = 0.6) +
+#   scale_x_continuous(
+#     limits = c(50, 100000),
+#     n.breaks = 10,
+#     labels = label_number(big.mark = " ")
+#   ) 
+
+inc_dist_1 <- inc_dist_0 +
+  geom_histogram(binwidth = 2000, alpha = 0.6)
+
+inc_dist_2 <-
+  inc_dist_0 + 
+  geom_histogram(breaks =  10 ^ seq(1, 5, 0.1), alpha = 0.6) +
+  scale_x_continuous(
+    limits = c(50, 100000),
+    breaks = 10 ^ (1:5) %>% c(., (.)/2) %>% sort(),
+    trans = "log10", 
+    labels = label_number(big.mark = " "), 
+    minor_breaks =  c(
+        seq(50, 100, 10),
+        seq(100, 1000, 100),
+        seq(1000, 10000, 1000),
+        seq(10000, 100000, 10000)
+      )
+  ) +
+  annotation_logticks(sides = "b")
+
+inc_dist_2c <- 
+  inc_dist_2 + 
+  scale_x_continuous(
+    limits = c(50, 100000),
+    breaks = 10 ^ c(2:5) %>% c(., 10^ log10(50)) %>% sort(), trans = "log10",
+    labels = label_math(10^.x)(c(1.699, 2:5)))
+inc_dta_agg <- 
+  inc_dta %>% 
+  summarise(
+    Mean = weighted.mean(income, freq),
+    Median =  matrixStats::weightedMedian(income, freq)
+  ) %>% 
+  pivot_longer(everything()) 
+
+
+inc_dist_1a <- 
+  inc_dist_1 + 
+  geom_vline(data = inc_dta_agg,
+             mapping = aes(xintercept = value, 
+                           linetype = name),
+             size = 1) +
+  theme(legend.position = c(.9,.9)) + 
+  scale_linetype_manual(values = c(1,4)) +
+  guides(colour = "none", fill = "none")
+
+pg <- ggplot_build(inc_dist_2)
+
+two_modes <- 
+  pg$data[[1]] %>% 
+  slice(c(20, 32)) %>% 
+  mutate(lab = c("Mode 1", "Mode 2"))
+
+inc_dist_2a <- 
+  inc_dist_2 + 
+  geom_label(
+    data = two_modes %>% mutate(ymax),
+    mapping = aes(x = 10^x, y = ymax*1.05, label = lab),
+    inherit.aes = FALSE
+  )
+
+inc_dist_2b <- 
+  inc_dist_2a + 
+  geom_vline(data = inc_dta_agg,
+             mapping = aes(xintercept = value, 
+                           linetype = name),
+             size = 1) +
+  theme(legend.position = c(.9,.9)) + 
+  scale_linetype_manual(values = c(1,4))+
+  guides(colour = "none", fill = "none")
+```
+
+# Distribution
+
+## Symmetric vs Non symmetric
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig-width: 5
+tibble(x = rbeta(10000, 5, 5)) |> 
+  ggplot() + aes(x = x) + 
+  geom_histogram(aes(y = after_stat(density)), fill = "grey", colour = "black") + 
+  geom_density(linewidth = 1) + theme_void() + 
+  labs(title = "Symmetric distribution") + 
+  geom_vline(aes(xintercept=mean(x)), linetype = 1, linewidth = 2, colour = "red")+ 
+  geom_vline(aes(xintercept=median(x)), linetype = 2, linewidth = 2, colour = "blue")
+```
+:::
+::: {.column width="50%"}
+```{r}
+#| fig-width: 5
+a <- 
+  tibble(x = rbeta(10000, 2, 50)) |> 
+  ggplot() + aes(x = x) + 
+  geom_histogram(aes(y = after_stat(density)), fill = "grey", colour = "black") + 
+  geom_density(linewidth = 1) + theme_void() + 
+  labs(title = "Right skewed (positive skewed)")+ 
+  geom_vline(aes(xintercept=mean(x)), linetype = 1, linewidth = 2, colour = "red")+ 
+  geom_vline(aes(xintercept=median(x)), linetype = 2, linewidth = 2, colour = "blue")
+b <- 
+  tibble(x = rbeta(10000, 50, 2)) |> 
+  ggplot() + aes(x = x) + 
+  geom_histogram(aes(y = after_stat(density)), fill = "grey", colour = "black") + 
+  geom_density(linewidth = 1) + theme_void() + 
+  labs(title = "Left skewed (negative skewed)")+ 
+  geom_vline(aes(xintercept=mean(x)), linetype = 1, linewidth = 2, colour = "red")+ 
+  geom_vline(aes(xintercept=median(x)), linetype = 2, linewidth = 2, colour = "blue")
+a / b
+```
+:::
+:::
+
+## Extreem and influential observations
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig-width: 5
+tibble(x = rbeta(10000, 5, 5), type ="Symmetric") |> 
+  bind_rows(tibble(x = rbeta(10000, 2, 5), type ="Right skewed") ) |> 
+  bind_rows(tibble(x = rbeta(10000, 5, 2), type ="Left skewed") ) |> 
+  ggplot() + 
+  aes(x = x, y = type) + 
+  geom_boxplot() +
+  geom_violin(alpha = 0.1) + 
+  stat_summary(fun = "mean", colour = "red")
+```
+:::
+::: {.column width="50%"}
+-   Mean is heavily affected by influential observations.
+
+-   Median is more **robust**.
+:::
+:::
+
+
+# Cumulative Distribution
+
+::: incremental
+-   Show all the data points at once with their contribution to the distribution of the value `x`
+
+-   See [Ch. 8 Visualizing distributions: Empirical cumulative distribution functions and q-q plots](https://clauswilke.com/dataviz/ecdf-qq.html) in Fundamentals of Data Visualization [@wilke2019fundamentals]
+:::
+
+::: footer
+See also prerequisites materials
+:::
+
+## From a density to a cumulative distribution
+
+::: columns
+::: {.column width="30%"}
+::: incremental
+How to:
+
+-   Order all observation ascendingly.
+
+-   Plot cumulative frequency for every existing observation on Y axis.
+:::
+:::
+
+::: {.column width="70%"}
+::: r-stack
+::: fragment
+```{r}
+#| fig-width: 8
+inc_dist_2
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 8
+inc_dist_2 + 
+  expand_limits(y = c(0, 6000000)) +
+  stat_ecdf(geom = "step")
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 8
+aaa <- ggplot_build(inc_dist_2)
+inc_dist_2 +
+  geom_step(aes(x = 10 ^ (x), y = y, weight = NA),
+            data = aaa$data[[1]] %>%
+              as_tibble() %>%
+              mutate(y = cumsum(y)),
+            size = 1, 
+            color = "blue")
+```
+:::
+:::
+:::
+:::
+
+## Cumulative distribution of income (1)
+
+```{r}
+cum_dta0 <- 
+  inc_dta %>% 
+  # filter(year == 1998) %>% 
+  group_by(year, income) %>% 
+  summarise(freq = sum(freq)) %>% 
+  arrange(year, income) %>% 
+  filter(income > 0, freq > 0) %>% 
+  mutate(cum_dens = cumsum(freq) / sum(freq),
+         cum_freq = cumsum(freq),
+         cum_freq_share = cum_freq / max(cum_freq),
+         cum_income_share = cumsum(income) / max(cumsum(income)),
+         income_share = income / max(income),
+         cum_equal = row_number() / max(row_number()),
+         year = as.factor(year)) %>% 
+  ungroup() 
+
+cum_dta <- cum_dta0 %>% filter(year == 1998, income > 0, freq > 0)
+
+cum_hist <-
+  inc_dist_1 + 
+  geom_path(data = filter(cum_dta, income < 100),
+            mapping = aes(x = income, y = cum_dens),
+            inherit.aes = FALSE, size = 1) +
+  scale_x_continuous(
+    n.breaks = 15,
+    labels = label_number(big.mark = " ")
+  ) +
+  scale_y_continuous(
+    n.breaks = 10, 
+    limits = c(0, 1900000),
+    labels = label_number(suffix = " M", scale = 1e-3),
+    sec.axis = 
+      sec_axis(~ . / 1900000, 
+               labels = label_percent(), name = "% of all people", 
+               breaks = seq(0, 1, 0.1))
+    ) 
+
+cum_dens_1 <- 
+  cum_hist + 
+  geom_path(data = filter(cum_dta, income < 500), 
+            mapping = aes(x = income, y = cum_dens* 1900000), 
+            inherit.aes = FALSE, size = 1)
+
+cum_dens_2 <-
+  cum_hist + 
+  geom_path(data = filter(cum_dta, income < 1500), 
+            mapping = aes(x = income, y = cum_dens * 1900000), 
+            inherit.aes = FALSE, size = 1) 
+
+cum_dens_3 <- 
+  cum_hist + 
+  geom_path(data = filter(cum_dta, income < 3000), 
+            mapping = aes(x = income, y = cum_dens * 1900000), 
+            inherit.aes = FALSE, size = 1) 
+
+cum_dens_3.2 <- 
+  cum_hist + 
+  geom_path(data = filter(cum_dta, income < 10000), 
+            mapping = aes(x = income, y = cum_dens * 1900000), 
+            inherit.aes = FALSE, size = 1) 
+
+cum_dens_3.4 <- 
+  cum_hist + 
+  geom_path(data = filter(cum_dta, income < 15000), 
+            mapping = aes(x = income, y = cum_dens * 1900000), 
+            inherit.aes = FALSE, size = 1) 
+
+
+cum_dens_4 <-
+  cum_hist + 
+  geom_path(data = filter(cum_dta, income < 55000), 
+            mapping = aes(x = income, y = cum_dens * 1900000), 
+            inherit.aes = FALSE, size = 1) 
+```
+
+::: r-stack
+::: fragment
+```{r}
+cum_hist
+```
+:::
+
+::: fragment
+```{r}
+cum_dens_1
+```
+:::
+
+::: fragment
+```{r}
+cum_dens_2
+```
+:::
+
+::: fragment
+```{r}
+cum_dens_3
+```
+:::
+
+::: fragment
+```{r}
+cum_dens_3.2
+```
+:::
+
+::: fragment
+```{r}
+cum_dens_3.4
+```
+:::
+
+::: fragment
+```{r}
+cum_dens_4
+```
+:::
+:::
+
+## Income distribution
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig-width: 5
+cum_dens_4 + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0))
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+```{r}
+#| fig-width: 5
+# cum_dens_4
+inc_dist_2 + 
+  geom_path(data = filter(cum_dta, income < 100000),
+            mapping = aes(x = income, y = cum_dens * 400000, colour = ),
+            inherit.aes = FALSE, size = 1) +
+  scale_y_continuous(
+    n.breaks = 10, 
+    # limits = c(0, 400000),
+    labels = label_number(suffix = " M", scale = 1e-3),
+    sec.axis = 
+      sec_axis(~ . / 400000, 
+               labels = label_percent(), name = "% of all people", 
+               breaks = seq(0, 1, 0.1))
+    )
+```
+:::
+:::
+:::
+
+# Cumulative Distribution: application
+
+## Income inequality
+
+::: r-stack
+::: fragment
+```{r}
+# cum_dta2 <- cum_dta %>% 
+  # mutate(cum_equal = row_number() / max(row_number()),
+         # income_share = income / max(income, na.rm = TRUE))
+equal <- 
+  ggplot() + 
+  geom_path(
+    data = cum_dta,
+    mapping = aes(x = income, 
+                  y = cum_equal,
+                  color = "Equal income"),
+    inherit.aes = FALSE,
+    size = 1
+  ) +
+  scale_color_brewer(type = "qual") + 
+  scale_y_continuous(n.breaks = 10, labels = label_percent()) + 
+  scale_x_continuous(n.breaks = 10) + 
+  ylab("Cumulative share of people, %") +
+  xlab("Cumulative Income/person/year in 2005 US$ adjusted to the PPP") +
+  labs(title = "Equally vs unequally distributed income") + 
+  theme(legend.position = "top") 
+equal
+```
+:::
+
+::: fragment
+```{r}
+equal  + 
+  geom_path(
+    data = cum_dta,
+    mapping = aes(x = income, 
+                  y = cum_freq_share ,
+                  color = "Unequal income"),
+    inherit.aes = FALSE,
+    size = 1
+  ) 
+```
+:::
+:::
+
+## Lorenz curve {.smaller}
+
+::: columns
+::: {.column width="30%"}
+The [Lorenz curve](https://en.wikipedia.org/wiki/Lorenz_curve):
+
+::: incremental
+-   It is a cumulative distribution function.
+
+-   Arrange all individuals by increasing income 
+
+    -   from 0% to 100% of maximum income.
+
+-   Compute cumulative % of people by income level (0 to 100% of all people).
+
+-   see [Graphical representation of the Lorenz curve](https://ourworldindata.org/income-inequality#the-gini-coefficient).
+:::
+:::
+
+::: {.column width="70%"}
+::: r-stack
+::: fragment
+```{r}
+#| fig-width: 8
+equal2 <- 
+  ggplot() + 
+  geom_path(
+    data = cum_dta,
+    mapping = aes(x = income_share , 
+                  y = cum_equal),
+    inherit.aes = FALSE,
+    size = 1
+  ) +
+  scale_color_brewer(type = "qual") + 
+  scale_y_continuous(n.breaks = 10, labels = label_percent()) + 
+  scale_x_continuous(n.breaks = 10, labels = label_percent()) + 
+  ylab("Cumulative share of people, %") +
+  xlab("Cumulative share of income, %") +
+  labs(title = "Lorenz curve of the global income inequality") + 
+  theme(legend.position = c(.8, 0.1), 
+        legend.direction = "horizontal")
+equal2
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 8
+equal2a <-
+  equal2 + 
+  geom_path(
+    data = cum_dta,
+    mapping = aes(x = income_share, 
+                  y = cum_freq_share ,
+                  color = year),
+    inherit.aes = FALSE,
+    size = 1
+  )
+equal2a
+```
+:::
+:::
+:::
+:::
+
+::: notes
+How to read it?
+:::
+
+## Lorenz curve: spot any differences
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig-width: 5
+equal2a
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+```{r}
+#| fig-width: 5
+equal2a + coord_flip()
+```
+:::
+:::
+:::
+
+## Exam problems on the cumulative distribution
+
+## Lorenz curve: over time (exam) {.smaller}
+
+::: columns
+::: {.column width="80%"}
+```{r}
+#| fig-width: 9
+equal2  + 
+  geom_path(
+    data = cum_dta0 %>% filter(year %in% c("1988", "2003", "2011")),
+    mapping = aes(x = income_share, 
+                  y = cum_freq_share ,
+                  color = year),
+    inherit.aes = FALSE,
+    size = 1
+  )  
+```
+:::
+
+::: {.column width="20%"}
+::: incremental
+-   How has income distribution changed between 1988 and 2011?
+-   What statistical concept is used in the backbone of the Lorenz curve computation?
+:::
+:::
+:::
+
+## Lorenz curve: comparing distributions drawing {.smaller}
+
+::: columns
+::: {.column width="80%"}
+```{r}
+#| fig-width: 9
+equal2 
+```
+:::
+
+::: {.column width="20%"}
+::: incremental
+-   Draw two Lorenz curves both with unequal income distribution.
+-   Explain differences between two curves?
+:::
+:::
+:::
+
+## At home: Lorenz curve: Inequality {.smaller}
+
+::: columns
+::: {.column width="70%"}
+![](img/torado-fig-8.7.png)
+:::
+
+::: {.column width="30%"}
+-   What kind of plot is this?
+-   What does it show?
+-   Which of these two countries demonstrate more equal distribution?
+-   Why do you conclude this?
+:::
+:::
+
+::: footer
+Source: [@Todaro2014]
+:::
+
+
+# Variance
+
+::: incremental
+-   `Variance` ($Var[X]$) is a measure of the spread of a distribution relative to its expected value [@Dowdy2004]
+
+    -   is the measure of variability in a single variable;
+    -   is the average squared distance from the mean;
+    -   is in squared units (**has no intuitive meaning**);
+
+-   `Standard Deviation` (`SD`) is the squared root of the variance:
+
+    -   $\text{SD} = \sqrt{\text{Variance}}$
+    -   The standard deviation is
+        -   **in the same units of measurement as the measured variable**
+:::
+
+## Variance
+
+::: columns
+::: {.column width="50%"}
+### Population variance, $\sigma^2$
+
+$$
+\sigma^2 = \frac{\sum_{i=1}^N [x_i - \mu]^2 }{N},
+$$
+
+where $\mu$ is the population mean:
+
+$\mu = {\sum_{i=1}^N x_i }/{N}$
+
+::: {.fragment fragment-index="1"}
+Only used with the population
+:::
+
+::: {.fragment fragment-index="2"}
+### Standard Deviation:
+
+$\sigma = \sqrt{\sigma^2}$
+:::
+:::
+
+::: {.column width="50%"}
+::: {.fragment fragment-index="3"}
+### Sample variance, $s^2$
+
+$$
+s^2 = \frac{\sum_{i=1}^N [x_i - \bar{x}]^2 }{N-1},
+$$
+
+where $\bar{x}$ is the sample mean:
+
+$\bar{x} = {\sum_{i=1}^N x_i }/{N}$
+:::
+
+::: {.fragment fragment-index="4"}
+::: {.callout-note appearance="simple"}
+#### Most commonly used in statistics
+:::
+:::
+
+::: {.fragment fragment-index="5"}
+### Sample Standard Deviation:
+
+$s = \sqrt{s^2}$
+:::
+:::
+:::
+
+## Example: the variance estimation {.smaller}
+
+```{r}
+#| layout-ncol: 3
+# set.seed(123112)
+library(openintro)
+var_dta <-
+  loan50 %>% 
+  select(x = interest_rate)# %>% 
+  # sample_n(7)
+
+kable_part <- function(x, rown_number = FALSE) {
+  
+  if (rown_number) {
+    x <- x %>% mutate(id = row_number()) %>% select(id, everything())
+  }
+  xx <- x %>% slice(1:7) %>% 
+    mutate(across(everything(), ~ as.character(.)))
+
+  xx[6, seq(1, ncol(xx))] <- "$\\cdots$"
+  xx %>% kable(row.names = FALSE, align = "c", 
+  escape = FALSE)
+}
+
+var_sample <- 
+  (sum((var_dta$x-mean(var_dta$x))^2) / (nrow(var_dta) - 1)) %>% 
+  round(2)
+```
+
+::: columns
+::: {.column width="25%"}
+::: {.fragment fragment-index="1"}
+```{r}
+dta_sum <- sum(var_dta$x) %>% round(2)
+dta_mean <- mean(var_dta$x) %>% round(2)
+
+var_dta %>% kable_part(rown_number = T)
+```
+:::
+
+::: {.fragment fragment-index="2"}
+Sum: $\sum x = `r dta_sum`$
+:::
+
+::: {.fragment fragment-index="3"}
+N. obs: $N = `r nrow(var_dta)`$
+:::
+
+::: {.fragment fragment-index="4"}
+`Sample mean`:
+
+$\bar x = \sum x / N$
+
+$\bar x = `r dta_mean`$
+:::
+:::
+
+::: {.column width="30%"}
+::: {.fragment fragment-index="5"}
+```{r}
+dta_mad <- abs(var_dta$x - mean(var_dta$x)) %>% mean() %>% round(2)
+var_dta %>% 
+  mutate(`$x - \\bar{x}$` = round(x - mean(x), 4),
+         `$abs(x - \\bar{x})$` = abs(`$x - \\bar{x}$`)) %>% 
+  select(-x) %>% 
+  kable_part()
+```
+
+Mean absolute deviation:
+
+$\text{MAD} = \sum |x - \bar x| / N$ $\text{MAD} = `r dta_mad`$
+:::
+:::
+
+::: {.column width="45%"}
+::: {.fragment fragment-index="6"}
+```{r}
+dta_sum2 <- sum((var_dta$x-mean(var_dta$x))^2) %>% round(2)
+dta_s <- sqrt(var_sample) %>% round(2)
+var_dta %>% 
+  mutate(`$(x - \\bar{x}) ^ 2$` = round((x - mean(x)) ^ 2, 4)) %>%
+  select(-x) %>%
+  kable_part()
+```
+:::
+
+::: {.fragment fragment-index="7"}
+Sum: $\sum{(x - \bar{x}) ^ 2} = `r dta_sum2`$
+:::
+
+::: {.fragment fragment-index="8"}
+`Sample variance:`
+
+$s^2 = \sum{(x - \bar{x}) ^ 2} / (N-1)$
+
+$s^2 = `r var_sample`$
+:::
+
+::: {.fragment fragment-index="9"}
+`Standard Deviation:`
+
+$s = \sqrt{`r var_sample`} = `r dta_s`$
+:::
+:::
+:::
+
+## Standard Deviation
+
+```{r}
+gg_sd0 <- 
+  ggplot(NULL, aes(c(-3,3)))  +
+  labs(x = NULL, y = NULL) +
+  scale_y_continuous(breaks = NULL) +
+  scale_x_continuous(breaks = 0, labels = "Mean")# +
+  # geom_vline(xintercept = 0, linetype = 2, size = 1, data = NULL, inherit_aes = FALSE)
+  
+gg_sd1 <-
+  gg_sd0 +
+  scale_x_continuous(
+    breaks = -3:3, 
+    minor_breaks = NULL,
+    labels = c("-3 SD", "-2 SD","-1 SD", "Mean", "1 SD", "2 SD", "3 SD")
+    )
+
+gg_sd2 <- 
+  gg_sd1 + 
+  geom_line(stat = "function", fun = dnorm, xlim = c(-3, 3),
+            colour = "black", size = 1) 
+
+gg_sd3 <-
+  gg_sd2 + 
+  geom_area(stat = "function", fun = dnorm, xlim = c(-1, 1),
+            fill = "black", alpha = 0.40) +
+  geom_label(aes(label = c("68.3%"), x = c(0), y = c(0.35)))
+  
+gg_sd4 <-
+  gg_sd3 + 
+  geom_area(stat = "function", fun = dnorm, xlim = c(-2, -1),
+            fill = "black", alpha = 0.25) +
+  geom_area(stat = "function", fun = dnorm, xlim = c(1, 2),
+            fill = "black", alpha = 0.25) +
+  geom_area(stat = "function", fun = dnorm, xlim = c(-3, -2),
+            fill = "black", alpha = 0.15) +
+  geom_area(stat = "function", fun = dnorm, xlim = c(2, 3),
+            fill = "black", alpha = 0.15) +
+  geom_label(aes(label = c("13.6%", "13.6%"), x = c(-1.5, 1.5), y = c(0.05, 0.05))) +
+  geom_label(aes(label = c("2.1%", "2.1%"), x = c(-2.2, 2.2), y = c(0.01, 0.01)))
+
+```
+
+::: columns
+::: {.column width="50%"}
+::: {.fragment fragment-index="1"}
+represents the typical deviation of observations from the mean.
+:::
+
+::: {.fragment fragment-index="2"}
+If the distribution is normal:
+
+-   [68.3% obs. are in +-1 SD;]{.fragment fragment-index="3"}
+-   [95.4% obs. are in +-2 SD;]{.fragment fragment-index="4"}
+-   [99.7% obs. are in +-3 SD;]{.fragment fragment-index="4"}
+:::
+
+::: {.fragment fragment-index="5"}
+::: {.callout-important appearance="simple"}
+The standard deviation **is in the same units of measurement as the measured variable.**
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: r-stack
+::: {.fragment fragment-index="1"}
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+gg_sd1
+```
+:::
+
+::: {.fragment fragment-index="2"}
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+gg_sd2
+```
+:::
+
+::: {.fragment fragment-index="3"}
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+gg_sd3
+```
+:::
+
+::: {.fragment fragment-index="4"}
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+gg_sd4
+```
+:::
+:::
+:::
+:::
+
+------------------------------------------------------------------------
+
+### Not every distribution is normal
+
+::: columns
+::: {.column width="70%"}
+![](img/severalDiffDistWithSdOf1.svg){width="100%"}
+:::
+
+::: {.column width="30%"}
+::: fragment
+::: callout-note
+#### Tip!
+
+A good description of distribution should include
+
+-   Central tendency;
+-   SD (Variance);
+-   Description of the shape;
+    -   modes
+    -   symmetry/skew
+:::
+:::
+:::
+:::
+
+::: footer
+Source: [@Diez2022].
+:::
+
+# Quantiles
+
+-   cut points that divide our data into equal chunks with equal probability of being selected (equal number of observations in each chunk).
+
+::: fragment
+-   The Robust measures of the variance that depends on the quantities of the ordered observations rather than their values:
+:::
+
+::: fragment
+-   Quantiles: Quartiles, Deciles, Percentiles...
+
+    -   see [Quantiles and Percentiles, Clearly Explained](https://youtu.be/IFKQLDmRK0Y)
+
+-   Range
+
+-   IQR - Interquartile range
+:::
+
+## Quartiles: every 25% of observations
+
+```{r}
+# qnorm(c(0.25, 0.5, 0.75))
+lab_dta <- 
+  tibble(x = qnorm(seq(0.125, 0.75+0.125, 0.25)),
+         label = "25%")
+
+gg_quart0 <-
+  ggplot(NULL, aes(c(-3,3)))  +
+  labs(x = "Values", y = "Density") +
+  scale_y_continuous(breaks = NULL) +
+  scale_x_continuous(breaks = 0, labels = "Median") +
+  geom_line(stat = "function", fun = dnorm, xlim = c(-3, 3),
+            colour = "black", size = 1) + 
+  theme(axis.text.y = element_blank())
+
+gg_quart1_1 <-
+  gg_quart0 + 
+  geom_area(stat = "function", fun = dnorm, xlim = c(-3, -0.674),
+            fill = "black", alpha = 0.15) + 
+  scale_x_continuous(
+    breaks = c(-3, -0.674, 0, 0.674, 3), 
+    limits = c(-3, 3),
+    minor_breaks = NULL,
+    labels = c("min", 
+               "Q1\n1st quartile",
+               "Q2\n2nd quartile\nMedian",
+               "Q3\n3rd quartile",
+               "max")
+    ) 
+
+gg_quart1_2 <- 
+  gg_quart1_1 + 
+  geom_area(stat = "function", fun = dnorm, xlim = c(-0.674, 0),
+            fill = "black", alpha = 0.25) 
+
+gg_quart1_3 <- 
+  gg_quart1_2 + 
+  geom_area(stat = "function", fun = dnorm, xlim = c(0, 0.674),
+            fill = "black", alpha = 0.35)
+
+gg_quart2 <- 
+  gg_quart1_3 + 
+  geom_area(stat = "function", fun = dnorm, xlim = c(0.674, 3),
+            fill = "black", alpha = 0.45) +
+  geom_label(data = lab_dta, aes(label=label, x = x, y = 0.05)) 
+
+set.seed(123342)
+gg_quart_box <-
+  tibble(x = rnorm(5000)) %>% 
+  filter(x > -3 & x < 3) %>% 
+  ggplot() + 
+  aes(x = x) + 
+  geom_boxplot() + 
+  scale_x_continuous(
+    breaks = c(-3, -0.674, 0, 0.674, 3), 
+    limits = c(-3, 3),
+    minor_breaks = NULL,
+    labels = c("min", 
+               "Q1\n1st quartile",
+               "Q2\n2nd quartile\nMedian",
+               "Q3\n3rd quartile",
+               "max")
+    ) + 
+  theme(axis.text.y = element_blank(),
+        panel.grid.major.y = element_blank(), 
+        panel.grid.minor.y = element_blank()) +
+  xlab(NULL)
+
+gg_quart_both <- 
+  gg_quart2 + 
+  gg_quart_box + 
+  plot_layout(nrow = 2, heights = c(4, 1))
+```
+
+::: r-stack
+```{r}
+gg_quart0
+```
+
+::: fragment
+```{r}
+gg_quart1_1
+```
+:::
+
+::: fragment
+```{r}
+gg_quart1_2
+```
+:::
+
+::: fragment
+```{r}
+gg_quart1_3
+```
+:::
+
+::: fragment
+```{r}
+gg_quart2
+```
+:::
+
+::: fragment
+```{r}
+gg_quart_both
+```
+:::
+:::
+
+## Quartiles: non-normal distribution
+
+```{r}
+xx <- c(seq(0, 0.999, 0.25), 0.99) %>% qgamma(shape = 2, rate = 2)
+lab_dta <- 
+  tibble(
+    x = qgamma(seq(0.125, 0.75+0.125, 0.25), shape = 2, rate = 2), label = "25%"
+    )
+dgg <- function(x) dgamma(x, shape = 2, rate = 2)
+
+gg_gamma2 <-
+  ggplot(NULL, aes(range(xx)))  +
+  labs(x = NULL, y = NULL) +
+  scale_y_continuous(breaks = NULL) +
+  # scale_x_continuous(breaks = 0, labels = "Median") + 
+  geom_line(stat = "function", fun = dgg, xlim = range(xx),
+            colour = "black", size = 1) + 
+  theme(axis.text.y = element_blank()) + 
+  geom_area(stat = "function", fun = dgg, xlim = c(0.0000000, 0.4806394),
+            fill = "black", alpha = 0.15) + 
+  geom_area(stat = "function", fun = dgg, xlim = c(0.4806394, 0.8391735 ),
+            fill = "black", alpha = 0.25) + 
+  geom_area(stat = "function", fun = dgg, xlim = c(0.8391735, 1.3463173),
+            fill = "black", alpha = 0.35) + 
+  geom_area(stat = "function", fun = dgg, xlim = c(1.3463173, 3.3191760),
+            fill = "black", alpha = 0.45) +
+  scale_x_continuous(
+    breaks = c(0.0000000, 0.4806394, 0.8391735, 1.3463173, 3.3191760), 
+    limits = range(xx),
+    minor_breaks = NULL,
+    labels = c("min", 
+               "Q1\n1st quartile",
+               "Q2\n2nd quartile\nMedian",
+               "Q3\n3rd quartile",
+               "max")
+    ) + 
+  geom_label(data = lab_dta, aes(label=label, x = x, y = 0.05)) 
+
+set.seed(123342)
+gg_gamma_box <-
+  tibble(x = rgamma(5000, shape = 2, rate = 2)) %>% 
+  # filter(x > 0 & x < 3) %>% 
+  ggplot() + 
+  aes(x = x) + 
+  geom_boxplot() + 
+  scale_x_continuous(
+    breaks = c(0.0000000, 0.4806394, 0.8391735, 1.3463173, 3.3191760), 
+    limits = range(xx),
+    minor_breaks = NULL,
+    labels = c("min", 
+               "Q1\n1st quartile",
+               "Q2\n2nd quartile\nMedian",
+               "Q3\n3rd quartile",
+               "max")
+    ) + 
+  theme(axis.text.y = element_blank(),
+        panel.grid.major.y = element_blank(), 
+        panel.grid.minor.y = element_blank()) +
+  xlab(NULL) +
+  expand_limits(x = range(xx))
+
+gg_gamma_both <- 
+  gg_gamma2 + 
+  gg_gamma_box + 
+  plot_layout(nrow = 2, heights = c(4, 1))
+```
+
+```{r}
+gg_gamma_both
+```
+
+## Deciles: every 10% of observations (Normal)
+
+```{r}
+#| fig-width: 9
+#| fig-height: 5
+qdist("norm", seq(.1, .9, by = 0.10), 
+      title = "Deciles of a normal distribution", 
+      show.legend = T,
+      pattern = "rings",
+      return = "plot") + 
+  theme(legend.position = c(0.8, 0.8))
+```
+
+## Deciles: [Gamma distribution](https://en.wikipedia.org/wiki/Gamma_distribution)
+
+```{r}
+#| fig-width: 9
+#| fig-height: 5
+qdist("gamma", 
+      seq(.1, .9, by = 0.10), 
+       shape = 3,
+      title = "Deciles of a gamma distribution", 
+      show.legend = T,
+      pattern = "rings",
+      return = "plot") + 
+  theme(legend.position = c(0.8, 0.8))
+```
+
+::: footer
+See more on the [Gamma distribution](https://en.wikipedia.org/wiki/Gamma_distribution)
+:::
+
+## Example: income deciles and robust-vs-non summary
+
+------------------------------------------------------------------------
+
+{{< include mk68-02-slides-example-1.qmd >}}
+
+## Example: Deciles of income, taxes and subsidies (1)
+
+Fiscal policy has a redistribution effect.
+
+::: incremental
+-   Taxes can accumulate wealth from the "rich":
+
+    -   Direct taxed: income tax
+    -   Indirect taxed: VAT, and excises
+
+-   Subsidies could distribute this wealth to the poor:
+
+    -   Direct subsidies: unemployment benefits, child support
+    -   In-kind subsidies: health and education
+:::
+
+::: footer
+See [Fiscal Incidence in Armenia.](https://commitmentoequity.org/wp-content/uploads/2017/09/CEQ-WP43_Younger-Khachatryan__Armenia_April-2017.pdf) and [FISCAL POLICY IN INDONESIA](https://commitmentoequity.org/wp-content/uploads/2017/09/CEQ-WP40_Jellema-WaiPoi-Afkar_Indonesia_May2017.pdf)
+:::
+
+------------------------------------------------------------------------
+
+### The Data
+
+Data below is produced based on the representative HH surveys.
+
+::: incremental
+-   For each individual income by sources and expenditure by directions was calculated.
+
+-   Then individuals were aggregated into the deciles of income.
+:::
+
+------------------------------------------------------------------------
+
+### Example: Taxes (2). Progressive taxation
+
+![](img/armenia-ncp.png){width="100%"}
+
+::: notes
+Guide through the revenues and costs. Regressive and progressive taxation.
+:::
+
+------------------------------------------------------------------------
+
+### Example: Taxes (3). Regressive taxation
+
+![](img/Indonesia-NCP.png){width="100%"}
+
+## Example (Exam): Robust vs non robust variance {.smaller}
+
+![](img/patrons-1.png){fig-align="center"}
+
+-   Would the mean or the median best represent the central tendency?
+-   What does this say about the robustness of the two measures?
+-   Would the standard deviation or the IQR best represent the amount of variability in the incomes?
+
+::: footer
+Source: [@Diez2022]
+:::
+
+## Example (Exam): Match distribution with the box plot
+
+::: columns
+::: {.column width="50%"}
+![](img/match-1.PNG){fig-align="left"}
+:::
+
+::: {.column width="50%"}
+![](img/match-2.PNG)
+:::
+:::
+
+-   Describe the distribution in the histograms below and match them to the box plots.
+
+::: footer
+Source: [@Diez2022]
+:::
+
+# Application of variance in the descriptive analysis
+
+## Example: Measuring stunting
+
+### How to measure if a child is stunted?
+
+::: {.fragment fragment-index="1"}
+::: callout-important
+> Stunting is the impaired growth and development that children experience from poor nutrition, repeated infection, and inadequate psycho-social stimulation
+
+-   Stunting in the first 1000 days of life has negative consequences on the child's physical and mental development.
+:::
+
+-   See: [WHO. Stunting in a nutshell](https://www.who.int/news/item/19-11-2015-stunting-in-a-nutshell) and more information on [Hunger and Undernourishment](https://ourworldindata.org/hunger-and-undernourishment#too-little-weight-for-height-wasting).
+:::
+
+------------------------------------------------------------------------
+
+### Global Stunting
+
+<iframe src="https://ourworldindata.org/grapher/share-of-children-younger-than-5-who-suffer-from-stunting" loading="lazy" style="width: 100%; height: 600px; border: 0px none;" data-external="1">
+
+</iframe>
+
+::: footer
+Source: [What is childhood stunting?](https://ourworldindata.org/stunting-definition)
+:::
+
+------------------------------------------------------------------------
+
+### How to measure if the child is stunted?
+
+```{r}
+who_lhfa <- read_rds(here("materials", "data", "who_lhfa.rds"))
+
+girls_gg <-
+  who_lhfa %>% 
+  filter(Day < 730) %>% 
+  filter(gender == "girls") %>%
+  ggplot() + 
+  aes(x = Day, colour = gender, fill = gender) + 
+  geom_line(aes(y = SD0, linetype = "Median"), size = 0.5) + 
+  geom_line(aes(y = SD2, linetype = "2SD"), size =  0.5) + 
+  geom_line(aes(y = SD2neg, linetype = "2SD"), size =  0.5) + 
+  geom_line(aes(y = SD3, linetype = "3SD"), size =  0.5) + 
+  geom_line(aes(y = SD3neg, linetype = "3SD"), size =  0.5) + 
+  geom_line(aes(y = SD4, linetype = "4SD"), size =  0.5) + 
+  geom_line(aes(y = SD4neg, linetype = "4SD"), size =  0.5) + 
+  geom_ribbon(aes(ymin = SD0, ymax = SD2), alpha = 0.05, colour = NA) + 
+  geom_ribbon(aes(ymin = SD2neg , ymax = SD0), alpha = 0.05, colour = NA) + 
+  geom_ribbon(aes(ymin = SD2, ymax = SD3), alpha = 0.15, colour = NA) + 
+  geom_ribbon(aes(ymin = SD3neg , ymax = SD2neg), alpha = 0.15, colour = NA) + 
+  geom_ribbon(aes(ymin = SD3, ymax = SD4), alpha = 0.25, colour = NA) + 
+  geom_ribbon(aes(ymin = SD4neg , ymax = SD3neg), alpha = 0.25, colour = NA) + 
+  scale_color_manual(values = c("#c51010", "#088da5"))+ 
+  scale_fill_manual(values = c("#c51010", "#088da5")) + 
+  # facet_grid(rows = "gender") + 
+  ylab("Length/Height in cm") + 
+  xlab("Age") + 
+  scale_y_continuous(n.breaks = 12) +
+  scale_x_continuous(
+    breaks = c(0, 14, 35, 60, 90, 120, 150, 180, 270, 360, 15*30, 18*30, 21*30, 24*30),
+    labels = c(0, "2W", "5W", "2M", "3M", "4M", "5M", "6M", "9M", "12M", "15M", "18M", "21M", "2Y"),
+    minor_breaks = NULL
+  ) + 
+  scale_linetype_manual(values = c(1, 2, 3, 4),
+                        breaks = c("Median", "2SD", "3SD", "4SD"), 
+                        name = NULL) +
+  guides(fill = guide_none(), colour = guide_none()) + 
+  theme(legend.position = c(.5, .1),
+        legend.direction = "horizontal", 
+        legend.key.width = unit(1.5, "cm")) +
+  labs(title = "Weight-for-height: Girls")
+```
+
+::: columns
+::: {.column width="40%"}
+::: fragment
+WHO has developed:
+
+-   [Child Growth standards](https://www.who.int/publications/i/item/9789241547635)
+:::
+
+::: fragment
+The [Height-for-age](https://www.who.int/tools/child-growth-standards/standards/length-height-for-age) standard stipulates:
+
+-   Lower boundaries of heights without stunting
+-   at all ages 0 days - 12 years.
+:::
+:::
+
+::: {.column width="60%"}
+::: fragment
+```{r}
+#| fig-width: 6
+girls_gg
+```
+:::
+:::
+:::
+
+------------------------------------------------------------------------
+
+### Length/Height-for-age in boys and girls
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig-width: 5
+girls_gg
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| fig-width: 5
+boys_gg <- 
+  girls_gg %+%  
+  filter(who_lhfa, gender == "girls", Day < 730) +
+  labs(title = "Boys") + 
+  scale_color_manual(values = c("#088da5")) + 
+  scale_fill_manual(values = c("#088da5")) 
+boys_gg
+```
+:::
+:::
+
+------------------------------------------------------------------------
+
+### How this standard is made?
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+#### WHO's data collection:
+
+![](img/who-sample.png)
+
+[WHO Child Growth Standards](https://www.who.int/tools/child-growth-standards/standards/length-height-for-age)
+
+::: incremental
+-   Random sample of children was followed in each country for several years.
+
+-   Children were regularly screened and measured.
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+#### Simplified methodology:
+
+::: incremental
+For every age group:
+
+-   Mean/median and standard deviation were calculated.
+
+-   Any child with height-for-age within two standard deviations from the mean is considered non-stunting.
+
+-   For a regular population, 95% of children are not stunted.
+:::
+:::
+:::
+:::
+
+------------------------------------------------------------------------
+
+### How this standard is made?
+
+```{r}
+set.seed(121332)
+dist_dta <-
+  who_lhfa %>%
+  filter(Day %in% c(0, 30, 160, 360),
+         gender == "boys")  %>%
+  rowwise() %>%
+  mutate(
+    mu = SD0,
+    sigma = SD1 - SD0,
+    data = map2(mu, sigma, ~{rnorm(10000, .x, .y)})
+  ) %>%
+  unnest(data) %>%
+  mutate(
+    z = (data - mu) / sigma,
+    Stunting = case_when(
+      abs(z) <= 2 ~ "No",
+      abs(z) > 2 & abs(z) <= 3  ~ "Severe",
+      abs(z) > 3  ~ "Critical"
+    ) %>% 
+      as_factor() %>% 
+      fct_relevel(c("NO",  "Critical", "Severe")),
+    y = pmap_dbl(list(z, mu, sigma), ~ {dnorm(..1)})
+  ) %>%
+  # select(Day, data, Stunting, z, y, mu, sigma) %>% 
+  mutate(
+    stunting2 = case_when(
+      abs(z) <= 2 ~ 1,
+      abs(z) > 2 & abs(z) <= 3  ~ 1,
+      abs(z) > 3  ~ 2
+    ),
+    measurement =
+      case_when(Day == 0 ~ "Newborn",
+                Day == 30 ~ "1 Month",
+                Day == 160 ~ "6 month",
+                Day == 360 ~ "1 year") %>% 
+      as_factor() %>% 
+      fct_relevel(c("Newborn", "1 Month", "6 month", "1 year")),
+    group = str_c(z > 0, Stunting)
+  )# %>% 
+  # bind_rows(
+  #   filter(., lag(Stunting) != Stunting) %>% 
+  #     mutate(Stunting = lag(Stunting)),
+  #   # filter(., lead(Stunting) != Stunting) %>% 
+  #   #   mutate(Stunting = lead(Stunting))
+  # ) %>% 
+  # filter(!is.na(Stunting))
+
+dist_gg_0 <- 
+  dist_dta %>% 
+  # filter(Day == 0)  %>%
+  ggplot() + 
+  aes(x = data , ymin = 0, ymax = y, group = group,
+      fill = Stunting, color = Stunting) + 
+  geom_ribbon(alpha = 0.75) +
+  facet_wrap(. ~ measurement, ncol = 1, strip.position = "left") +
+  xlab("Length/Height in cm") + 
+  theme(axis.line.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) + 
+  scale_x_continuous(n.breaks = 10) + 
+  scale_fill_brewer(palette = "YlOrRd", direction = -1)+
+  scale_color_brewer(palette = "YlOrRd", direction = -1)
+
+
+dist_gg_1_1 <- 
+   dist_gg_0 %+% 
+  ungroup(filter(group_by(dist_dta, measurement),  data == max(data)))
+
+dist_gg_1 <- 
+  dist_gg_0 %+% 
+  ungroup(filter(
+    group_by(dist_dta, measurement),
+    measurement %in% c("Newborn") |
+      (!measurement %in% c("Newborn") & data == max(data))
+  ))
+
+dist_gg_2 <- 
+  dist_gg_0 %+% 
+  ungroup(filter(
+    group_by(dist_dta, measurement),
+    measurement %in% c("Newborn", "1 Month") |
+      (!measurement %in% c("Newborn", "1 Month") & data == max(data))
+  ))
+
+dist_gg_3 <- 
+  dist_gg_0 %+% 
+  ungroup(filter(
+    group_by(dist_dta, measurement),
+    measurement %in% c("Newborn", "1 Month", "6 month") |
+      (!measurement %in% c("Newborn", "1 Month", "6 month") & data == max(data))
+  ))
+```
+
+::: r-stack
+```{r}
+dist_gg_1_1
+```
+
+::: fragment
+```{r}
+dist_gg_1
+```
+:::
+
+::: fragment
+```{r}
+dist_gg_2
+```
+:::
+
+::: fragment
+```{r}
+dist_gg_3
+```
+:::
+
+::: fragment
+```{r}
+dist_gg_0
+```
+:::
+:::
+
+------------------------------------------------------------------------
+
+### The stanard summary
+
+Practically, WHO's data collected on the healthy population helped defining
+
+-   probability distribution of **heights** for age and gender of children.
+
+::: fragment
+-   Mean/Median height
+-   Standard deviation of height
+-   The distribution is normal
+:::
+
+::: fragment
+Stunting was defined as:
+
+-   Having actual height 2 standard deviation lower than the central tendency in the healthy population.
+:::
+
+------------------------------------------------------------------------
+
+### Application: let us follow a boy's development:
+
+```{r}
+bb <- 
+  tibble(
+    x = c(1, 36, 73, 144, 251, 462, 610, 700),
+    y = c(42, 48, 51, 59, 67, 73, 77, 81)
+    )
+```
+
+::: fragment
+```{r}
+boys_gg + 
+  geom_path(data = bb, aes(x = x, y = y), inherit.aes = FALSE) + 
+  geom_point(data = bb, aes(x = x, y = y), inherit.aes = FALSE)
+```
+:::
+
+## Exam questions on variance
+
+-   What is variance and how is it different from the standard deviation.
+
+-   When the mean and the standard deviation are not the best measures of respectively the central tendency and the variance?
+
+    -   What are the alternative methods?
+
+-   Assume that the distribution is normal. What share of observations falls withing two SD of mean?
+
+-   How the quntiles are constructed?
+
+-   Is median one of the quantiles or this is the central tendency?
+
+-   What robust measures of variance do you know?
+
+# The (Satandard) Normal Distribution
+
+::: columns
+::: {.column width="40%"}
+::: {.fragment fragment-index="1"}
+Is the symmetric, bell-shaped normal distribution, whit:
+:::
+
+::: {.fragment fragment-index="3"}
+-   $\mu = 0$,
+
+-   $\text{SD} = 1$.
+:::
+
+::: {.fragment fragment-index="4"}
+-   X axis contains z-scores.
+:::
+:::
+
+::: {.column width="60%"}
+```{r}
+st_norm_0 <- 
+  ggplot(NULL, aes(c(-3,3)))  +
+  labs(x = NULL, y = NULL) +
+  scale_y_continuous(breaks = NULL) +
+  scale_x_continuous(breaks = -3:3, minor_breaks = NULL, labels = NULL)
+
+st_norm_1 <- 
+  st_norm_0 + 
+  geom_line(stat = "function", fun = dnorm, xlim = c(-3, 3),
+            colour = "black", size = 1) 
+
+st_norm_2 <- 
+  st_norm_1 + 
+  scale_x_continuous(breaks = -3:3, minor_breaks = NULL, 
+                     labels = c("-3\n-3SD", "-2\n-2SD", "-1\n-1SD", "0\nMean",
+                                "1\n-1SD", "2\n-2SD", "3\n-3SD")) + 
+  xlab("z-score")
+```
+
+::: r-stack
+::: {.fragment fragment-index="2"}
+```{r}
+#| fig-width: 5
+#| fig-height: 4
+st_norm_1
+```
+:::
+
+::: {.fragment fragment-index="3"}
+```{r}
+#| fig-width: 5
+#| fig-height: 4
+st_norm_2
+```
+:::
+:::
+:::
+:::
+
+## Z-score
+
+The Z-score of an observation $x$ is the `number of standard deviations` $s$ that it ($x$) falls above or below the mean $\bar x$.
+
+::: fragment
+We can compute a z-score of every observation $x$ in our sample. For that we need:
+
+-   sample mean $\bar x$, and
+-   sample standard deviation, $s$.
+:::
+
+::: fragment
+$$
+Z = \frac{x-\bar x}{s}
+$$
+:::
+
+::: fragment
+Please memorize it! 
+:::
+
+::: footer
+Source: [@Diez2022].
+:::
+
+## Why do we need it?
+
+::: columns
+::: {.column width="25%"}
+Often, we need to compare distributions or locate individual observations on distributions.
+:::
+
+::: {.column width="75%"}
+::: fragment
+![](img/twoSampleNormalsStacked.svg){width="100%"}
+:::
+:::
+:::
+
+::: fragment
+This is difficult, when values are expressed in the absolute terms.
+:::
+
+::: footer
+Image source: [@Diez2022].
+:::
+
+## Standardization
+
+The process of converting any value of any distribution to the standard normal distribution.
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+$$
+Z = \frac{x-\bar x}{s}
+$$
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+where:
+
+-   $\bar x$ is the mean, and
+-   $s$ is the SD, and
+-   $x$ is the observation.
+:::
+:::
+:::
+
+## Example (exam): det. stunting status (1)
+
+Stunting is defined **as having heights** `2 standard deviations lower` **then the average height of a healthy child** of the same gender and age.
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+We've measured that:
+
+-   a 5 years old girl
+-   has heights of 97 cm.
+
+**Can we consider her suffering from stunting?**
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+According to the [Child Growth Standards](https://www.who.int/publications/i/item/9789241547635) about [height-for-age](https://www.who.int/tools/child-growth-standards/standards/length-height-for-age), the height of a healthy girl at the age of 5 years old:
+
+-   is normally distributed with
+-   the mean $\mu = 109$ cm and
+-   the SD $s = 4.73$ cm.
+:::
+:::
+:::
+
+## Example (exam): det. stunting status (2)
+
+Computing the z-score of the observation:
+
+::: fragment
+$$
+Z = \frac{97 - 109}{4.73} = \frac{-12}{4.73} = -2.54
+$$
+:::
+
+::: fragment
+Conclusion:
+
+-   Observed height of a 5 y.o. girl falls below -2 standard deviations.
+
+-   Thus she might be suffering from stunting if other causes of growth deprevation (e.g. genetic) are eliminated.
+:::
+
+## Example 2 (exam) DIY
+
+1.  The boy's height is 76 cm. He is 1.5 Years old.
+
+    -   Is this boy stunted given that the expected height in the corresponding population of that age is 80.3 and the SD is 2.6?
+    -   Calculate corresponding statistics and write a brief conclusion.
+
+2.  The girl's weight is 13.8 kg. She is 5 years old.
+
+    -   Does this girl suffer from waisting?
+    -   Expected weight in the corresponding population of that age is 18.3 and the SD is 2.05?
+    -   Calculate corresponding statistics and write a brief conclusion.
+
+## Exam questions on the Normal distribution
+
+-   What is the difference between a normal distribution of age and a standard normal distribution?
+
+-   What is the z-score?
+
+
+# Univariate data analysis is not enough.
+
+## Datasaur: Synthetic data (1) {.smaller}
+
+```{r}
+saur_dta <- read_tsv(here("materials", "data", "DatasaurusDozen.tsv"))
+sum_stats <- 
+  saur_dta %>%
+  group_by(dataset) %>%
+  summarise(
+    across(x:y, ~ mean(., na.rm  = T), .names = "mean_{.col}")#,
+    # corr_xy = cor(x, y)
+  ) %>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  kable()
+```
+
+::: columns
+::: {.column width="30%"}
+::: incremental
+-   There are 13 synthetic data sets that produce similar descriptive statistics and distributions:
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+```{r}
+sum_stats
+```
+:::
+:::
+:::
+
+::: footer
+Data source: [@Cairo2016] and [@Matejka2017]
+:::
+
+## Univariate analysis of the Datasaur (1)
+
+```{r}
+saur_dta %>%
+  filter(dataset != "away") %>%
+  ggplot() +
+  aes(x = x, colour = dataset) +
+  geom_boxplot() +
+  facet_wrap(. ~ dataset, scales = "free_y") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+::: footer
+Data source: [@Cairo2016] and [@Matejka2017]
+:::
+
+## Univariate analysis of the Datasaur (2)
+
+```{r}
+saur_dta %>%
+  filter(dataset != "away") %>%
+  ggplot() +
+  aes(x = x, colour = dataset, fill = dataset) +
+  geom_histogram(bins = 20) +
+  facet_wrap(. ~ dataset, scales = "free_y") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+::: footer
+Data source: [@Cairo2016] and [@Matejka2017]
+:::
+
+## Bi-variate distribution is important!
+
+```{r}
+saur_dta %>%
+  filter(dataset != "away") %>%
+  ggplot() +
+  aes(x, y, colour = dataset) +
+  geom_point() +
+  facet_wrap(. ~ dataset) + theme_minimal() +
+  theme(legend.position = "none")
+```
+
+# Takeaways checklist
+
+## Homework
+
+Read the paper below **before week 4**: [@Kuchenbecker2017]
+
+-   Kuchenbecker, J., Reinbott, A., Mtimuni, B., Krawinkel, M. B., & Jordan, I. (2017). Nutrition education improves dietary diversity of children 6-23 months at community-level: Results from a cluster randomized controlled trial in Malawi. PLOS ONE, 12, e0175216.
+
+-   Available on Ilias.
+
+## Key concepts covered in the lecture {.smaller}
+
+::: columns
+::: {.column width="50%"}
+Univariate data 
+
+The Histogram:
+
+-   bars, frequencies, bins and bins width;
+
+The Density plot:
+
+-   Density vs frequency;
+-   How to make a density plot;
+
+The Cumulative distribution:
+
+-   How to make it;
+-   Equal vs unequal distribution;
+-   Lorenz Curve;
+:::
+
+::: {.column width="50%"}
+The Variance:
+
+-   Robust vs non robust statistical measures of variance;
+-   Variance and Standard deviation;
+-   Use of SD;
+-   Units of measurement in SD;
+-   1, 2, 3 SD from the mean/median;
+
+The Normal Distribution:
+
+-   Mean and Variance in the Normal distribution;
+-   Standard normal distribution;
+-   Z-scores and standardization;
+:::
+:::
+
+# References
