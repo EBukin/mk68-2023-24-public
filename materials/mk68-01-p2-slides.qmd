@@ -599,6 +599,615 @@ condo_food_mean %>%
 :::
 :::
 
+# Global income distribution
+
+The Data individual's **income** across the world.
+
+-   Combines many surveys from different countries
+
+-   Number of observations: 10+ million
+
+-   Observation units: **individuals**
+
+-   The population: **all people in the World**
+
+-   The variable: **income per person per year** in constant 2005 US\$ adjusted to the PPP ([Purchasing Power Parity](https://data.oecd.org/conversion/purchasing-power-parities-ppp.htm))..
+
+-   Data sources: [@lakner2015global] at [elibrary.worldbank.org](http://elibrary.worldbank.org/doi/abs/10.1596/1813-9450-6719), [@roser2013global] at [OurWorldInData.org](https://ourworldindata.org/global-economic-inequality) :::
+
+::: footer
+See also: [@wilke2019fundamentals] [Ch. 8.2 Highly skewed distributions](https://clauswilke.com/dataviz/ecdf-qq.html#skewed-distributions)
+:::
+
+## Income distribution
+
+```{r}
+inc_dta <- 
+  here("materials", "data", "income-distribution.rds") %>%  
+  read_rds() %>%
+  group_by(year, region) %>% 
+  mutate(freq_total = sum(freq)) %>% 
+  group_by(year, region, freq_total) %>% 
+  mutate(dens = freq / freq_total) %>% 
+  nest() %>% 
+  mutate(
+    model = map(data, ~{
+      # browser()
+      mod <- approxfun(x = .x$income, y = .x$dens)
+      dta <- 
+        tibble(income = c(seq(0, 150000, 25))) %>% 
+        mutate(dens = mod(income)) %>% 
+        replace_na(replace = list(dens = 0)) %>% 
+        mutate(dens = dens / sum(dens)) 
+      dta
+      })
+  ) %>% 
+  unnest(model) %>% 
+  mutate(freq = dens * freq_total)  %>% 
+  ungroup() %>% 
+  mutate(
+    region = 
+      ifelse(str_detect(region, "Russia"), "C.Asia Europe MENA", region),
+    region = ifelse(str_detect(region, "Latin"), "LAC", region),
+    region = region %>% 
+      factor(levels = c("China", "India", "Other Asia", "LAC", 
+                        "C.Asia Europe MENA", "Sub-Saharan Africa", 
+                        "Developed Countries")))
+
+inc_dist_0 <- 
+  inc_dta %>% 
+  filter(year == 1998, income > 0, freq > 0) %>% 
+  ggplot() + 
+  aes(x = income, weight = freq, fill = "All ocountries", colour = "All ocountries") + 
+  scale_fill_viridis_d(begin = 0.5) +
+  scale_color_viridis_d(begin = 0.5) +
+  scale_y_continuous(
+    n.breaks = 8, 
+    labels = label_number(suffix = " B", scale = 1e-6)
+    ) +
+  scale_x_continuous(n.breaks = 10) + 
+  theme(legend.position = "none") +
+  ylab("Frequency") +
+  xlab("Income/person/year in 2005 US$ adjusted to the PPP") +
+  labs(title = "Global income distribution in 1998")
+
+inc_dist_0a <- 
+  inc_dist_0 %+%
+  (
+     inc_dta %>% 
+       filter(year == 1998) %>% 
+       group_by(year, income) %>% 
+       summarise(freq = sum(freq, na.rm = T))
+  )
+
+# inc_dist_1a <- 
+#   inc_dist_0 %+%
+#   (
+#      inc_dta %>% 
+#        filter(year == 1998) %>% 
+#        group_by(year, income) %>% 
+#        summarise(freq = sum(freq, na.rm = T))
+#   ) + 
+#   geom_histogram(breaks =  10 ^ seq(1, 6, 0.1), alpha = 0.6) +
+#   scale_x_continuous(
+#     limits = c(50, 100000),
+#     n.breaks = 10,
+#     labels = label_number(big.mark = " ")
+#   ) 
+
+inc_dist_1 <- inc_dist_0 +
+  geom_histogram(binwidth = 2000, alpha = 0.6)
+
+inc_dist_2 <-
+  inc_dist_0 + 
+  geom_histogram(breaks =  10 ^ seq(1, 5, 0.1), alpha = 0.6) +
+  scale_x_continuous(
+    limits = c(50, 100000),
+    breaks = 10 ^ (1:5) %>% c(., (.)/2) %>% sort(),
+    trans = "log10", 
+    labels = label_number(big.mark = " "), 
+    minor_breaks =  c(
+        seq(50, 100, 10),
+        seq(100, 1000, 100),
+        seq(1000, 10000, 1000),
+        seq(10000, 100000, 10000)
+      )
+  ) +
+  annotation_logticks(sides = "b")
+
+inc_dist_2c <- 
+  inc_dist_2 + 
+  scale_x_continuous(
+    limits = c(50, 100000),
+    breaks = 10 ^ c(2:5) %>% c(., 10^ log10(50)) %>% sort(), trans = "log10",
+    labels = label_math(10^.x)(c(1.699, 2:5)))
+inc_dta_agg <- 
+  inc_dta %>% 
+  summarise(
+    Mean = weighted.mean(income, freq),
+    Median =  matrixStats::weightedMedian(income, freq)
+  ) %>% 
+  pivot_longer(everything()) 
+
+
+inc_dist_1a <- 
+  inc_dist_1 + 
+  geom_vline(data = inc_dta_agg,
+             mapping = aes(xintercept = value, 
+                           linetype = name),
+             size = 1) +
+  theme(legend.position = c(.9,.9)) + 
+  scale_linetype_manual(values = c(1,4)) +
+  guides(colour = "none", fill = "none")
+
+pg <- ggplot_build(inc_dist_2)
+
+two_modes <- 
+  pg$data[[1]] %>% 
+  slice(c(20, 32)) %>% 
+  mutate(lab = c("Mode 1", "Mode 2"))
+
+inc_dist_2a <- 
+  inc_dist_2 + 
+  geom_label(
+    data = two_modes %>% mutate(ymax),
+    mapping = aes(x = 10^x, y = ymax*1.05, label = lab),
+    inherit.aes = FALSE
+  )
+
+inc_dist_2b <- 
+  inc_dist_2a + 
+  geom_vline(data = inc_dta_agg,
+             mapping = aes(xintercept = value, 
+                           linetype = name),
+             size = 1) +
+  theme(legend.position = c(.9,.9)) + 
+  scale_linetype_manual(values = c(1,4))+
+  guides(colour = "none", fill = "none")
+```
+
+::: columns
+::: {.column width="75%"}
+```{r}
+#| echo: false
+inc_dist_1a
+```
+:::
+
+::: {.column width="25%"}
+-   How informative is this chart?
+
+-   Can we say anything about the distribution of income in the world?
+
+-   How can we improve the histogram?
+:::
+:::
+
+## Band width: Logarithm transformation
+
+::: smaller
+::: columns
+::: {.column width="50%"}
+::: r-stack
+```{r}
+#| echo: false
+#| fig-width: 5
+inc_dist_1a
+```
+
+::: {.fragment fragment-index="4"}
+```{r}
+#| echo: false
+#| fig-width: 5
+inc_dist_2c
+```
+:::
+
+::: {.fragment fragment-index="5"}
+```{r}
+#| echo: false
+#| fig-width: 5
+inc_dist_2
+```
+:::
+:::
+:::
+
+::: {.column width="50%"}
+Can we distinguish mode, median and mean here?
+
+::: {.fragment fragment-index="3"}
+Should we try a logarithm transformation?
+
+-   $\log_{10}$
+-   $\log_{10}{1} = 0$
+-   $\log_{10}{10} = 1$
+-   $\log_{10}{100} = 2$
+-   $\log_{10}{1000} = 3$
+-   $\log_{10}{10000} = 4$
+-   $\log_{10}{100000} = 5$
+:::
+:::
+:::
+:::
+
+## New insights (1) {auto-animate="true"}
+
+::: columns
+::: {.column width="50%"}
+::: r-stack
+```{r}
+#| echo: false
+#| fig-width: 5
+inc_dist_2
+```
+
+::: {.fragment fragment-index="1"}
+```{r}
+#| echo: false
+#| fig-width: 5
+inc_dist_2a
+```
+:::
+
+::: {.fragment fragment-index="3"}
+```{r}
+#| echo: false
+#| fig-width: 5
+inc_dist_2b
+```
+:::
+:::
+:::
+
+::: {.column width="50%"}
+What can we see now?
+
+::: {.fragment fragment-index="0"}
+1.  The mode:
+:::
+
+::: {.fragment fragment-index="1"}
+-   **Bi-modal distribution**.
+
+-   What is "bi-modal"?
+
+-   What causes two spikes?
+:::
+
+::: {.fragment fragment-index="2"}
+2.  The mean and the median
+:::
+
+::: {.fragment fragment-index="3"}
+-   They are more evident after transformation.
+:::
+
+::: {.fragment fragment-index="4"}
+Why are there two modes?
+:::
+:::
+:::
+
+## New insights (2): data complexity {auto-animate="true"}
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| echo: false
+#| fig-width: 5
+inc_dist_2
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+```{r}
+#| echo: false
+#| fig-width: 5
+inc_dist_3 <- 
+  inc_dist_2 + 
+  aes(fill = region, colour = "darkgrey") + 
+  scale_fill_brewer(type = "qual") + 
+  theme(legend.position = c(0.85, 0.9)) + 
+  guides(colour = "none",
+         fill = guide_legend(title=NULL))
+inc_dist_3
+```
+:::
+:::
+:::
+
+## New insights (3): change over time {auto-animate="true"}
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| echo: false
+#| fig-width: 5
+inc_dist_3
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+```{r}
+#| echo: false
+#| fig-width: 5
+inc_dist_3 %+% 
+  filter(inc_dta, year == 2011, income > 0, freq > 0) +
+  labs(title = "Global income distribution in 2011")
+```
+:::
+:::
+:::
+
+::: notes
+How does this relate to the global income change?
+:::
+
+# Comparing distributions
+
+## How to compare distributions of income between regions? {.smaller}
+
+```{r}
+inc_dist_4 <- 
+  inc_dist_0 + 
+  geom_histogram(breaks =  10 ^ seq(1, 6, 0.1), alpha = 0.6,
+                 position = "dodge") +
+  scale_x_continuous(
+    limits = c(50, 100000),
+    breaks = 10 ^ (1:5) %>% c(., (.)/2) %>% sort(),
+    trans = "log10", 
+    labels = label_number(big.mark = " "), 
+    minor_breaks = 10 ^ seq(1, 6, 0.1)
+    ) + 
+  aes(x = income, weight = freq, fill = region, colour = "darkgrey") + 
+  scale_fill_brewer(type = "qual", palette = 2) + 
+  theme(legend.position = "bottom") + 
+  guides(colour = "none")
+```
+
+::: columns
+::: {.column width="70%"}
+::: r-stack
+```{r}
+#| fig-width: 8
+inc_dist_3
+```
+
+::: fragment
+```{r}
+#| fig-width: 8
+inc_dist_4
+```
+:::
+:::
+:::
+
+::: {.column width="30%"}
+We can use histograms, but is it informative?
+
+-   Box plots?
+
+-   Density curves?
+:::
+:::
+
+## Box plots for comparing distributions
+
+```{r}
+set.seed(1234)
+inc_dta_box <-
+  inc_dta %>%
+  filter(year == 2011, income > 0, freq > 0) %>%
+  group_by(region) %>%
+  sample_frac(.1) %>%
+  ungroup()
+
+inc_boxes <- 
+  inc_dta_box  %>% 
+  ggplot() + 
+  aes(x = income, y = region, weight = freq) + 
+  geom_boxplot() +
+  scale_x_continuous(
+    limits = c(100, 100000),
+    breaks = 10 ^ (2:5) %>% c(., (.)/2) %>% sort(),
+    trans = "log10",
+    labels = label_number(big.mark = " "),
+    minor_breaks = c(
+      seq(100, 1000, 100),
+      seq(1000, 10000, 1000),
+      seq(10000, 100000, 10000)
+    ) %>% sort()
+    ) + 
+  annotation_logticks(sides = "b") + 
+  labs(title = "Income distribution by regions in 2011")
+inc_boxes
+# anscombe_long <- 
+#   anscombe %>% 
+#   pivot_longer(everything()) %>% 
+#   mutate(
+#     sample = str_extract(name, "\\d{1}"),
+#     variable = str_extract(name, "\\D{1}"),
+#   ) 
+# 
+# anscombe_long %>% 
+#   group_by(sample, variable) %>% 
+#   summarise(`Arithmetic mean` = mean(value) %>% round(2)) %>% 
+#   arrange(variable, sample)
+# 
+# anscombe_long %>% 
+#   ggplot() + 
+#   aes(x = value, y = sample) + 
+#   geom_boxplot() + 
+#   facet_grid(.~ variable)
+```
+
+## Density curves
+
+::: columns
+::: {.column width="70%"}
+::: r-stack
+```{r}
+#| fig-width: 8
+inc_dist_4
+```
+
+::: fragment
+```{r}
+#| fig-width: 8
+inc_dist_5 <- 
+  inc_dist_0 + 
+  geom_density(alpha = 0, size = 1) +
+  scale_x_continuous(
+    limits = c(50, 100000),
+    breaks = 10 ^ (1:5) %>% c(., (.)/2) %>% sort(),
+    trans = "log10", 
+    labels = label_number(big.mark = " "), 
+    minor_breaks = 10 ^ seq(1, 6, 0.1)
+    ) + 
+  aes(x = income, weight = freq, fill = NA, colour = region) + 
+  scale_color_brewer(type = "qual", palette = 2) + 
+  theme(legend.position = "bottom") + 
+  guides(fill = "none") + 
+  ylab("Density") +
+  scale_y_continuous(n.breaks = 8)
+inc_dist_5
+```
+:::
+:::
+:::
+
+::: {.column width="30%"}
+::: fragment
+-   This is a density curve.
+
+-   Area under the curve is 1.
+
+    -   Density plot allows to compare the distributions.
+:::
+
+::: fragment
+What do we learn from this plot?
+
+-   Density "location".
+
+-   Distribution kurtosis.
+:::
+:::
+:::
+
+::: footer
+Data source: [@roser2013global]. Published online at [OurWorldInData.org](https://ourworldindata.org/global-economic-inequality)
+:::
+
+## At home: Explore all the aspects of income inequality at [OurWorldInData.org](https://www.maxroser.com/roser/graphs/WorldIncomeDistribution_LaknerAndMilanovic/WorldIncomeDistribution_LaknerAndMilanovic1988_100.html)
+
+```{r}
+knitr::include_url(
+  "https://www.maxroser.com/roser/graphs/WorldIncomeDistribution_LaknerAndMilanovic/WorldIncomeDistribution_LaknerAndMilanovic1988_100.html",
+  height = "600px"
+)
+```
+
+::: footer
+[OurWorldInData.org](https://www.maxroser.com/roser/graphs/WorldIncomeDistribution_LaknerAndMilanovic/WorldIncomeDistribution_LaknerAndMilanovic1988_100.html){preview-link="true"}.["Max Roser (2013) Global Economic Inequality"](https://ourworldindata.org/global-economic-inequality).
+:::
+
+## At home: Exam problems on Density (Examples)
+
+------------------------------------------------------------------------
+
+### Crop yields and technology
+
+::: columns
+::: {.column width="70%"}
+![](img/torado-fig-9.6.png)
+:::
+
+::: {.column width="30%"}
+::: smaller
+::: incremental
+-   What does this plot show?
+
+-   What can we conclude about the distribution in the `Technique B`?
+
+-   How are the `Technique A` and the `Technique B` comparable?
+
+    -   Centers and variances;
+:::
+:::
+:::
+:::
+
+::: footer
+Source: [@Todaro2014]
+:::
+
+------------------------------------------------------------------------
+
+### Income distribution change
+
+::: smaller
+::: columns
+::: {.column width="70%"}
+```{r}
+#| fig-width: 7
+inc_dist_5 %+%
+  filter(inc_dta %>% mutate(year = as.factor(year)), 
+         region == "China",
+         year %in% c("1988", "2003", "2011"),
+         income > 0, freq > 0) + 
+  aes(x = income, weight = freq, fill = NA, colour = year) +
+  labs(title = "Change in the income distribution in China")
+```
+:::
+
+::: {.column width="30%"}
+::: incremental
+What do we learn from this plot?
+
+-   Income growth over time.
+
+-   Emergence of the richer groups of population.
+:::
+:::
+:::
+:::
+
+::: footer
+Data source: [@roser2013global]. Published online at [OurWorldInData.org](https://ourworldindata.org/global-economic-inequality)
+:::
+
+------------------------------------------------------------------------
+
+### Population distribution by age
+
+::: smaller
+::: columns
+::: {.column width="70%"}
+![](img/Population-Pyramid-1950-to-2100%20(1).jpg)
+:::
+
+::: {.column width="30%"}
+::: incremental
+What do we learn from this plot?
+
+-   Does it tell us anything about the size of the population?
+
+-   What age groups will drive global population in 2050 compared to 2018.
+:::
+:::
+:::
+:::
+
+::: footer
+Source: [World Population Growth](https://ourworldindata.org/world-population-growth)
+:::
+
+------------------------------------------------------------------------
+
 # Takeaways checklist
 
 ## Homework
@@ -615,7 +1224,10 @@ Univariate data
 
 The Histogram:
 
--   bars, frequencies.
+The Density plot:
+
+-   Density vs frequency;
+-   How to make a density plot;
 
 The Central tendency:
 
