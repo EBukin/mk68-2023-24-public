@@ -2,7 +2,9 @@
 title: "Week 01. Part 2. Descriptive statistics"
 subtitle: "Univariate Data. Central tendency. Box plot."
 editor: source
-format: revealjs
+format:
+  revealjs:
+    scrollable: false
 editor_options: 
   chunk_output_type: console
 ---
