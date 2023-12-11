@@ -1,6 +1,5 @@
 ---
-title: "Week 02. TBD"
-subtitle: "TBD"
+title: "Week 02. Distribution, Variance and its applications"
 editor: source
 format: 
   revealjs:
@@ -167,7 +166,7 @@ inc_dist_2b <-
 ::: columns
 ::: {.column width="50%"}
 ```{r}
-#| fig-width: 5
+#| fig-width: 6
 tibble(x = rbeta(10000, 5, 5)) |> 
   ggplot() + aes(x = x) + 
   geom_histogram(aes(y = after_stat(density)), fill = "grey", colour = "black") + 
@@ -179,7 +178,7 @@ tibble(x = rbeta(10000, 5, 5)) |>
 :::
 ::: {.column width="50%"}
 ```{r}
-#| fig-width: 5
+#| fig-width: 6
 a <- 
   tibble(x = rbeta(10000, 2, 50)) |> 
   ggplot() + aes(x = x) + 
@@ -206,7 +205,7 @@ a / b
 ::: columns
 ::: {.column width="50%"}
 ```{r}
-#| fig-width: 5
+#| fig-width: 6
 tibble(x = rbeta(10000, 5, 5), type ="Symmetric") |> 
   bind_rows(tibble(x = rbeta(10000, 2, 5), type ="Right skewed") ) |> 
   bind_rows(tibble(x = rbeta(10000, 5, 2), type ="Left skewed") ) |> 
@@ -218,9 +217,12 @@ tibble(x = rbeta(10000, 5, 5), type ="Symmetric") |>
 ```
 :::
 ::: {.column width="50%"}
+
+::: incremental
 -   Mean is heavily affected by influential observations.
 
 -   Median is more **robust**.
+:::
 :::
 :::
 
@@ -412,7 +414,7 @@ cum_dens_4
 ::: columns
 ::: {.column width="50%"}
 ```{r}
-#| fig-width: 5
+#| fig-width: 6
 cum_dens_4 + 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0))
 ```
@@ -421,7 +423,7 @@ cum_dens_4 +
 ::: {.column width="50%"}
 ::: fragment
 ```{r}
-#| fig-width: 5
+#| fig-width: 6
 # cum_dens_4
 inc_dist_2 + 
   geom_path(data = filter(cum_dta, income < 100000),
@@ -441,7 +443,9 @@ inc_dist_2 +
 :::
 :::
 
-# Cumulative Distribution: application
+# Cumulative Distribution: applications
+
+-   Measuring income inequality
 
 ## Income inequality
 
@@ -561,7 +565,7 @@ How to read it?
 ::: columns
 ::: {.column width="50%"}
 ```{r}
-#| fig-width: 5
+#| fig-width: 6
 equal2a
 ```
 :::
@@ -569,16 +573,14 @@ equal2a
 ::: {.column width="50%"}
 ::: fragment
 ```{r}
-#| fig-width: 5
+#| fig-width: 6
 equal2a + coord_flip()
 ```
 :::
 :::
 :::
 
-## Exam problems on the cumulative distribution
-
-## Lorenz curve: over time (exam) {.smaller}
+## Exam problems example: Lorenz curve {.smaller}
 
 ::: columns
 ::: {.column width="80%"}
@@ -599,6 +601,7 @@ equal2  +
 ::: {.column width="20%"}
 ::: incremental
 -   How has income distribution changed between 1988 and 2011?
+
 -   What statistical concept is used in the backbone of the Lorenz curve computation?
 :::
 :::
@@ -621,6 +624,10 @@ equal2
 :::
 :::
 :::
+
+## At home: Read what is the Gini Coefficeint
+
+Joe Hasell (2023) - "Measuring inequality: What is the Gini coefficient?" Published online at OurWorldInData.org. Retrieved from: <https://ourworldindata.org/what-is-the-gini-coefficient> [Online Resource]
 
 ## At home: Lorenz curve: Inequality {.smaller}
 
@@ -729,7 +736,7 @@ kable_part <- function(x, rown_number = FALSE) {
   xx <- x %>% slice(1:7) %>% 
     mutate(across(everything(), ~ as.character(.)))
 
-  xx[6, seq(1, ncol(xx))] <- "$\\cdots$"
+  xx[6, seq(1, ncol(xx))] <- "..."
   xx %>% kable(row.names = FALSE, align = "c", 
   escape = FALSE)
 }
@@ -1016,7 +1023,7 @@ gg_quart2 <-
 
 set.seed(123342)
 gg_quart_box <-
-  tibble(x = rnorm(5000)) %>% 
+  tibble(x = rnorm(10000)) %>% 
   filter(x > -3 & x < 3) %>% 
   ggplot() + 
   aes(x = x) + 
@@ -1118,7 +1125,7 @@ gg_gamma2 <-
 
 set.seed(123342)
 gg_gamma_box <-
-  tibble(x = rgamma(5000, shape = 2, rate = 2)) %>% 
+  tibble(x = rgamma(10000, shape = 2, rate = 2)) %>% 
   # filter(x > 0 & x < 3) %>% 
   ggplot() + 
   aes(x = x) + 
@@ -1187,7 +1194,7 @@ See more on the [Gamma distribution](https://en.wikipedia.org/wiki/Gamma_distrib
 
 {{< include mk68-02-slides-example-1.qmd >}}
 
-## Example: Deciles of income, taxes and subsidies (1)
+## Example: inequality, taxes and subsidies (1)
 
 Fiscal policy has a redistribution effect.
 
@@ -1235,7 +1242,7 @@ Guide through the revenues and costs. Regressive and progressive taxation.
 
 ![](img/Indonesia-NCP.png){width="100%"}
 
-## Example (Exam): Robust vs non robust variance {.smaller}
+## At home: Robust vs non robust variance {.smaller}
 
 ![](img/patrons-1.png){fig-align="center"}
 
@@ -1247,7 +1254,7 @@ Guide through the revenues and costs. Regressive and progressive taxation.
 Source: [@Diez2022]
 :::
 
-## Example (Exam): Match distribution with the box plot
+## At home: Match distribution with the box plot
 
 ::: columns
 ::: {.column width="50%"}
@@ -1359,7 +1366,7 @@ The [Height-for-age](https://www.who.int/tools/child-growth-standards/standards/
 ::: {.column width="60%"}
 ::: fragment
 ```{r}
-#| fig-width: 6
+#| fig-width: 6.5
 girls_gg
 ```
 :::
@@ -1373,14 +1380,14 @@ girls_gg
 ::: columns
 ::: {.column width="50%"}
 ```{r}
-#| fig-width: 5
+#| fig-width: 6
 girls_gg
 ```
 :::
 
 ::: {.column width="50%"}
 ```{r}
-#| fig-width: 5
+#| fig-width: 6
 boys_gg <- 
   girls_gg %+%  
   filter(who_lhfa, gender == "girls", Day < 730) +
@@ -1608,7 +1615,7 @@ boys_gg +
 
 -   Assume that the distribution is normal. What share of observations falls withing two SD of mean?
 
--   How the quntiles are constructed?
+-   How the quantiles are constructed?
 
 -   Is median one of the quantiles or this is the central tendency?
 
@@ -1810,7 +1817,7 @@ Conclusion:
 -   What is the z-score?
 
 
-# Univariate data analysis is not enough.
+# When univariate data analysis is not enough?
 
 ## Datasaur: Synthetic data (1) {.smaller}
 
@@ -1895,7 +1902,25 @@ saur_dta %>%
 
 # Takeaways checklist
 
-## Homework
+## Read more about income inequality at [Our World in Data](https://ourworldindata.org/economic-inequality#research-writing) {.smaller}
+
+-   [The history of global economic inequality](https://ourworldindata.org/the-history-of-global-economic-inequality)
+
+-   [Global Inequality of Opportunity](https://ourworldindata.org/global-inequality-of-opportunity)
+
+-   [Global economic inequality: what matters most for your living conditions is not who you are, but where you are](https://ourworldindata.org/global-economic-inequality-introduction)
+
+-   [Income inequality before and after taxes: How much do countries redistribute income?](https://ourworldindata.org/income-inequality-before-and-after-taxes)
+
+-   [OWID Data Collection: Inequality and Poverty](https://ourworldindata.org/owid-data-collection-inequality-and-poverty)
+
+-   [How has inequality in the United Kingdom changed over the long run?](https://ourworldindata.org/how-has-inequality-in-the-uk-changed-over-the-very-long-run)
+
+-   [How unequal were pre-industrial societies?](https://ourworldindata.org/how-unequal-were-pre-industrial-societies)
+
+-   [How has income inequality within countries evolved over the past century?](https://ourworldindata.org/how-has-income-inequality-within-countries-evolved-over-the-past-century)
+
+## Read also: 
 
 Read the paper below **before week 4**: [@Kuchenbecker2017]
 
