@@ -37,7 +37,7 @@ Data on two variables:
 ## Example of Bi-viriate data... (1)
 
 ::: fragment
-### are Palmer[ penguins](https://allisonhorst.github.io/palmerpenguins/articles/art.html) !!!
+### are Palmer[penguins](https://allisonhorst.github.io/palmerpenguins/articles/art.html) !!!
 
 ![](img/lter_penguins.png){.absolute top="75" left="0" width="90%"}
 :::
@@ -335,8 +335,8 @@ temp_carbon |>
   ggtitle(
     label = "Temperature anomalies and emissions over time", 
     subtitle = "Measured in C\u00b0 difference from XIXth century average") + 
-  scale_color_discrete(name = "Annual carbon emissions, mln. MT") +
-  scale_size(name = "Period") +
+  scale_color_discrete(name = "Period") +
+  scale_size(name = "Annual carbon emissions, mln. MT") +
   scale_linetype(NULL) +
   theme_bw()
 ```
@@ -372,7 +372,7 @@ See more explanations:
 
 ## Methodology {.smaller}
 
-There are many [method of correlation](https://easystats.github.io/correlation/articles/types.html#different-methods-for-correlations) estimation, for example:
+There are many [methods of correlation](https://easystats.github.io/correlation/articles/types.html#different-methods-for-correlations) estimation, for example:
 
 ::: fragment
 ### Pearson's correlation coefficient
@@ -585,7 +585,13 @@ penguins %>%
 
 ![](img/corr-quis-1.png)
 
-## [Spurious correlation (link)](https://www.tylervigen.com/spurious-correlations) {background-iframe="https://www.tylervigen.com/spurious-correlations"}
+## Spurious correlation (link)
+
+Explore at home on your own:
+
+-   <https://www.tylervigen.com/spurious-correlations>
+
+-   Define what is "spurious correlation"?
 
 # Correlation and Causation
 
@@ -1076,7 +1082,7 @@ $$
 ::: fragment
 ### Farm B
 
--   $\text{Urea}_B = 100$
+-   $\text{Urea}_B = 0$
 
 -   $\text{Yield}_{B}(Rice| \text{Urea} = 0)$
 :::
@@ -1084,7 +1090,7 @@ $$
 :::
 
 ::: fragment
-### We usually observe just a difference:
+### We usually observe just a difference between two factuals:
 
 $$
 \text{Yield difference} = \text{Yield}_A(\text{Rice}|\text{Urea} = 100) - \\ \text{Yield}_B(\text{Rice}|\text{Urea} = 0)
@@ -1092,7 +1098,7 @@ $$
 :::
 
 ::: fragment
-This is not the same as the **causal effect** because **the other things are not equal** between farms A and B.
+[This is not the same as the causal effect because **the other things are not equal** between farms A and B.]{style="color: red;"}
 :::
 
 ## Cause or Treatment
@@ -1108,7 +1114,7 @@ This is not the same as the **causal effect** because **the other things are not
 ::: fragment
 ### Causal Effect
 
--   Difference between **factual and potential outcomes**.
+-   Difference between **factual and counterfactual** (potential outcome).
 :::
 
 ## Potential Outcome or Counterfactual
@@ -1129,30 +1135,34 @@ This is not the same as the **causal effect** because **the other things are not
 
 ::: columns
 ::: {.column width="40%"}
-```{mermaid}
-%%| label: fig-mermaid-1
-%%| fig-width: 6
-%%| fig-height: 7
-%%| fig-cap: |
-%%|   Cause and Effect
-graph TD
-    A[Treatment] --> |Apply| B(Factual)
-    A --> |Do not apply| C(Counterfactual)
-    B --> E[Factual minus Counterfactual]
-    C --> E
-    E ==> d[Causal Effect]
-    subgraph equal[Ceteris paribus]
-        A
-        B 
-        C 
-        E
-    end
+```{r}
+# mermaid
+# %%| label: fig-mermaid-1
+# %%| fig-width: 6
+# %%| fig-height: 7
+# %%| fig-cap: |
+# %%|   Cause and Effect
+# graph TD
+#     A[Treatment] --> |Apply| B(Factual)
+#     A --> |Do not apply| C(Counterfactual)
+#     B --> E[Factual minus Counterfactual]
+#     C --> E
+#     E ==> d[Causal Effect]
+#     subgraph equal[Ceteris paribus]
+#         A
+#         B 
+#         C 
+#         E
+#     end
 ```
+
+![](img/w3-causal-diagram.svg)
+
 :::
 
 ::: {.column width="60%"}
 ::: fragment
-**To reveal the effect caused by treatment, we need to ensure the ceteris paribus.**
+**To reveal the effect caused by a treatment, we need to ensure the ceteris paribus.**
 :::
 
 ::: fragment
