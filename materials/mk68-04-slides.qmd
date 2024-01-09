@@ -1,0 +1,1212 @@
+---
+title: "Week 04. Cause and Effect in the RCT. Hypothesis testing. T-tests."
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+    incremental: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+source(here::here("materials", "00-setup.R"), local = TRUE)
+knitr::opts_chunk$set(fig.width = 8)
+knitr::opts_chunk$set(fig.height = 4.5)
+```
+
+# Ceteris paribus
+
+[Ceteris Paribus: Public vs. Private University](https://youtu.be/iPBV3BlV7jk)
+
+## Ceteris paribus I: RCT (1) {.smaller}
+
+RCT - Randomized Control Trial (watch [Randomized Trials: The Ideal Weapon](https://youtu.be/eGRd8jBdNYg)!!!)
+
+::: {.fragment fragment-index="1"}
+-   The treatment is assigned randomly in a control environment where all other things remained fixed.
+:::
+
+::: columns
+::: {.column width="50%"}
+::: {.fragment fragment-index="2"}
+### Treatment group
+
+-   **random sample** from a population, where **a treatment** is assigned.
+:::
+:::
+
+::: {.column width="50%"}
+::: {.fragment fragment-index="3"}
+### Control group
+
+-   **randomly sample** from a population, **without any treatment**.
+:::
+:::
+:::
+
+::: {.fragment fragment-index="4"}
+### The Law of large numbers says:
+
+-   Both, the treatment and control groups are on average the same as they are sampled from the same population.
+
+-   The only difference between two samples is the fact of a treatment.
+:::
+
+::: {.fragment fragment-index="5"}
+### [Causal effect = Average Causal Effect = Difference in averages between two groups]{style="color: red;"}
+:::
+
+## Ceteris paribus I: RCT (2)
+
+Experiments are often **not available**, **costly**, **sometimes unethical**, often illegal.
+
+::: incremental
+Think, how to make experiments to estimate the effects of:
+
+-   years of schooling on earning?
+
+-   additional child on mother's employment?
+
+-   army service on job perspective?
+
+-   electronics (phones/laptops) in class on students performance?
+
+-   insurance on health?
+:::
+
+## Ceteris paribus II: Regression
+
+When experiments are not possible, **econometric methods** come to our rescue.
+
+::: fragment
+### Regression
+
+::: incremental
+-   **regressions** controls effects of other factors in the **causal effect of interest**.
+
+-   **regression** contains **multiple variables**, which **represent measurable** and **approximate not measurable** factors.
+
+-   Regression analysis has to be theoretically sound by ensuring that **key assumptions are validated**.
+:::
+:::
+
+## Ceteris paribus III: Innovation
+
+::: r-stack
+::: columns
+::: {.column width="50%"}
+::: fragment
+### Use clones!
+:::
+
+::: fragment
+![](img/stormtroopers.jpg){fig-align="center" width="275"}
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+### Add treatment!
+:::
+
+::: fragment
+![](img/ligthsaber.png)
+:::
+:::
+:::
+
+::: fragment
+### Measure impact
+:::
+
+::: fragment
+![](img/stormtroopers-lightsaber.jpg){width="665"}
+:::
+:::
+
+::: footer
+[\@Rooners72flickr: Stormtrooper Handbook: Rule #2 - Never Issue Lightsabers](https://www.flickr.com/photos/rooners/7012643339)
+:::
+
+## Econometrics: measures effect of a cause
+
+Read more:
+
+1.  Cause and Effect, a teaser:
+
+    -   Ch 1.4 in [@wooldridge2020introductory].
+
+2.  The world of potential outcomes:
+
+    -   Ch 1 in [@Angrist2014].
+
+3.  It is all about the research design:
+
+    -   [@Angrist2010].
+
+4.  The RCT is not the ultimate solution in development economics:
+
+    -   [@Deaton2009].
+
+::: notes
+More on the RCT in economics: [@Heckman1995], [@Burtless1995].
+:::
+
+## Example (exam): think of an experiment (1)
+
+### Can training and education of parents about nutrition reduce children stunting?
+
+::: fragment
+::: callout-warning
+### What RCT experiment can help us answering this question?
+:::
+
+Let us think of and discuss:
+
+-   An outcome;
+-   A treatment;
+-   The population;
+-   A sample;
+-   How to measure the impact of the treatment?
+:::
+
+::: footer
+Based on [@Kuchenbecker2017].
+:::
+
+## Example (exam): think of an experiment (2)
+
+::: columns
+::: {.column width="50%"}
+::: incremental
+1.  Outcome variable:
+
+    -   Stunting score of a child.
+
+2.  Treatment variable:
+
+    -   Parents' special training in nutrition.
+
+3.  Targeted population
+
+4.  Samples:
+
+    -   Randomly select eligible subjects.
+:::
+:::
+
+::: {.column width="50%"}
+::: incremental
+5.  Randomly assign treatment (communities with training) and control (community without it) groups
+
+6.  Collect the pre-intervention data;
+
+7.  Apply the treatment
+
+8.  Collect the post-intervention data;
+
+9.  Measure the effect
+:::
+:::
+:::
+
+## Example (exam): think of an experiment (3) {.smaller}
+
+```{r}
+uganda_dta <-
+  read_sav(here(
+    "data-raw",
+    "uganda-poject",
+    "Uganda_B_E_agri and nutrition 04.06.2018.sav"
+  )) %>% 
+  select(contains("CHWEIGHHAV_"), contains("CHHEIGHHAV_"),
+         contains("HAZ"), contains("WAZ"), contains("WHZ"), 
+         NUTREneu_E, 
+         HHID_B,
+         ageindays_B) %>% 
+  pivot_longer(c(contains("CHWEIGHHAV_"), contains("CHHEIGHHAV_"),
+         contains("HAZ"), contains("WAZ"), contains("WHZ"))) %>% 
+  separate(name, c("Variable", "Line")) %>% 
+  pivot_wider(
+    names_from = "Variable", 
+    values_from = "value"
+  ) %>% 
+  mutate(
+    Line = ifelse(Line == "B", "Baseline survey", "Endline survey") %>% 
+      as.factor(),
+    Status = if_else(HAZ < -2, "Stunted", "Normal") %>% as.factor(),
+    Status2 = HAZ < -2
+    ) %>% 
+  filter(!is.na(Status))
+
+
+ug_tbl_dta <- 
+  uganda_dta %>%
+  mutate(
+     Line = ifelse(NUTREneu_E == 0, "Control", "Treatment") %>% as.factor()
+  ) %>% 
+  filter(!is.na(Line))
+
+ug_tbl_out <- 
+  ug_tbl_dta %>% 
+  group_by(Line) %>%
+  summarise(across(
+    HAZ,
+    list(
+      # n = ~n(),
+      mean = ~ mean(., na.rm = TRUE),
+      sd = ~ sd(., na.rm = TRUE)#,
+      # median = ~ median(., na.rm = TRUE),
+      # IQR = ~ iqr(., na.rm = TRUE)
+    ),
+    .names = "{.fn}"
+  )) %>%
+  tidyr::pivot_longer(-1) %>%
+  tidyr::pivot_wider(names_from = 1, values_from = value) %>%
+  rename(Statistics = name) %>% 
+  kable(row.names = F,
+        digits = 2,
+        caption = "Stunting score")
+
+# ug_tbl_dta %>% 
+#   ggplot() + 
+#   aes(x = HAZ, y = Line, color = Line) + 
+#   geom_boxplot()
+```
+
+::: columns
+::: {.column width="45%"}
+```{r}
+ug_tbl_out
+```
+
+::: fragment
+Does the **research design** imply that (if found) education has a causal impact on stunting?
+
+::: incremental
+-   Answer:
+    -   **Yes!**
+    -   All other things are equal because the research design is based on the RCT.
+    -   **Training** is the only change between the treatment and control.
+:::
+:::
+:::
+
+::: {.column width="55%"}
+::: fragment
+**Is the stunting on average less in the treatment compared to the control?**
+
+::: incremental
+-   Answer:
+    -   The absolute number, yes. **BUT!**
+    -   Treatment and control are two different samples from the population.
+    -   Means vary natural for random samples.
+    -   We **must apply statistical inference** about the population based on the estimates.
+    -   Conclusion: **We do not have sufficient information!**
+:::
+:::
+
+::: fragment
+Can we recommend education as one of the ways to reduce stunting?
+
+::: incremental
+-   Answer:
+    -   If any effect is found, yes! But...
+    -   Results are only applicable to the population under the investigation.
+:::
+:::
+:::
+:::
+
+## Example (exam): think of an experiment (4)
+
+::: columns
+::: {.column width="50%"}
+::: smaller
+```{r}
+ug_tbl_out
+```
+:::
+
+::: fragment
+In order to conclude that
+
+-   two means estimated from different samples
+
+are different (same),
+
+-   we need to perform **statistical inference**!
+:::
+:::
+
+::: {.column width="50%"}
+-   **Without statistical inference, we cannot know what are the chances that the difference in means is caused by a random variation in samples.**
+:::
+:::
+
+
+## Exam questions examples (1) {.smaller}
+
+-   What is the difference between counterfactual and potential outcome?
+
+-   What is the counterfactual? How is it different from the factual?
+
+-   What do we usually observe in the data, factual or counterfactual?
+
+-   What are the factual and counterfactual in the Urea fertilizers and Rice yields example?
+
+    -   How to generate a counterfactual?
+
+-   What kind of experiment can help answering the questions below. Think about such experiment and discuss it.
+
+    -   Does the health insurance make people more healthy?
+    -   What is the causal effect of fertilizers on yields?
+    -   Does going to a private school improves earning?
+
+-   What makes randomized control trials such a powerful tool for revealing the causal effects?
+
+    -   What statistical principals ensure the ceteris paribus under the RCT?
+
+-   Give examples of measurable and not measurable factors that need to remain fixed in order to reveal the causal effect of fertilizer application on crop yields.
+
+# Hypothesis testing
+
+A statistical hypothesis test is a **method of statistical inference** used to decide **whether the data** at hand **sufficiently support a particular hypothesis**.
+
+::: fragment
+> Hypothesis testing **allows us to make probabilistic statements about population parameters**.
+
+-   Read more in: Appendix C-6 in [@wooldridge2020introductory].
+:::
+
+::: footer
+Source: [the wiki](https://en.wikipedia.org/wiki/Statistical_hypothesis_testing)
+:::
+
+## Hypothesis testing
+
+::: fragment
+### What?
+
+::: incremental
+-   Hypothesis Test: A statistical test of the **null hypothesis** against an **alternative hypothesis** [@wooldridge2020introductory].
+:::
+:::
+
+::: fragment
+### Why?
+
+::: incremental
+-   We never know the true parameters of the population.
+-   We must infer about the population from samples.
+-   HT establishes certainty behind our inference.
+:::
+:::
+
+::: fragment
+### How?
+
+::: incremental
+-   Following Neyman-Pearson [@Neyman1933] approach to hypothesis testing.
+:::
+:::
+
+## Neyman-Pearson approach
+
+::: incremental
+-   assumes that we can perform an infinite number of repeated sampling based on population;
+
+-   aims to minimize errors of making a false conclusion about the relationship
+
+    -   based on these samples in the long run;
+
+-   controls amount of times (probability) of making an error, when we say "we reject" the Null hypothesis;
+:::
+
+## Hypothesis Testing: Steps
+
+::: columns
+::: {.column width="60%"}
+::: incremental
+1.  $H_0$: Null/Zero Hypothesis;
+
+    -   $H_0 : \mu = 0$
+
+2.  $H_1$: Alternative Hypothesis;
+
+    -   $H_1 : \mu \ne 0$
+
+3.  **Estimate parameters**: $\hat \mu = \widehat{\text{mean}}$ and $s = \widehat{\text{SD}}$
+
+    -   based on our sample;
+
+4.  **Compute the test statistics**;
+:::
+:::
+
+::: {.column width="40%"}
+::: incremental
+5.  **Conclude:**
+
+    -   **to reject** $H_0$
+    -   (accept $H_1$), or
+    -   **fail to reject** $H_0$
+    -   (accept $H_0$).
+
+6.  **Calculate probabilities** of making an error.
+
+    -   probability value
+    -   p-value
+:::
+:::
+:::
+
+## Hypothesis Testing: Two errors.
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+### Type I error
+
+-   false positive
+-   probability value: "p-value"
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+### Type II error
+
+-   false negative
+:::
+:::
+:::
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+Error of rejecting $H_0$, when $H_0$ is the `TRUE` hypothesis
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+Error of accepting $H_0$, when $H_0$ is the `FALSE` hypothesis
+
+::: fragment
+::: callout-important
+#### NEVER KNOWN to the researchers!
+:::
+:::
+:::
+:::
+:::
+
+## Hypothesis Testing: probability value
+
+::: fragment
+Probability of the **Type I error**:
+
+::: incremental
+-   Neyman-Pearson approach aims to minimize it [@Neyman1933]!
+-   It does so by establishing [the **level of significance**]{style="color: red;"} $\alpha$.
+:::
+:::
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+### As the type I error (p-value) is
+
+-   **the probability that we've made a mistake by rejecting** $H_0$
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+::: callout-important
+### in hypothesis testing, we ensure that the p-value is always less than the level of significance.
+
+$$\text{p-value} < \alpha$$
+:::
+:::
+:::
+:::
+
+::: fragment
+Thus, [**we reject** $H_0$ **only if** $\text{p-value} < \alpha$]{style="color: red;"}.
+
+-   Conventionally, $\alpha \le 0.05$!
+:::
+
+## Significance Level
+
+[The probability of a Type I error in hypothesis testing.]{style="color: red;"}
+
+## Example (exam): HT about stunting (1)
+
+Can training and education of parents about nutrition reduce children stunting?
+
+::: fragment
+Our data measures change in stunting level between pre- and post-training for 500 individuals.
+:::
+
+::: fragment
+Answer the following questions:
+
+-   Formulate H0 and H1.
+-   Provide examples of the Type I and Type II errors in the context of your hypothesis.
+:::
+
+## Example (exam): HT about stunting (2) {.smaller}
+
+::: columns
+::: {.column width="30%"}
+::: incremental
+-   $H_0:{\Delta}_{\text{stunting}}= 0$
+-   $H_1:{\Delta}_{\text{stunting}}\ne 0$
+-   $H_1:{\Delta}_{\text{stunting}} > 0$
+-   $H_1:{\Delta}_{\text{stunting}} < 0$
+:::
+:::
+
+::: {.column width="70%"}
+::: incremental
+-   Type I error:
+
+    -   We conclude that ${\Delta}_{\text{stunting}}\ne 0$ is not zero,
+    -   But this this change is cause **not by training**, but rather **by the sample variation**.
+    -   In the population, training had nothing to do with stunting.
+
+-   Type II error:
+
+    -   We conclude that stunting did not change after training.
+    -   In fact, training helped but, e.g., the food shortage deepened the malnutrition problem.
+:::
+:::
+:::
+
+## Example (2): HT about ravens' color
+
+### Question: What % of ravens are White?
+
+::: columns
+::: {.column width="70%"}
+::: fragment
+[Hypothesis:]{style="color: blue;"}
+
+::: incremental
+-   $H_0:$ White ravens make 0% of the population
+-   $H_1:$ Share of white raven is not zero (\> 0%)
+:::
+:::
+:::
+
+::: {.column width="30%"}
+::: fragment
+[Data:]{style="color: green;"}
+
+::: incremental
+-   we went to a park;
+-   we saw 100 ravens (or crows);
+-   **no white ravens**!
+:::
+:::
+:::
+:::
+
+::: fragment
+[**Results: share of white ravens is 0!**]{style="color: green;"}
+:::
+
+::: fragment
+[Conclusion: **fail to reject** $H_0$ (**Accept** $H_0$ )]{style="color: red;"}
+:::
+
+::: notes
+Was this a random sampling?
+:::
+
+## Example (2): Raven color
+
+### [Conclusion: **Accept** $H_0$ (there are no white ravens)]{style="color: red;"}
+
+::: fragment
+Did we make any error? If yes, which one?
+
+::: incremental
+-   We've made the **type II error: false negative**.
+:::
+:::
+
+::: fragment
+**Because:**
+
+::: incremental
+-   We do not know if $H_0$ is a true hypothesis.
+-   We did not use theory (did not study the ornithology).
+-   Theory has to justify our choice of the $H_0$.
+:::
+:::
+
+::: fragment
+![](img/white-raven.jpg){.absolute top="50" right="50" width="350"}
+:::
+
+::: footer
+[Image source](https://vancouversun.com/news/local-news/rare-white-raven-spotted-on-vancouver-island)
+:::
+
+## Homework on hypothesis testing {.smaller}
+
+::: columns
+::: {.column width="50%"}
+For the research questions below:
+
+1.  Describe how would you measure the outcome variable.
+2.  Formulate H0 and H1.
+3.  Discuss Type I and Type II errors in the context of your hypothesis.
+4.  Provide examples of the factors, which could cause these errors to appear.
+5.  Think of an RCT experiment that could help answering these questions.
+
+Research questions:
+
+-   What is the difference between demographic characteristics of individuals in the control and treatment groups?
+
+    -   The characteristics are: age, weights, height, income, number of children, household size...
+:::
+
+::: {.column width="50%"}
+-   How students' performance in a class is different between years?
+
+-   Are the wheat yields higher in the farms that use precision agriculture?
+:::
+:::
+
+## Exam questions examples (2) {.smaller}
+
+-   Formulate H0 and H1.
+
+-   Provide an example of a type I / II error relevant to the hypothesis.
+
+-   What are the type I/II errors?
+
+-   Which error type is not known to the researcher that operates observational data? Why?
+
+-   When do we reject the null hypothesis? What kind of error we are trying to minimize?
+
+-   What is the significance level?
+
+# Examples of the Hypothesis Testing.
+
+The paper [@Kuchenbecker2017] aimed to assess the potential of community-based nutrition education to improve height-for-age z-scores in children 6--23 months of age.
+
+-   Authors performed the RCT experiment in Malawi over the course of 5 years.
+
+-   Data was collected for the control and treatment groups in the baseline and the end-line.
+
+## [@Kuchenbecker2017] {.smaller}
+
+::: incremental
+-   If the paper finds a difference between nutrition statuses in the control and treatment groups, does it mean that education has a causal effect on nutrition?
+
+    -   Yes, if treatment and control groups are the same on average in other factors.
+
+    -   Such factors are Income, Education level, HH size, Farming abilities, ...
+
+-   How to identify if the factors are NOT DIFFERENT between two groups?
+
+    -   Perform statistical hypothesis testing.
+
+    -   Formulate the hypothesis:
+
+        -   H0: factor is the same across the two groups.
+        -   H1: factor changes between two groups.
+
+    -   Fail to reject H0, when there is no difference
+:::
+
+## Checks and balances table
+
+This is an essential table that evaluates if the treatment and control groups of the RCT are not different on average.
+
+::: incremental
+The table shows:
+
+-   estimated mean and SD in the control and treatment groups;
+
+-   statistical test about the difference in means;
+
+-   probability value of the type I error;
+:::
+
+## [@Kuchenbecker2017] Table 2 {.smaller}
+
+![](img/Kuchenbecker2017-t1-2.png){fig-align="center"}
+
+::: columns
+::: {.column width="30%"}
+::: incremental
+-   Formulate H0 and H1 about each variable.
+-   Perform statistical HT about the means difference.
+:::
+:::
+
+::: {.column width="70%"}
+::: fragment
+For example the household size in the baseline
+
+::: incremental
+-   H0: Average household size is equal between Control and treatment;
+
+    -   $H_0: \text{HH Size}_{\text{Control}} = \text{HH Size}_{\text{Treatment}}$
+
+-   H0: Average HH size is unequal
+
+    -   $H_1: \text{HH Size}_{\text{Control}} \ne \text{HH Size}_{\text{Treatment}}$
+
+-   Probability of the type I error: 0.49
+
+-   Conclusion:
+
+    -   Fail to reject $H_0$.
+:::
+:::
+:::
+:::
+
+## How to identify if the intervention helped?
+
+::: incremental
+-   Perform statistical hypothesis testing.
+
+-   Formulate the hypothesis:
+
+    -   H0: factor is the same across treatment and control groups.
+    -   H1: factor changes between two groups.
+
+-   Reject H0, to show that there is difference
+:::
+
+## Intervention outcomes table
+
+![](img/Kuchenbecker2017-t4.png){fig-align="center"}
+
+## Homework
+
+-   Perform statistical hypothesis testing about the means difference in table 4 [@Kuchenbecker2017].
+
+-   Perform statistical hypothesis testing about the means difference in table 1 in [@Gertler2004].
+
+Papers are available on Ilias.
+
+# t-test
+
+Most commonly used statistical test for hypothesis testing about the estimated parameter (e.g., $\widehat{\text{mean}}$).
+
+In principal, there are:
+
+::: incremental
+-   one-sample t-test: compares mean to a number
+
+-   two-sample t-test: compares means of two independent samples
+
+    -   for equal and unequal variances between samples
+:::
+
+## one-sample t-test: comparing mean to a number
+
+### The algorithm
+
+1.  **Step 1.** Hypothesis formulation;
+
+2.  **Step 2.** Calculating test statistic;
+
+3.  **Step 3.** Setting a decision rule for rejecting $H_0$;
+
+4.  **Step 4.** Make a conclusion;
+
+## Step 1. Hypothesis formulation
+
+We want to infer about population mean $\mu$ based on our sample estimate ($\widehat{\text{mean}}$).
+
+Is the population mean different from an arbitrary number, $\mu_{0}$.
+
+-   For example, $\mu_{0} = 0$. It could be any number...
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+### $H_0$ Null Hypothesis
+
+The population mean equals to $\mu_{0}$
+
+-   $H_0 : \mu = \mu_{0}$
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+### $H_1$ Alternative Hypothesis
+
+The population mean is not $\mu_{0}$
+
+::: incremental
+-   $H_1: \mu \ne \mu_{0}$
+-   $H_1: \mu < \mu_{0}$
+-   $H_1: \mu > \mu_{0}$
+:::
+:::
+:::
+:::
+
+## Step 2. Calculating test statistic
+
+::: columns
+::: {.column width="60%"}
+::: fragment
+### t-statistics:
+
+$$t = \frac{\sqrt{n} ( \hat\mu - \mu_0)}{s}\,,$$
+:::
+
+::: fragment
+where:
+
+-   $t$ - t-statistics;
+-   $\hat\mu$ - estimated mean;
+-   $\mu_0$ - arbitrary number;
+-   $n$ - number of observation;
+-   $s$ - sample standard deviation
+:::
+:::
+
+::: {.column width="40%"}
+::: fragment
+Sometimes, t-statistics is defined as:
+
+$$t = (\hat\mu -  \mu_0) / se(\hat\mu) \, ,$$
+
+where:
+
+-   $se(\hat\mu)$ is the standard error of the estimated coefficient $\hat\mu$
+-   $se(\hat\mu) = s / \sqrt{n}$;
+:::
+:::
+:::
+
+## Step 2. Example
+
+::: columns
+::: {.column width="60%"}
+::: incremental
+Sample size: $n = 25$
+
+Estimates mean: $\hat \mu = -2.2$
+
+Sample SD: $s = 3.3$
+
+-   Compute the t-statistics for the mean difference from zero.
+
+-   $\mu_0 = 0$?
+
+-   $t = \frac{\sqrt{25} ( -2.2 - 0)}{3.3} \\ = 5 \cdot (-1/3) \\= -1.667$
+:::
+:::
+
+::: {.column width="40%"}
+::: fragment
+::: incremental
+-   Compute the t-statistics for the mean difference from -5.5.
+
+-   $\mu_0 = -5.5$?
+
+-   $t = \frac{\sqrt{25} ( -2.2 + 5.5)}{3.3} \\ = 5 \cdot 1 \\ = 5$
+:::
+:::
+:::
+:::
+
+## Step 3. Setting a decision rule (1)
+
+To reject $H_0$, we compare $t$ to a **critical value** $c_{df, \text{CL}}$.
+
+where: $\text{CL}$ is the confidence level (opposite to the significance level)
+
+::: incremental
+
+-   **Critical value**, is the **minimum values of the t-statistics** at which we **can reject** $H_0$ at the given **level of significance**.
+
+-   Critical value depends on the alternative hypothesis:
+
+-   when $H_1: \mu \ne \mu_{0}$ (two-sided t-test),
+
+    -   $\text{CL} = 1 - \alpha / 2$ then $c_{df,\, 1 - \alpha / 2}$;
+    
+-   $H_1: \mu < \mu_{0}$ or $H_1: \mu > \mu_{0}$ (one-sided t-test),
+
+    -   $\text{CL} = 1 - \alpha$ then $c_{df,\, 1 - \alpha}$;
+:::
+
+## Step 3. Setting a decision rule (2)
+
+::: incremental
+Critical value also depends on:
+
+-   the number of dredges of freedom $df = n - k$:
+
+    -   $n$ is the number of observation in the sample and
+    -   $k$ is the number of parameters
+        -   $k=1$ for one-sample t-test
+        -   $k=2$ for two-sample t-test
+
+-   level of significance $\alpha$;
+
+    -   Conventionally $\alpha = 0.05$
+:::
+
+## Step 3. Setting a decision rule (3)
+
+::: incremental
+We reject $H_0: \mu = \mu_0$ in favor of $H_1: \mu \neq \mu_{0}$ **only if**:
+
+-   $|t| > c_{df, 1 - \alpha / 2}$ for two-sided t-test $H_1: \mu \ne \mu_{0}$
+
+-   $|t| > c_{df, 1 - \alpha}$ for one-sided t-test $H_1: \mu > \mu_{0}$ or $H_1: \mu > \mu_{0}$
+:::
+
+## Step 3. Setting a decision rule (4) {.smaller}
+
+::: columns
+::: {.column width="20%"}
+Finding the critical value is possible from the quantiles of the t-distribution.
+
+-   $df = n - k$;
+-   $\text{CL} = 1 - \alpha / 2$ for $H_1: \mu \ne \mu_{0}$
+-   $\text{CL} = 1 - \alpha$ for $H_1: \mu > \mu_{0}$ or $H_1: \mu > \mu_{0}$
+:::
+
+::: {.column width="80%"}
+```{r eval = TRUE, echo = FALSE, results = "asis"}
+c(1, 5, 10, 25, 40, 50, 75, 100, 150, 300, 1000, 10000, 1000000) %>% 
+  map_dfr(~{
+    c(0.9, 0.95, 0.975, 0.99, 0.995) %>% 
+      set_names(qt(., .x) %>% round(4), .) %>% 
+      enframe() %>% 
+      mutate(df = .x)
+  }) %>% 
+  pivot_wider(names_from = "name", values_from = "value")  %>% 
+  knitr::kable()
+```
+:::
+:::
+
+## Step 3. Example (cont.) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+Sample size: $n = 25$; $df = 25 - 1 = 24$
+
+::: fragment
+Is the population mean different from zero at 1% level of significance?
+
+::: incremental
+-   $H_1: \mu \ne 0$
+-   $1 - \alpha / 2 = 1 - 0.01 / 2 = 0.995$
+-   $c_{24, \, 1 - 0.01/ 2} = 2.7969$
+:::
+:::
+
+::: fragment
+Is the population mean different from zero at 5% level of significance?
+
+::: incremental
+-   $1 - \alpha / 2 = 1 - 0.05 / 2 = 0.975$
+-   $c_{24, \, 1 - 0.05/ 2} = 2.0639$
+:::
+:::
+
+::: fragment
+Is the population mean different from zero at 10% level of significance?
+
+::: incremental
+-   $1 - \alpha / 2 = 1 - 0.1 / 2 = 0.95$
+-   $c_{24, \, 1 - 0.1/ 2} = 1.7109$
+:::
+:::
+:::
+
+::: {.column width="50%"}
+```{r eval = TRUE, echo = FALSE, results = "asis"}
+c(1, 5, 10, 20, 23, 24, 25, 26, 27, 28, 29, 30, 50, 150) %>% 
+  map_dfr(~{
+    c(0.95, 0.975, 0.99, 0.995) %>% 
+      set_names(qt(., .x) %>% round(4), .) %>% 
+      enframe() %>% 
+      mutate(df = .x)
+  }) %>% 
+  pivot_wider(names_from = "name", values_from = "value")  %>% 
+  knitr::kable()
+```
+:::
+:::
+
+## Step 4. Make a conclusion
+
+Concluding either or:
+
+::: incremental
+-   We reject $H_0$ at least at the $\alpha$ level of significance. The population mean is significantly different from $\mu_0$.
+
+-   We fail to reject (we accept) $H_0$.
+
+    -   Available data do not provide sufficient evidence to reject $H_0$ at the $\alpha$ level of significance. The population mean is statistically indifferent from $\mu_0$.
+:::
+
+## Step 4. Example (cont.) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+Sample size: $n = 25$
+
+Estimates mean: $\hat \mu = -2.2$
+
+Sample SD: $s = 3.3$
+
+::: fragment
+Is the population mean different from zero ($\mu_0 = 0$) at 5% level of significance?
+
+::: incremental
+-   $t = \frac{\sqrt{25} ( -2.2 - 0)}{3.3} = -1.667$
+
+-   $c_{24, \, 1 - 0.05/ 2} = 2.0639$
+
+-   $|t| < c_{24, \, 1 - 0.01/ 2}$
+
+-   $|-1.667| < 2.0639$
+
+-   Conclusion:
+
+    -   Fail to reject (we accept) $H_0$.
+    -   the population mean is statistically **indifferent** from $\mu_0 = 0$.
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+Is the population mean different from -5.5 ($\mu_0 = -5.5$) at the 1% level of significance?
+
+::: incremental
+-   $\mu_0 = -5.5$?
+
+-   $t = \frac{\sqrt{25} ( -2.2 + 5.5)}{3.3} = 5$
+
+-   $c_{24, \, 1 - 0.05/ 2} = 2.7969$
+
+-   $|t| > c_{24, \, 1 - 0.01/ 2}$
+
+-   $|5| > 2.7969$
+
+-   Conclusion:
+
+    -   Reject $H_0$.
+    -   the population mean is statistically different from $\mu_0 = -5.5$ at least at the 1% level of significance.
+:::
+:::
+:::
+:::
+
+
+## Homework (exam) examples (1). {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+Calculate the t-statistics and find corresponding critical values.
+
+-   Conclude weather the H0 could be rejected in the following hypothesis testing problems.
+
+-   Compare your calculations to the solutions.
+
+```{r}
+tibble(
+  `$\\hat \\mu$` = c(4, 2, 3.5, 8, 1.2),
+  `s` = c(1, 1.2, 3.1, 4, 3.4),
+  `$\\mu_0$` = c(3, 0.8, 2.8, 16, .2),
+  n = c(10, 8, 150, 21, 53),
+  `$\\alpha$` = c(0.01, 0.05, 0.01, 0.1, 0.05)
+) %>%
+  mutate(
+    `$t$` = round(sqrt(n) * (`$\\hat \\mu$` - `$\\mu_0$`) / `s`, 3),
+    `$c_{df, \\text{CL}}$` = round(qt(1 - `$\\alpha$` / 2, n), 3)
+  ) %>% 
+  kable()
+```
+:::
+
+::: {.column width="50%"}
+
+```{r eval = TRUE, echo = FALSE, results = "asis"}
+c(1, 5, 6, 7, 8, 9, 10, 20, 25, 30, 50, 80, 100, 150) %>% 
+  map_dfr(~{
+    c(0.95, 0.975, 0.99, 0.995) %>% 
+      set_names(qt(., .x) %>% round(4), .) %>% 
+      enframe() %>% 
+      mutate(df = .x)
+  }) %>% 
+  pivot_wider(names_from = "name", values_from = "value")  %>% 
+  knitr::kable(caption = "Critical values of the t-distribution.")
+```
+:::
+
+::::
+
+ 
+
+# Takeaways checklist
+
+## Homework
+
+Make the topic-specific homework.
+
+Answer sample exam questions.
+
+Same readings:
+
+-   [@Kuchenbecker2017] **before the week 4**;
+-   [@Gertler2004] another example of the statistics application;
+
+## Key concepts covered in the lecture {.smaller}
+
+::: columns
+::: {.column width="50%"}
+
+RCT:
+
+-   Causal meaning of the averages;
+-   Random sample variation;
+-   Need of the statistical hypothesis testing;
+:::
+
+::: {.column width="50%"}
+Hypothesis testing:
+
+-   Type I and Type II errors;
+-   Significance level;
+-   Null and Alternative Hypotheses;
+-   What is the probability value (p-value)?
+-   What do false-negative/false-positive mean?
+
+T-test:
+
+-   One-sided/Two-sided.
+-   Critical values of the t-distributions
+-   t statistics
+-   Mechanics of the test statistics calculaiton.
+:::
+:::
+
+# References
