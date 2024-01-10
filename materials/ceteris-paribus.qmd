@@ -1,0 +1,368 @@
+---
+#title: "Ceteris Paribus"
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+    incremental: false
+editor_options: 
+  chunk_output_type: consoles
+---
+
+# Ceteris paribus
+
+-   Watch again: [Ceteris Paribus: Public vs. Private University](https://youtu.be/iPBV3BlV7jk)
+
+## Ceteris paribus I: RCT (1) {.smaller}
+
+RCT - Randomized Control Trial (watch [Randomized Trials: The Ideal Weapon](https://youtu.be/eGRd8jBdNYg)!!!)
+
+::: {.fragment fragment-index="1"}
+-   The treatment is assigned randomly in a controlled environment where all other things remain fixed.
+:::
+
+::: columns
+::: {.column width="50%"}
+::: {.fragment fragment-index="2"}
+### Treatment group
+
+-   **a random sample** from a population, where **a treatment** is assigned.
+:::
+:::
+
+::: {.column width="50%"}
+::: {.fragment fragment-index="3"}
+### Control group
+
+-   **random sample** from a population, **without any treatment**.
+:::
+:::
+:::
+
+::: {.fragment fragment-index="4"}
+### The Law of large numbers says:
+
+-   Both, the treatment and control groups are on average the same as they are sampled from the same population.
+
+-   The only difference between the two samples is the fact of treatment.
+:::
+
+::: {.fragment fragment-index="5"}
+### [Causal effect = Average Causal Effect = Difference in averages between two groups]{style="color: red;"}
+:::
+
+## Ceteris paribus I: RCT (2)
+
+Experiments are often **not available**, **costly**, **sometimes unethical**, and often illegal.
+
+::: incremental
+Think, about how to make experiments to estimate the effects of:
+
+-   years of schooling on earning?
+
+-   additional child on mother's employment?
+
+-   army service on the job perspective?
+
+-   electronics (phones/laptops) in class on students performance?
+
+-   health insurance on health
+:::
+
+## Ceteris paribus II: Regression
+
+When experiments are not possible, **econometric methods** come to our rescue.
+
+::: fragment
+### Regression
+
+::: incremental
+-   **regressions** control the effects of other factors in the **causal effect of interest**.
+
+-   **regression** contains **multiple variables**, which **represent measurable** and **approximate not measurable** factors.
+
+-   Regression analysis has to be theoretically sound by ensuring that **key assumptions are validated**.
+:::
+:::
+
+## Ceteris paribus III: Innovation
+
+::: r-stack
+::: columns
+::: {.column width="50%"}
+::: fragment
+### Use clones!
+:::
+
+::: fragment
+![](img/stormtroopers.jpg){fig-align="center" width="275"}
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+### Add treatment!
+:::
+
+::: fragment
+![](img/ligthsaber.png)
+:::
+:::
+:::
+
+::: fragment
+### Measure impact
+:::
+
+::: fragment
+![](img/stormtroopers-lightsaber.jpg){width="665"}
+:::
+:::
+
+::: footer
+[\@Rooners72flickr: Stormtrooper Handbook: Rule #2 - Never Issue Lightsabers](https://www.flickr.com/photos/rooners/7012643339)
+:::
+
+## Econometrics measures the effect of a cause
+
+Read more:
+
+1.  Cause and Effect, a teaser:
+
+    -   Ch 1.4 in [@wooldridge2020introductory].
+
+2.  The world of potential outcomes:
+
+    -   Ch 1 in [@Angrist2014].
+
+3.  It is all about the research design:
+
+    -   [@Angrist2010].
+
+4.  The RCT is not the ultimate solution in development economics:
+
+    -   [@Deaton2009].
+
+::: notes
+More on the RCT in economics: [@Heckman1995], [@Burtless1995].
+:::
+
+
+## Example (exam): think of an experiment (1)
+
+### Can training and education of parents about nutrition reduce children's stunting?
+
+::: fragment
+::: callout-warning
+### What RCT experiment can help us answer this question?
+:::
+
+Let us think of and discuss:
+
+-   An outcome;
+-   A treatment;
+-   The population;
+-   A sample;
+-   How to measure the impact of the treatment?
+:::
+
+::: footer
+Based on [@Kuchenbecker2017].
+:::
+
+## Example (exam): think of an experiment (2)
+
+::: columns
+::: {.column width="50%"}
+::: incremental
+1.  Outcome variable:
+
+    -   Stunting score of a child.
+
+2.  Treatment variable:
+
+    -   Parents' special training in nutrition.
+
+3.  Targeted population
+
+4.  Samples:
+
+    -   Randomly select eligible subjects.
+:::
+:::
+
+::: {.column width="50%"}
+::: incremental
+5.  Randomly assign treatment (communities with training) and control (community without it) groups
+
+6.  Collect the pre-intervention data;
+
+7.  Apply the treatment
+
+8.  Collect the post-intervention data;
+
+9.  Measure the effect
+:::
+:::
+:::
+
+## Question 1.
+
+```{r}
+library(here)
+library(haven)
+library(dplyr)
+library(tidyr)
+library(knitr)
+uganda_dta <-
+  read_sav(here(
+    "data-raw",
+    "uganda-poject",
+    "Uganda_B_E_agri and nutrition 04.06.2018.sav"
+  )) %>% 
+  select(contains("CHWEIGHHAV_"), contains("CHHEIGHHAV_"),
+         contains("HAZ"), contains("WAZ"), contains("WHZ"), 
+         NUTREneu_E, 
+         HHID_B,
+         ageindays_B) %>% 
+  pivot_longer(c(contains("CHWEIGHHAV_"), contains("CHHEIGHHAV_"),
+         contains("HAZ"), contains("WAZ"), contains("WHZ"))) %>% 
+  separate(name, c("Variable", "Line")) %>% 
+  pivot_wider(
+    names_from = "Variable", 
+    values_from = "value"
+  ) %>% 
+  mutate(
+    Line = ifelse(Line == "B", "Baseline survey", "Endline survey") %>% 
+      as.factor(),
+    Status = if_else(HAZ < -2, "Stunted", "Normal") %>% as.factor(),
+    Status2 = HAZ < -2
+    ) %>% 
+  filter(!is.na(Status))
+
+
+ug_tbl_dta <- 
+  uganda_dta %>%
+  mutate(
+     Line = ifelse(NUTREneu_E == 0, "Control", "Treatment") %>% as.factor()
+  ) %>% 
+  filter(!is.na(Line))
+
+ug_tbl_out <- 
+  ug_tbl_dta %>% 
+  group_by(Line) %>%
+  summarise(across(
+    HAZ,
+    list(
+      # n = ~n(),
+      mean = ~ mean(., na.rm = TRUE),
+      sd = ~ sd(., na.rm = TRUE)#,
+      # median = ~ median(., na.rm = TRUE),
+      # IQR = ~ iqr(., na.rm = TRUE)
+    ),
+    .names = "{.fn}"
+  )) %>%
+  tidyr::pivot_longer(-1) %>%
+  tidyr::pivot_wider(names_from = 1, values_from = value) %>%
+  rename(Statistics = name) %>% 
+  kable(row.names = F,
+        digits = 2,
+        caption = "Stunting score")
+
+# ug_tbl_dta %>% 
+#   ggplot() + 
+#   aes(x = HAZ, y = Line, color = Line) + 
+#   geom_boxplot()
+```
+
+
+::: fragment
+Does the **research design** imply that (if found) education has a causal impact on stunting?
+
+::: incremental
+-   Answer:
+    -   **Yes!**
+    -   All other things are equal because the research design is based on the RCT.
+    -   **Training** is the only change between the treatment and control.
+:::
+:::
+
+## Question 2.
+
+::: fragment
+```{r}
+# ug_tbl_out
+```
+
+**Is the stunting on average less in the treatment compared to the control?**
+
+::: incremental
+-   Answer:
+    -   The absolute number, yes. **BUT!**
+    -   Treatment and control are two different samples from the population.
+    -   Means vary naturally for random samples.
+    -   We **must apply statistical inference** about the population based on the estimates.
+    -   Conclusion: **We do not have sufficient information!**
+:::
+:::
+
+## Question 3.
+
+::: fragment
+```{r}
+# ug_tbl_out
+```
+
+**Can we recommend education as one of the ways to reduce stunting?**
+
+::: incremental
+-   Answer:
+    -   If any effect is found, yes! But...
+    -   Results are only applicable to the population under investigation.
+:::
+:::
+
+
+## Conclusion
+
+```{r}
+ug_tbl_out
+```
+
+::: fragment
+To conclude that
+
+-   two means estimated from different samples
+
+are different (same),
+
+-   we need to perform **statistical inference**!
+:::
+
+::: fragment
+-   **Without statistical inference, we cannot know what are the chances (odds) that the difference in means is caused by a random variation in samples.**
+:::
+
+## Exam questions examples {.smaller}
+
+-   What is the difference between counterfactual and potential outcomes?
+
+-   What is the counterfactual? How is it different from the factual?
+
+-   What do we usually observe in the data, factual or counterfactual?
+
+-   What are the factual and counterfactual in the Urea fertilizers and Rice yields example?
+
+    -   How to generate a counterfactual?
+
+-   What kind of experiment can help answer the questions below? Think about such an experiment and discuss it.
+
+    -   Does the health insurance make people more healthy?
+    -   What is the causal effect of fertilizers on yields?
+    -   Does going to a private school improv earning?
+
+-   What makes randomized control trials such a powerful tool for revealing the causal effects?
+
+    -   What statistical principles ensure the ceteris paribus under the RCT?
+
+-   Give examples of measurable and not measurable factors that need to remain fixed in order to reveal the causal effect of fertilizer application on crop yields.

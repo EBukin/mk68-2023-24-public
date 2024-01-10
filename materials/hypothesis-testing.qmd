@@ -1,0 +1,443 @@
+---
+#title: "Hypothesis testing"
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+    incremental: false
+editor_options: 
+  chunk_output_type: consoles
+---
+
+# Hypothesis testing
+
+A statistical hypothesis test is a **method of statistical inference** used to decide **whether the data** at hand **sufficiently supports a particular hypothesis**.
+
+::: fragment
+> Hypothesis testing **allows us to make probabilistic statements about population parameters**.
+
+-   Read more in Appendix C-6 in [@wooldridge2020introductory].
+:::
+
+::: footer
+Source: [the wiki](https://en.wikipedia.org/wiki/Statistical_hypothesis_testing)
+:::
+
+## Hypothesis testing
+
+::: fragment
+### What?
+
+::: incremental
+-   Hypothesis Test: A statistical test of the **null hypothesis** against an **alternative hypothesis** [@wooldridge2020introductory].
+:::
+:::
+
+::: fragment
+### Why?
+
+::: incremental
+-   We never know the true parameters of the population.
+-   We must infer about the population from samples.
+-   HT establishes certainty behind our inference (probability or an error).
+:::
+:::
+
+::: fragment
+### How?
+
+::: incremental
+-   Following Neyman-Pearson's [@Neyman1933] approach to hypothesis testing.
+:::
+:::
+
+## Neyman-Pearson's approach
+
+::: incremental
+-   assumes that we can perform an infinite number of repeated sampling based on population;
+
+-   aims to **minimize errors of making a false conclusion about the relationship**
+
+-   controls the probability of making an error, when we say "**we reject**" the **Null** hypothesis;
+:::
+
+## Hypothesis Testing: Steps
+
+::: columns
+::: {.column width="50%"}
+::: incremental
+1.  $H_0$: Null/Zero Hypothesis;
+
+    -   $H_0 : \mu = 0$
+
+2.  $H_1$: Alternative Hypothesis;
+
+    -   $H_1 : \mu \ne 0$
+
+3.  **Estimate parameters**:
+
+    -   $\hat \mu = \widehat{\text{mean}}$ , and
+    -   $s = \widehat{\text{SD}}$
+
+4.  **Compute the test statistics**;
+:::
+:::
+
+::: {.column width="50%"}
+::: incremental
+5.  **Conclude:**
+
+    -   **to reject** $H_0 = \text{accept}\, H_1$, or
+
+    -   **fail to reject** $H_0 = \text{accept}\, H_0$
+
+6.  **Calculate probabilities** of making an error.
+
+    -   probability value (aka "p-value")
+:::
+:::
+:::
+
+## Hypothesis Testing may result in two errors
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+### Type I error
+
+-   false positive
+
+-   probability value: "p-value"
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+### Type II error
+
+-   false negative
+:::
+:::
+:::
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+The error of rejecting $H_0$, when $H_0$ is the `TRUE` hypothesis
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+The error of accepting $H_0$, when $H_0$ is the `FALSE` hypothesis
+
+::: fragment
+::: callout-important
+#### NEVER KNOWN to the researchers!
+:::
+:::
+:::
+:::
+:::
+
+## `p-value` probability value
+
+::: incremental
+Neyman-Pearson's approach to HT suggests:
+
+-   reject $H_0$, when
+
+-   p-value (probability of the **Type I error**)
+
+-   is below [the **level of significance** $\alpha$]{style="color: red;"}.
+:::
+
+::: fragment
+That means:
+
+-   when we reject $H_0$, the probability that we've made a mistake is below $\alpha$
+:::
+
+::: fragment
+Thus, [**we reject** $H_0$ **only and only if** $\text{p-value} < \alpha$]{style="color: red;"}.
+:::
+
+## $\alpha$ is the level of significance
+
+-   Maximum probability of a Type I error in hypothesis testing.
+
+-   In social sciences, the level of significance should not be higher than 5% ($\alpha = 0.05$).
+
+## Example (exam): HT about stunting (1)
+
+Can training and education of parents about nutrition reduce children's stunting?
+
+::: fragment
+Our data measures change in stunting levels between pre- and post-training for 500 individuals.
+:::
+
+::: fragment
+Answer the following questions:
+
+-   Formulate H0 and H1.
+
+-   Provide examples of the Type I and Type II errors in the context of your hypothesis.
+:::
+
+## Solutions
+
+::: columns
+::: {.column width="30%"}
+::: fragment
+Null hypothesis: - $H_0:{\Delta}_{\text{stunting}} = 0$
+
+Alternative hypothesis: - $H_1:{\Delta}_{\text{stunting}} \ne 0$ - $H_1:{\Delta}_{\text{stunting}} > 0$ - $H_1:{\Delta}_{\text{stunting}} < 0$
+:::
+:::
+
+::: {.column width="70%"}
+::: fragment
+-   Type I error:
+
+    -   We conclude **to reject** $H_0$: ${\Delta}_{\text{stunting}}\ne 0$,
+
+    -   But this observation is caused **by a random variation in the sample**.
+
+    -   In the population, training had nothing to do with stunting.
+
+    -   Repeated sampling will probably fail to show a difference.
+
+-   Type II error:
+
+    -   We conclude **to accept** $H_0$: stunting rate did not change after training.
+
+    -   Training helped but, e.g., the food shortage deepened the malnutrition problem in the survey year.
+:::
+:::
+:::
+
+## Example (2): HT about ravens' color
+
+### Question: What % of ravens are White?
+
+::: columns
+::: {.column width="70%"}
+::: fragment
+[Hypothesis:]{style="color: blue;"}
+
+::: incremental
+-   $H_0:$ White ravens make up 0% of the population
+-   $H_1:$ Share of white raven is not zero (\> 0%)
+:::
+:::
+:::
+
+::: {.column width="30%"}
+::: fragment
+[Data:]{style="color: green;"}
+
+::: incremental
+-   we went to a park;
+-   we saw 100 ravens (or crows);
+-   **no white ravens**!
+:::
+:::
+:::
+:::
+
+::: fragment
+**Results: the share of white ravens is 0!**
+:::
+
+::: fragment
+[Conclusion: **fail to reject** $H_0$ (**Accept** $H_0$ )]{style="color: red;"}
+:::
+
+::: notes
+Was this a random sampling?
+:::
+
+## Example (2): Raven color
+
+### [Conclusion: **Accept** $H_0$ (there are no white ravens)]{style="color: red;"}
+
+::: fragment
+Did we make any errors? If yes, which one?
+
+::: incremental
+-   We've made the **type II error: false negative**.
+:::
+:::
+
+::: fragment
+**Because:**
+
+::: incremental
+-   We do not know if $H_0$ is a true hypothesis.
+-   We did not use theory (did not study ornithology).
+-   [The theory has to justify our choice of the $H_0$.]{style="color: red;"}
+:::
+:::
+
+::: fragment
+![](img/white-raven.jpg){.absolute top="50" right="50" width="350"}
+:::
+
+::: footer
+[Image source](https://vancouversun.com/news/local-news/rare-white-raven-spotted-on-vancouver-island)
+:::
+
+## Homework on hypothesis testing {.smaller}
+
+::: columns
+::: {.column width="50%"}
+For the research questions below:
+
+1.  Describe how would you measure the outcome variable.
+2.  Formulate H0 and H1.
+3.  Discuss Type I and Type II errors in the context of your hypothesis.
+4.  Provide examples of the factors, which could cause these errors to appear.
+5.  Think of an RCT experiment that could help answer these questions.
+
+Research questions:
+
+-   What is the difference between the demographic characteristics of individuals in the control and treatment groups?
+
+    -   The characteristics are:age, weight, height, income, number of children, household size...
+:::
+
+::: {.column width="50%"}
+-   How students' performance in a class is different between years?
+
+-   Are the wheat yields higher in the farms that use precision agriculture?
+:::
+:::
+
+## Exam questions examples (2) {.smaller}
+
+-   Formulate H0 and H1.
+
+-   Provide an example of a type I / II error relevant to the hypothesis.
+
+-   What are the type I/II errors?
+
+-   Which error type is not known to the researcher that operates observational data? Why?
+
+-   When do we reject the null hypothesis? What kind of error we are trying to minimize?
+
+-   What is the significance level?
+
+# Examples of Hypothesis Testing
+
+The paper [@Kuchenbecker2017] aimed to assess the potential of community-based nutrition education to improve height-for-age z-scores in children 6--23 months of age.
+
+-   The authors performed the RCT experiment in Malawi over 5 years.
+
+-   Data was collected for the control and treatment groups in the baseline and the end-line.
+
+## @Kuchenbecker2017
+
+::: incremental
+-   If the paper finds a difference between nutrition statuses in the control and treatment groups, does it mean that education has a causal effect on nutrition?
+
+    -   Yes, if treatment and control groups are the same on average in other factors.
+
+    -   Such factors are Income, Education level, HH size, Farming abilities, ...
+:::
+
+## Checks and balances
+
+::: incremental
+-   How to identify if the factors are NOT DIFFERENT between the two groups?
+
+    -   Perform statistical hypothesis testing.
+
+    -   Formulate the hypothesis:
+
+        -   H0: a factor is the same across the two groups.
+        -   H1: a factor changes between two groups.
+
+    -   Fail to reject H0, when there is no difference
+:::
+
+## Checks and balances table
+
+This is an essential table that evaluates if the treatment and control groups of the RCT are the same on average.
+
+::: incremental
+The table shows:
+
+-   estimated mean and SD in the control and treatment groups;
+
+-   statistical test about the difference in means;
+
+-   probability value of the type I error;
+:::
+
+## @Kuchenbecker2017 Table 2
+
+![](img/Kuchenbecker2017-t1-2.png){fig-align="center"}
+
+Also available [here](https://storage.googleapis.com/plos-corpus-prod/10.1371/journal.pone.0175216/1/pone.0175216.t002.PNG_L?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=wombat-sa%40plos-prod.iam.gserviceaccount.com%2F20240109%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20240109T230545Z&X-Goog-Expires=86400&X-Goog-SignedHeaders=host&X-Goog-Signature=0080675c7765f662bea418223f546952dfe135d588d75305449f1d650fbafaa158c53c8e6921b070a204f6faf383d026ff500b306d93d92a60ebd33233d973f2b5a0b2330a550b6d53aadfd7bbb786d5165bd8fc835c12f9b41d8b56655c18c3e005c459a2cf81d5e0da833c785e6418f5116a95f5f91f569e8b1d28e6f465cf376e9b95801f9c31457105b9b6b5f2d329f3f613db1b1168eca2c6184dd4bcd531121880ce37d8f89179b3310b237fa79656a4f9f9e52a91ccddce4cbbcfcae97e3a090a13014508e8ff1f98e38c2f5316a904fec41f9062c7e211895a5fb9ca8cf99482e541096dae7031c6e0f56bb73f9db73298571ffc717db6d39c758032).
+
+::: fragment
+-   Formulate H0 and H1 about each variable.
+
+-   Perform statistical HT about the mean difference.
+
+-   Conclude if this variable is the same between the treatment and control groups.
+:::
+
+## Balance of the HH size
+
+![](img/Kuchenbecker2017-t1-2.png){fig-align="center"}
+
+::: incremental
+-   H0: Average household size is equal between Control and treatment;
+
+    -   $H_0: \text{HH Size}_{\text{Control}} = \text{HH Size}_{\text{Treatment}}$
+
+-   H0: Average HH size is unequal
+
+    -   $H_1: \text{HH Size}_{\text{Control}} \ne \text{HH Size}_{\text{Treatment}}$
+
+-   Probability of the type I error: 0.49 (p-value)
+
+-   Fail to reject $H_0$.
+
+-   The difference between C and I is insignificant at the 5% level of significance.
+:::
+
+## Remember
+
+The checks and balances table must indicate that treatment and control groups are similar on average.
+
+-   If they are not, simple means comparison will not reveal the causal effect of a treatment.
+
+## How to identify if the intervention helped?
+
+Because @Kuchenbecker2017 is an RCT, we can:
+
+::: incremental
+-   Compare means of the outcome variable between two groups, by
+
+-   Performing statistical hypothesis testing (same as in checks and balances),
+
+-   But instead of looking for failing to reject the $H_0$, look for a significant difference.
+:::
+
+## Intervention outcomes table
+
+![](img/Kuchenbecker2017-t4.png){fig-align="center"}
+
+## Homework
+
+-   Watch: [**How to Read Economics Research Papers: Randomized Controlled Trials (RCTs)**](https://youtu.be/s-_3s3OMeqs)
+
+    -   See [@Carter2017] that underpins the video.
+
+-   Practice:
+
+    -   Perform statistical hypothesis testing about the mean difference in Table 4 [@Kuchenbecker2017].
+
+    -   Perform statistical hypothesis testing about the mean difference in Table 1 in [@Gertler2004].

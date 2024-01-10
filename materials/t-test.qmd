@@ -1,0 +1,421 @@
+---
+#title: "t-test"
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+    incremental: false
+editor_options: 
+  chunk_output_type: consoles
+---
+
+# t-test
+
+Most commonly used statistical test for hypothesis testing about the estimated parameter (e.g., $\widehat{\text{mean}}$, but also other estimates).
+
+**The purpose:**
+
+Infer:
+
+::: incremental
+-   whether or not the population parameter $\mu$ (mean, or else)
+
+-   is different from an arbitrary number (usually zero: $\mu_{0} = 0$)
+
+-   based on our sample estimates of
+
+    -   the parameter ($\widehat{\text{mean}}$),
+    -   the variance ($\text{se}$ or $s$), and
+    -   sample size $n$.
+:::
+
+## t-tests
+
+In principal, there are:
+
+::: incremental
+-   one-sample t-test: compares mean to a number
+
+-   two-sample t-test: compares means of two independent samples
+
+    -   for equal and unequal variances between samples
+:::
+
+## one-sample t-test: comparing mean to a number
+
+### The algorithm
+
+1.  **Step 1.** Hypothesis formulation;
+
+2.  **Step 2.** Calculating test statistic;
+
+3.  **Step 3.** Setting a decision rule for rejecting $H_0$;
+
+4.  **Step 4.** Making a conclusion;
+
+## Step 1. Hypothesis formulation
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+### $H_0$ Null Hypothesis
+
+The population mean equals to zero $\mu_{0}$
+
+-   $H_0 : \mu = \mu_{0}$
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+### $H_1$ Alternative Hypothesis
+
+The population mean is not zero $\mu_{0}$
+
+::: incremental
+-   $H_1: \mu \ne \mu_{0}$
+
+-   $H_1: \mu < \mu_{0}$
+
+-   $H_1: \mu > \mu_{0}$
+:::
+:::
+:::
+:::
+
+## Step 2. Calculating test statistic
+
+::: columns
+::: {.column width="60%"}
+::: fragment
+### t-statistics:
+
+$$t = (\hat\mu - \mu_0) / \text{se} =  \frac{\sqrt{n} ( \hat\mu - \mu_0)}{s}\,,$$
+:::
+
+::: fragment
+where:
+
+-   $t$ - t-statistics;
+
+-   $\hat\mu$ - estimated mean and $\mu_0$ is an arbitrary number;
+
+-   $n$ - number of observation and $s$ - sample standard deviation;
+:::
+:::
+
+::: {.column width="40%"}
+::: fragment
+Sometimes, t-statistics is defined as:
+
+$$t = (\hat\mu -  \mu_0) / se(\hat\mu) \, ,$$
+
+where:
+
+-   $se(\hat\mu)$ is the standard error of the estimated coefficient $\hat\mu$
+
+-   $se(\hat\mu) = s / \sqrt{n}$;
+:::
+:::
+:::
+
+## Step 2. Example
+
+::: columns
+::: {.column width="60%"}
+::: incremental
+Sample size: $n = 25$
+
+Estimates mean: $\hat \mu = -2.2$
+
+Sample SD: $s = 3.3$
+
+-   Compute the t-statistics for the mean difference from zero.
+
+-   $\mu_0 = 0$?
+
+-   $t = \frac{\sqrt{25} ( -2.2 - 0)}{3.3} \\ = 5 \cdot (-1/3) \\= -1.667$
+:::
+:::
+
+::: {.column width="40%"}
+::: fragment
+::: incremental
+-   Compute the t-statistics for the mean difference from -5.5.
+
+-   $\mu_0 = -5.5$?
+
+-   $t = \frac{\sqrt{25} ( -2.2 + 5.5)}{3.3} \\ = 5 \cdot 1 \\ = 5$
+:::
+:::
+:::
+:::
+
+## Step 3. Setting a decision rule (1)
+
+To reject $H_0$, we compare $t$ to a **critical value** $c_{df, \text{CL}}$, where:
+
+-   $\text{CL}$ is the confidence level (opposite to the significance level: $1-\alpha$)
+
+-   $df$ - degrees of freedom
+
+## Step 3. Setting a decision rule (2)
+
+**Critical value**, is the **minimum values of the t-statistics** at which we **can reject** $H_0$ at the given **level of significance**.
+
+-   Critical value depends on the alternative hypothesis:
+
+-   when $H_1: \mu \ne \mu_{0}$ (two-sided t-test),
+
+    -   $\text{CL} = 1 - \alpha / 2$ then $c_{df,\, 1 - \alpha / 2}$;
+
+-   $H_1: \mu < \mu_{0}$ or $H_1: \mu > \mu_{0}$ (one-sided t-test),
+
+    -   $\text{CL} = 1 - \alpha$ then $c_{df,\, 1 - \alpha}$; :::
+
+## Step 3. Setting a decision rule (3)
+
+::: incremental
+Critical value also depends on:
+
+-   the number of degrees of freedom $df = n - k$:
+
+    -   $n$ is the number of observation in the sample and
+
+    -   $k$ is the number of parameters
+
+        -   $k=1$ for one-sample t-test
+
+        -   $k=2$ for two-sample t-test
+
+-   level of significance $\alpha$;
+
+    -   Conventionally $\alpha = 0.05$
+:::
+
+## Step 3. Setting a decision rule (4)
+
+::: incremental
+We reject $H_0: \mu = \mu_0$ in favor of $H_1: \mu \neq \mu_{0}$ **only if**:
+
+-   $|t| > c_{df, 1 - \alpha / 2}$ for two-sided t-test $H_1: \mu \ne \mu_{0}$
+
+-   $|t| > c_{df, 1 - \alpha}$ for one-sided t-test $H_1: \mu > \mu_{0}$ or $H_1: \mu > \mu_{0}$
+:::
+
+## Step 3. Setting a decision rule (4) {.smaller}
+
+::: columns
+::: {.column width="30%"}
+Finding the critical value is possible from the quantiles of the t-distribution.
+
+-   $df = n - k$;
+-   $\text{CL} = 1 - \alpha / 2$ for $H_1: \mu \ne \mu_{0}$
+-   $\text{CL} = 1 - \alpha$ for $H_1: \mu > \mu_{0}$ or $H_1: \mu > \mu_{0}$
+:::
+
+::: {.column width="70%"}
+```{r eval = TRUE, echo = FALSE, results = "asis"}
+library(purrr)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(knitr)
+critical_tbl <- 
+  c(1, 5, 10, 20, 23, 24, 25, 26, 27, 28, 29, 30, 50, 150) %>% 
+  map_dfr(~{
+    c(0.95, 0.975, 0.99, 0.995) %>% 
+      set_names(qt(., .x) %>% round(4), .) %>% 
+      enframe() %>% 
+      mutate(df = .x)
+  }) %>% 
+  pivot_wider(names_from = "name", values_from = "value")  %>% 
+  knitr::kable()
+
+c(1, 5, 10, 25, 40, 50, 75, 100, 150, 300, 1000, 10000, 1000000) %>% 
+  map_dfr(~{
+    c(0.9, 0.95, 0.975, 0.99, 0.995) %>% 
+      set_names(qt(., .x) %>% round(4), .) %>% 
+      enframe() %>% 
+      mutate(df = .x)
+  }) %>% 
+  pivot_wider(names_from = "name", values_from = "value")  %>% 
+  knitr::kable()
+```
+:::
+:::
+
+## Step 3. Example (1) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+Sample size: $n = 25$; $df = 25 - 1 = 24$
+
+::: fragment
+Is the population mean different from zero at a 1% level of significance?
+
+::: incremental
+-   $H_1: \mu \ne 0$
+-   $1 - \alpha / 2 = 1 - 0.01 / 2 = 0.995$
+-   $c_{24, \, 1 - 0.01/ 2} = 2.7969$
+:::
+:::
+:::
+
+::: {.column .smaller width="50%"}
+```{r eval = TRUE, echo = FALSE, results = "asis"}
+critical_tbl
+```
+:::
+:::
+
+## Step 3. Example (2) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+Sample size: $n = 25$; $df = 25 - 1 = 24$
+
+::: fragment
+Is the population mean different from zero at a 5% level of significance?
+
+::: incremental
+-   $1 - \alpha / 2 = 1 - 0.05 / 2 = 0.975$
+
+-   $c_{24, \, 1 - 0.05/ 2} = 2.0639$
+:::
+:::
+:::
+
+::: {.column width="50%"}
+```{r eval = TRUE, echo = FALSE, results = "asis"}
+critical_tbl
+```
+:::
+:::
+
+## Step 3. Example (3) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+Sample size: $n = 25$; $df = 25 - 1 = 24$.
+
+::: fragment
+Is the population mean different from zero at 10% level of significance?
+
+::: incremental
+-   $1 - \alpha / 2 = 1 - 0.1 / 2 = 0.95$
+
+-   $c_{24, \, 1 - 0.1/ 2} = 1.7109$
+:::
+:::
+:::
+
+::: {.column width="50%"}
+```{r eval = TRUE, echo = FALSE, results = "asis"}
+critical_tbl
+```
+:::
+:::
+
+## Step 4. Make a conclusion
+
+Concluding either or:
+
+::: incremental
+-   We reject $H_0$
+
+    -   at least at the $\alpha$ level of significance.
+    -   The population mean is significantly different from $\mu_0$.
+
+-   We fail to reject (we accept) $H_0$.
+
+    -   Available data do not provide sufficient evidence to reject $H_0$ at the $\alpha$ level of significance.
+    -   The population mean is statistically indifferent from $\mu_0$.
+:::
+
+## Step 4. Example (1)
+
+Sample size: $n = 25$. Estimates mean: $\hat \mu = -2.2$. Sample SD: $s = 3.3$
+
+::: fragment
+Is the population mean different from zero ($\mu_0 = 0$) at 5% level of significance?
+
+::: incremental
+-   $t = \frac{\sqrt{25} ( -2.2 - 0)}{3.3} = -1.667$
+
+-   $c_{24, \, 1 - 0.05/ 2} = 2.0639$
+
+-   $|t| < c_{24, \, 1 - 0.01/ 2}$
+
+-   $|-1.667| < 2.0639$
+
+-   Conclusion:
+
+    -   Fail to reject (we accept) $H_0$.
+    -   the population mean is statistically **indifferent** from $\mu_0 = 0$.
+:::
+:::
+
+## Step 4. Example (2)
+
+::: fragment
+Is the population mean different from -5.5 ($\mu_0 = -5.5$) at the 1% level of significance?
+
+::: incremental
+-   $\mu_0 = -5.5$?
+
+-   $t = \frac{\sqrt{25} ( -2.2 + 5.5)}{3.3} = 5$
+
+-   $c_{24, \, 1 - 0.05/ 2} = 2.7969$
+
+-   $|t| > c_{24, \, 1 - 0.01/ 2}$
+
+-   $|5| > 2.7969$
+
+-   Conclusion:
+
+    -   Reject $H_0$.
+    -   the population mean is statistically different from $\mu_0 = -5.5$ at least at the 1% level of significance.
+:::
+:::
+
+## Homework (exam) examples (1) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+Calculate the t-statistics and find corresponding critical values.
+
+-   Conclude weather the H0 could be rejected in the following hypothesis testing problems.
+
+-   Compare your calculations to the solutions.
+
+```{r}
+tibble(
+  `$\\hat \\mu$` = c(4, 2, 3.5, 8, 1.2),
+  `s` = c(1, 1.2, 3.1, 4, 3.4),
+  `$\\mu_0$` = c(3, 0.8, 2.8, 16, .2),
+  n = c(10, 8, 150, 21, 53),
+  `$\\alpha$` = c(0.01, 0.05, 0.01, 0.1, 0.05)
+) %>%
+  mutate(
+    `$t$` = round(sqrt(n) * (`$\\hat \\mu$` - `$\\mu_0$`) / `s`, 3),
+    `$c_{df, \\text{CL}}$` = round(qt(1 - `$\\alpha$` / 2, n), 3)
+  ) %>% 
+  kable()
+```
+:::
+
+::: {.column width="50%"}
+```{r table, eval = TRUE, echo = FALSE, results = "asis"}
+c(1, 5, 6, 7, 8, 9, 10, 20, 25, 30, 50, 80, 100, 150) %>% 
+  map_dfr(~{
+    c(0.95, 0.975, 0.99, 0.995) %>% 
+      set_names(qt(., .x) %>% round(4), .) %>% 
+      enframe() %>% 
+      mutate(df = .x)
+  }) %>% 
+  pivot_wider(names_from = "name", values_from = "value")  %>% 
+  knitr::kable(caption = "Critical values of the t-distribution.")
+```
+:::
+:::

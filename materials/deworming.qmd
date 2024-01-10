@@ -1,0 +1,132 @@
+---
+#title: "Deworming"
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+    incremental: false
+editor_options: 
+  chunk_output_type: consoles
+---
+
+# Effects of a de-worming pill
+
+In 1998 an NGO initiated
+
+-   the Primary School Deworming Project \[PSDP\]
+
+-   in Busia District (Busia County), western Kenya that is fairly representative of rural Kenya
+
+-   in 75 randomly selected schools (32,000 pupils) with a helminths prevalence rate over 90%!
+
+## PSDP implementation timeline
+
+::: columns
+::: {.column width="35%"}
+Source: [@Hamory2021], supplementary materials.
+:::
+
+::: {.column width="65%"}
+![](img/Hamory2021-s1.PNG){fig-align="center"}
+:::
+:::
+
+## Checks and balances between groups
+
+::: columns
+::: {.column width="35%"}
+Source: [@Miguel2004] table 1.
+
+-   See the full table and interpret it.
+
+-   Is there any difference between treatment and control groups?
+:::
+
+::: {.column width="65%"}
+![](img/Miguel2004-T1.PNG){fig-align="center"}
+:::
+:::
+
+## Immediate effect on health
+
+::: columns
+::: {.column width="35%"}
+Source: [@Miguel2004] Table 5.
+
+-   Check the full table and interpret it.
+
+-   What effects were and were not caused by deworming treatment?
+:::
+
+::: {.column width="65%"}
+![](img/Miguel2004-T5.PNG){fig-align="center"}
+:::
+:::
+
+## Immediate effect on school participation
+
+::: columns
+::: {.column width="35%"}
+Source: [@Miguel2004] Table 8.
+
+-   Check the full table and interpret it.
+:::
+
+::: {.column width="65%"}
+![](img/Miguel2004-T8.PNG){fig-align="center"}
+:::
+:::
+
+## Long-term economic effects (1)
+
+::: columns
+::: {.column width="35%"}
+Source: [@Hamory2021] Table 1.
+
+-   Check the full table and interpret it.
+:::
+
+::: {.column width="65%"}
+![](img/Hamory2021-T1.PNG){fig-align="center"}
+:::
+:::
+
+## Long-term economic effects (2)
+
+::: columns
+::: {.column width="20%"}
+Source: [@Hamory2021] Figure 1.
+
+-   the x-axis represents the log of annual earnings per capita.
+:::
+
+::: {.column width="80%"}
+![](img/Hamory2021-P1.PNG){fig-align="center"}
+:::
+:::
+
+## Long-term economic effects (3)
+
+::: columns
+::: {.column width="50%"}
+Source: [@Hamory2021] Table 2.
+:::
+
+::: {.column width="50%"}
+![](img/Hamory2021-T2.PNG){fig-align="center"}
+:::
+:::
+
+## Costs and benefits of deworming
+
+::: columns
+::: {.column width="10%"}
+Source: [@Hamory2021] Figure 2
+:::
+
+::: {.column width="90%"}
+![](img/Hamory2021-P2.PNG){fig-align="center"}
+:::
+:::
+
+## References
