@@ -1,0 +1,545 @@
+---
+#title: "Conditional Cash Transfers"
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+# source(here::here("materials", "00-setup.R"), local = TRUE)
+knitr::opts_chunk$set(fig.width = 8)
+knitr::opts_chunk$set(fig.height = 4.5)
+```
+
+# Example 0: Conditional Cash Transfers (CCTs)
+
+Let us consider an example of CONDITIONAL CASH TRANSFERS' causal effect on children's school enrollment.
+
+> See: CH 5. The Impact of CCT Programs on the Accumulation of Human Capital from [@Fiszbein2009].
+
+## Conditional Cash Transfers (CCTs)
+
+CCTs are programs that **transfer cash** on the **condition of making pre-specified investments** in **human capital and children**. [@Fiszbein2009, Figure 1]
+
+::: r-stack
+::: fragment
+![](img/CCT-1.png)
+:::
+
+::: fragment
+![](img/CCT-2.png)
+:::
+:::
+
+::: footer
+:::
+
+## Cause and Effect
+
+::: fragment
+### 1. Cause / Treatment:
+
+::: incremental
+-   CCTs (monetary incentive) + Pre-specified conditions
+:::
+:::
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+### 2.a Outcome / Factual
+
+::: incremental
+-   School enrollment
+-   in treatment;
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+### 2.b Counterfactual
+
+::: incremental
+-   School enrollment
+-   in control;
+:::
+:::
+:::
+:::
+
+::: fragment
+### 3. ATE: $\text{Effect} = \text{Factual} - \text{Counterfactual}$
+
+::: incremental
+-   $\text{Average Treatment Effect} = \text{Enrollment Rate Difference}$
+:::
+:::
+
+## What makes "Difference in Enrollment Rate" a causal effect?
+
+> What statistical concepts ensure that the difference in school enrollment between the treatment and control is caused by the treatment?
+
+::: incremental
+1.  Research Designed with the Randomized Control Trial (RCT):
+
+    -   Randomization between the Control and Treatment group;
+
+2.  **the Law of Large Numbers** (LLN):
+
+    -   Both random groups are equal on average;
+
+3.  The RCT + LLN = **Ceteris Paribus**;
+
+    -   All other things are equal between the two groups;
+:::
+
+## Good controls in the RCT
+
+The control group is a perfect **counterfactual** when **three conditions are met**:
+
+::: incremental
+1.  has the same characteristics, on average, as the treatment group in the absence of the program;
+
+2.  remains unaffected by the treatment; and
+
+3.  reacts to the treatment in the same way as the treatment group;
+:::
+
+::: fragment
+> When these three conditions are met, the treatment causes the effect ceteris paribus [@Gertler2016].
+:::
+
+::: notes
+1.  the average characteristics of the treatment group and the comparison group must be identical in the absence of the program.2 Although individual units in the treatment group don't need to have "perfect clones" in the comparison group, on average the characteristics of treatment and comparison groups should be the same.
+
+2.  treatment should not affect the comparison group either directly or indirectly.
+
+3.  the outcomes of units in the control group should change the same way as outcomes in the treatment group if both groups were given the program (or not).
+:::
+
+## How to check that ceteris paribus is ensured?
+
+> What statistical tools are used to check that control and treatment groups are the same on average?
+
+::: incremental
+-   Checks and balance tables
+
+    -   performs a mean-difference test between treatment and control for
+    -   variables that are (should be) independent of treatment
+
+-   No significant differences (failing to reject $H_0$) suggest that the two groups are the same on average
+
+-   Any significant differences (rejecting $H_0$ at the $\alpha$ level of significance) imply that the two groups are not random.
+:::
+
+## Counterfeit counterfactual: Before and After
+
+```{r}
+library(ggplot2)
+#![](img/counterfitting-1.png)
+ba_gg1 <-
+  ggplot() + 
+  scale_x_continuous(
+    breaks = c(0.25, 2),
+    minor_breaks = NULL,
+    labels = c("Year 1", "Year 2"), 
+    limits = c(0.0, 2.25),
+    expand = expansion(mult = 0, add = 0)
+  ) + 
+  scale_y_continuous(
+    breaks = c(65, 90), 
+    minor_breaks = NULL,
+    labels = c("65%", "90%"),
+    limits = c(50, 95),
+    expand = expansion(mult = 0, add = 0)
+  ) + 
+  geom_segment(aes(y = 65, yend = 65, x = 0, xend = 0.25)) + 
+  geom_point(aes(0.25, 65)) +
+  theme_bw() +
+  theme(
+    axis.line.y = element_line(
+      arrow = grid::arrow(length = unit(0.3, "cm"), ends = "last")
+      ),
+    axis.line.x = element_line(
+      arrow = grid::arrow(length = unit(0.3, "cm"), ends = "last")
+      )) +
+  ylab("School enrolment rate, %")
+  
+
+ba_gg2 <-
+  ba_gg1 + 
+  geom_segment(
+    aes(y = 65, yend = 90, x = 0.25, xend = 2),
+    arrow = arrow(length=unit(0.25,"cm"), ends="last", type = "closed"),
+    linetype = 2,
+    linewidth = 1
+    ) + 
+  geom_segment(
+    aes(y = 65, yend = 65, x = 0, xend = 2),
+    arrow = arrow(length=unit(0.25,"cm"), ends="last", type = "closed")) + 
+  geom_point(aes(c(2, 2), c(90, 65))) + 
+  geom_label(
+    aes(
+      c(2.05, 2.05, 1, 1.8),
+      c(90, 65, 78, 66.5),
+      label = c("A", "B", "Factual", "Counterfactual B")
+    )) 
+
+
+ba_gg3 <- 
+  ba_gg2 +   
+  geom_segment(
+    aes(y = 65, yend = 77.5, x = 0.25, xend = 2),
+    arrow = arrow(length=unit(0.25,"cm"), ends="last", type = "closed") ,
+    linetype = 3
+    ) + 
+  geom_segment(
+    aes(y = 65, yend = 55, x = 0.25, xend = 2),
+    arrow = arrow(length=unit(0.25,"cm"), ends="last", type = "closed") ,
+    linetype = 3
+    ) + 
+  geom_point(aes(c(2, 2), c(55, 77.5))) + 
+  geom_label(aes(
+    x = c(1.5, 1.5, 2.05, 2.05),
+    y = c(56, 75, 77.5, 55),
+    label = c("Counterfactual D", "Counterfactual C", "C?", "D?")
+  ))
+
+```
+
+::: r-stack
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+ba_gg1
+```
+
+::: fragment
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+ba_gg2
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 10
+#| fig-height: 7
+ba_gg3
+```
+:::
+:::
+
+## Counterfeit counterfactual: Self-selection
+
+Self-selection:
+
+-   comparing two groups of individuals, where one has chosen to sign up voluntarily and others have chosen not to participate.
+
+::: incremental
+-   self-selection occurs when participation in treatment and control occurs based on preferences decisions and unobserved characteristics of potential participants.
+
+-   For example: Erasmus' post-graduation internship grant. How does it improve a graduate's employment prospects?
+
+    -   Graduates choose between an internship or a job.
+    -   In practice, motivation, effort, and knowledge define employment...
+    -   But all three affect the choice of internship vs job.
+:::
+
+::: notes
+-   For example: What if the choice of joining the CCTs program was up to the HH?
+
+    -   Parents who sent their kids to school anyway would apply for this program.
+    -   Those, who rely on child labor on the farm would not participate anyway.
+:::
+
+## Ceteris Paribus
+
+Other things are equal! The "other things" are:
+
+::: incremental
+-   **measurable features** (age, height, costs, ...);
+
+-   **measurable but absent from our data**;
+
+-   **nonmeasurable factors** (ability, effort, connections, ...)
+:::
+
+## $\text{The Effect} = \text{Factual} - \text{Counterfactual}$
+
+If there is a causal effect, then $\text{Effect} \ne 0$ in the population.
+
+::: incremental
+1.  We do not operate the population;
+
+2.  Samples contain random variation;
+
+3.  Based on samples we estimate $\widehat{\text{Effect}}$;
+
+4.  If we find $\widehat{\text{Effect}} \ne 0$,
+
+    -   **Does this mean that in the population,** $\text{Effect} \ne 0$ ?
+    -   YES/NO ??? Please vote!
+    -   NO. See point 2 above.
+
+5.  We need to perform the **Hypothesis Testing**!
+:::
+
+## Hypothesis testing (1): Formulation
+
+Two competing ideas are called **hypotheses**.
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+### $H_0$ Null/Zero hypothesis
+
+::: incremental
+-   often represents a skeptical perspective or a claim to be tested.
+-   $H_0 : \text{Effect} = 0$
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+### $H_1$ alternative hypothesis
+
+::: incremental
+-   represents an alternative claim.
+-   range of possible values.
+-   $H_1 : \text{Effect} \ne 0$
+-   $H_1 : \text{Effect} > 0$ or $H_1 : \text{Effect} < 0$
+:::
+:::
+:::
+:::
+
+::: footer
+See also: [@Diez2022]
+:::
+
+## Hypothesis testing (2): Decision
+
+### Rejection rule / statistical test (t-test)
+
+-   probability value (p-value) / critical value;
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+### When evidence is sufficient.
+
+-   Reject $H_0$.
+-   Find sufficient evidence in support of $H_1$.
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+### When we do not find sufficient evidence.
+
+-   Fail to reject $H_0$.
+-   The Null hypothesis is not implausible.
+:::
+:::
+:::
+
+::: notes
+We always aim to reject $H_0$.
+:::
+
+## Hypothesis testing (3) : Error
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+### Type I error
+
+::: incremental
+-   False Positive
+
+-   CCTs **did NOT improve enrollment** in the pop., but **the test shows that it did**.
+
+-   Probability is known: p-value.
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+### Type II error
+
+::: incremental
+-   False Negative
+
+-   CCTs **did improve enrollment** in the pop., but **the test shows that it did NOT**.
+
+-   The probability is unknown.
+:::
+:::
+:::
+:::
+
+::: fragment
+![](img/four-hypo.png)
+:::
+
+::: footer
+Source: [@Diez2022]
+:::
+
+## t-tests (1)
+
+Helps us perform HT about the population based on (a) sample(s).
+
+1.  One sample t-test:
+
+    -   is the population parameter $\mu$ different from an arbitrary number?
+
+2.  Two sample t-test:
+
+    -   are two parameters $\mu_1$ and $\mu_2$ different in the population?
+
+## t-tests (2) One sample t-test algorithm {.smaller}
+
+**Hypothesis**
+
+::: fragment
+::: columns
+::: {.column width="30%"}
+$H_0: \mu = 0$
+:::
+
+::: {.column width="70%"}
+$H_1: \mu \ne 0$, or $H_1: \mu > 0$, or $H_1: \mu < 0$
+:::
+:::
+:::
+
+::: fragment
+**Statistics**
+
+::: fragment
+::: columns
+::: {.column width="40%"}
+-   Estimated parameter: $\widehat{\mu}$
+-   Standard Deviation: $s$
+-   Zero hypothesis value: $\mu_0 = 0$
+:::
+
+::: {.column width="60%"}
+-   Number of observations: $n$
+-   t-statistics: $t = \sqrt{n} (\widehat{\mu} - \mu_0) / {s}$
+-   Significance level: $\alpha = 0.05$
+:::
+:::
+:::
+:::
+
+::: fragment
+**Conclusions:**
+
+::: incremental
+1.  Reject $H_0$ if:
+
+    -   $|t| > c_{df, \, 1-\alpha/2}$ or $|t| > c_{df, \, 1-\alpha}$, depending on the $H_1$ and
+    -   $\text{p-value} < \alpha$ (probability of type I error \< level of significance
+
+2.  Fail to reject $H_0$
+:::
+:::
+
+## t-tests (3.1) example (exam) {.smaller}
+
+**Do the CCTs improve children's school enrollment?** [@Fiszbein2009]
+
+::: incremental
+-   The effect: [$\widehat{\text{Enrollment change}} = \widehat{\text{After the CCT}} - \widehat{\text{Before the CCT}}$]{.fragment}
+
+-   Hypothesis:
+
+    -   $H_0:$ [$\text{Enrollment change} = 0$]{.fragment}
+
+    -   $H_1:$ [$\text{Enrollment change} > 0$]{.fragment}
+
+-   Statistical test:
+
+    -   [One-sided t-test]{.fragment}
+
+-   **Desired t-test result** at the 5% level of significance $\alpha = 0.05$.
+
+    -   Which t-test result indicates that CCT has a positive effect on school enrollment?
+
+    -   $\text{p-value}$ [$< \alpha$ or $\text{p-value} < 0.05$]{.fragment}
+
+    -   $|\text{t-statistics}|$ [$> c_{df, \, 0.95}$]{.fragment}
+
+    -   We need to be able to reject $H_0$
+:::
+
+::: footer
+Source: [@Fiszbein2009]
+:::
+
+## t-tests (3.2) example (exam) {.smaller}
+
+::: columns
+::: {.column width="60%"}
+![](img/school-enrollment-t5-1.png)
+:::
+
+::: {.column width="40%"}
+-   The column for "impact" reports the difference and standard error (in parentheses); the unit is percentage points, except of the Jamaican PATH program.
+
+-   `*`, `**`, and `***` correspond to significance at the 10, 5, and 1 percent levels.
+
+::: incremental
+-   What is shown in the rows?
+    -   [case-specific t-test]{.fragment}
+-   What are $H_0$ and $H_1$?
+    -   [$H_0: \text{diff} = 0$; $H_1: \text{diff} \ne 0$;]{.fragment}
+-   What are the conclusions for each row?
+    -   [Reject/Accept $H_0$]{.fragment}
+-   What do "stars" imply for test-specific conclusions for each row?
+:::
+:::
+:::
+
+## t-tests (3.3) example (exam) {.smaller}
+
+::: columns
+::: {.column width="40%"}
+![](img/school-enrollment-t5-2.png)
+:::
+
+::: {.column width="60%"}
+Interpret results of the statistical test for country A at the X (1%, 5%) level of significance.
+
+-   State Null and Alternative hypotheses.
+-   Conclude about the HT results.
+-   What parameter/statistics/number was used to make this conclusion?
+
+For example, in Turkey, Ahmed et al. (2007) failed to show that CCTs improve/worsen children's school enrollment. With "H~0~: no improvement" versus the "H~1~: some improvement", the authors failed to reject the H~0~ at the 5% sign. level for populations of primary and secondary school attendees ...
+:::
+:::
+
+(For example cont.) ... In absolute terms, authors show a reduction in primary school enrollment by 3% and an increase in secondary school enrollment by 5.2%. However, the probability that these changes are due to sample variation (probability of type I error / p-value) is above 5% and 10% respectively. Table source: [@Fiszbein2009]
+
+## Homework: Read/do more on Hypothesis testing
+
+[OpenIntro](https://www.openintro.org/book/os/) Foundations for Inference:
+
+-   [Point Estimates](https://youtu.be/oLW_uzkPZGA)
+-   [Hypothesis Testing Fundamentals](https://youtu.be/NVbPE1_Cbx8)
+-   [Inference for Estimators Other Than the Mean](https://youtu.be/PUMBNtVKr_g)
+
+Khan Academy:
+
+-   [The idea of significance tests](https://www.khanacademy.org/math/statistics-probability/significance-tests-one-sample/idea-of-significance-tests/v/simple-hypothesis-testing)

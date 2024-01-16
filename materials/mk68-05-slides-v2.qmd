@@ -1,0 +1,321 @@
+---
+title: "Week 05. Hypothesis testing II. Central Limit Theorem. t-distribution. Confidence intervals."
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+editor_options: 
+  chunk_output_type: console
+---
+
+{{< include cct.qmd >}}
+
+{{< include pop-dist-clt.qmd >}}
+
+{{< include ci-t-dist.qmd >}}
+
+# Practice
+
+{{< include mk68-05-slides-ex1.qmd >}}
+
+# Example 2: Travel time difference between treatment and control
+
+We come back to the travel time example.
+
+## Checks and balances
+
+Travel time example:
+
+-   Two random samples are derived from the population:
+
+    -   Treatment, where (CCTs) were provided;
+
+    -   Control, where no CCT was provided;
+
+We want to establish that the mean travel times of these two groups are similar on average.
+
+## Exploratory analysis (1) {.smaller}
+
+```{r}
+set.seed(1135)
+pop_dstance_sample <- 
+  pop_dstance %>% 
+  rename(`Travel time` = dist0) %>% 
+  sample_n(64) %>% 
+  mutate(Group = ifelse(row_number() < 34, "Treatment", "Control"))
+
+pop_dstance_stat <- 
+  pop_dstance_sample %>%
+  group_by(Group) %>% 
+  summarise(
+    `$n$` = n(),
+    `$\\hat\\mu$` = mean(`Travel time`) %>% round(2) ,
+    `$s$` =  round((sum((`Travel time` - `$\\hat\\mu$`)^2) / (n() - 1)) ^ 0.5, 2),
+    `$\\text{SE}$` = round(`$s$` / sqrt(n()) , 2))
+```
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig-width: 6
+#| fig-height: 6
+pop_dstance_sample %>% 
+  ggplot() + 
+  aes(y = `Travel time`, x =  Group, color = Group) + 
+  geom_boxplot() + 
+  ylab("Travel time to school, minutes")
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+From the plot, we observe:
+
+1.  Medians are slightly different but they overlap within the boxes (for 50% of all observations)
+
+2.  Variances are different based on the whiskers. The presence of an outlier in the treatment may indicate that groups have similar variances, but the small sample size does not perfectly represent it.
+
+3.  We may consider using a t-test for two samples with unequal variances.
+:::
+:::
+:::
+
+## Exploratory analysis (2) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+```{r}
+pop_dstance_stat %>% kable(row.names = F)
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+Is there any difference between treatment and control?
+
+-   Absolute numbers are different.
+
+-   Given that these are two samples, we need to perform statistical Hypothesis Testing to establish if these two averages are statistically significantly different from one another.
+:::
+:::
+:::
+
+## Two-sample t-test (1)
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "1-3,6,7,8,9"
+t.test(`Travel time` ~ Group, data = pop_dstance_sample,  
+       var.equal = FALSE)
+# 	Welch Two Sample t-test
+# 
+# data:  Travel time by Group
+# t = 1.1331, df = 58.767, p-value = 0.2618
+# alternative hypothesis: true difference in means between group Control and group Treatment is not equal to 0
+# 95 percent confidence interval:
+#  -1.110563  4.009977
+# sample estimates:
+#   mean in group Control mean in group Treatment 
+#                24.46403                23.01432 
+```
+
+::: incremental
+-   Two-sample t-test with unequal variances between two samples.
+-   $H0: \hat\mu_1 = \hat\mu_2$ Two means are statistically similar (indifferent);
+-   $H1: \hat\mu_1 \ne \hat\mu_2$ Because the $H1$ is about an inequality sign, we have a two-tailed t-test ($c_{df, \, 1 - \alpha / 2}$)
+:::
+
+## Two-sample t-test (2) Conclusions {.smaller}
+
+::: incremental
+Critical value of the t-statistics (see full tables at the end of slides):
+
+-   $df = 58.767 \approx 58$
+-   $1 - \alpha / 2 = 1 - 0.05/2 = 0.975$
+-   $c_{58, 0.975} = `r round(qt(0.975, 58),3)`$
+-   Line 6: $|t| < c_{58, 0.975}$ as $|1.1331| < `r round(qt(0.975, 58),3)`$
+-   Line 7: 95% confidence interval of difference between two means includes zero.
+
+**Conclusion:**
+
+-   Fail to reject $H_0$. The evidence is insufficient to conclude that average travel times between school and households in treatment and control groups are different at the 5% level of significance.
+:::
+
+## Two-sample t-test (3) Equal variance
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "2,3,6"
+t.test(`Travel time` ~ Group, data = pop_dstance_sample,  
+       var.equal = TRUE)
+# 	Welch Two Sample t-test
+# 
+# data:  Travel time by Group
+# t = 1.1331, df = 58.767, p-value = 0.2618
+# alternative hypothesis: true difference in means between group Control and group Treatment is not equal to 0
+# 95 percent confidence interval:
+#  -1.110563  4.009977
+# sample estimates:
+#   mean in group Control mean in group Treatment 
+#                24.46403                23.01432 
+```
+
+Test statistics, degrees of freedom, and confidence intervals change, but the conclusion remains the same.
+
+# Example 3: Causal effect of treatment on enrollment
+
+The dependent variable here is a dummy variable (0\|1), which takes the value of 1 if children are being enrolled in the school in a household and zero otherwise.
+
+## Descriptive statistics
+
+```{r}
+set.seed(112)
+pop_dstance_sample_enrollment <- 
+  pop_dstance_sample %>% 
+  mutate(
+    enroll = 
+      0.1 + 
+      dist * 0.3 +
+      as.integer(Group != "Treatment") * rnorm(nrow(.), 0.22, 0.1)) %>% 
+  mutate(school = as.integer(enroll < 0.1)) 
+```
+
+```{r}
+pop_dstance_sample_enrollment %>%
+  group_by(Group) %>% 
+  summarise(
+    `$n$` = n(),
+    `$\\hat\\mu$` = mean(school) %>% round(3) ,
+    `$s$` =  round((sum((school - `$\\hat\\mu$`)^2) / (n() - 1)) ^ 0.5, 3),
+    `$\\text{SE}$` = round(`$s$` / sqrt(n()) , 3)) %>% 
+  kable(row.names = F, 
+        caption = "Descriptive statistics of school enrollment for two groups.")
+```
+
+## two-sample two-sided t-test {.smaller}
+
+::: columns
+::: {.column width="50%"}
+### for equal variance
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "3-4,7,9-10"
+t.test(school ~ Group, 
+       data = pop_dstance_sample_enrollment, 
+       var.equal = TRUE)
+# 	Two Sample t-test
+# 
+# data:  school by Group
+# t = -2.6316, df = 62, p-value = 0.01071
+# alternative hypothesis: true difference in means between group Control and group Treatment is not equal to 0
+# 95 percent confidence interval:
+#  -0.55557287 -0.07590318
+# sample estimates:
+#   mean in group Control mean in group Treatment 
+#               0.2903226               0.6060606 
+```
+:::
+
+::: {.column width="50%"}
+### for UNEQUAL variance
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "3-4,7,9-10"
+t.test(school ~ Group, 
+       data = pop_dstance_sample_enrollment, 
+       var.equal = FALSE)
+# 	Welch Two Sample t-test
+# 
+# data:  school by Group
+# t = -2.6377, df = 61.995, p-value = 0.01054
+# alternative hypothesis: true difference in means between group Control and group Treatment is not equal to 0
+# 95 percent confidence interval:
+#  -0.55502140 -0.07645465
+# sample estimates:
+#   mean in group Control mean in group Treatment 
+#               0.2903226               0.6060606 
+```
+:::
+:::
+
+::: incremental
+-   $H_0: \text{School enrollment}_{\text{T}} = \text{School enrollment}_{\text{c}}$
+
+-   $H_1: \text{School enrollment}_{\text{T}} \ne \text{School enrollment}_{\text{c}}$
+
+-   Conclusion:
+
+    -   In both tests $p < 0.05$;
+    -   School enrollment in treatment is larger than in control at the 5% level of significance. Therefore, the effect of CCT on school enrollment is indeed positive and significant.
+:::
+
+# t-scores
+
+The slides below contain the t-scores (critical values of the t-distribution) for t-distributions with 1-150 degrees of freedom.
+
+{{< include mk68-05-slides-t-scores.qmd >}}
+
+# Takeaways checklist
+
+## Homework {.smaller}
+
+This homework generally outlines examples of the exam questions.
+
+1.  Use paper [@Duflo2008] (available on Ilias);
+
+    -   Perform a statistical hypothesis testing of the mean yield increase for panel A-C in table 1.
+    -   State H0 and H1; Calculate t-statistics and the 95% confidence intervals.
+    -   Conclude about the effect of fertilizer application on the yields for each of the panels.
+
+2.  Watch "[Randomized Trials: The Ideal Weapon](https://youtu.be/eGRd8jBdNYg)" (It was suggested already in one of the previous lectures)
+
+    -   Take the paper [@Carter2017] (available on Ilias) and interpret results of the columns 4-5 in the table 2.
+
+## Key concepts covered in the lecture {.smaller}
+
+::: columns
+::: {.column width="50%"}
+The Central Limit Theorem:
+
+-   Conditions and implications;
+-   Distribution of the sample estimates of mean
+
+Standard Errors:
+
+-   Definition and importance.
+-   SE of the sample estimates of mean.
+-   Difference from the sample variance.
+
+T-distribution:
+
+-   Normal vs t-distribution.
+-   t-scores;
+-   Identifying t-scores from a table;
+:::
+
+::: {.column width="50%"}
+Confidence intervals:
+
+-   For the population observations and normal distribution;
+-   For the sample estimates of mean.
+-   Construction of the confidence intervals.
+
+t-test:
+
+-   two-sided t-test;
+-   Hypotheses null and alternative;
+-   Formulating Hypotheses;
+-   Rejecting/accepting:
+    -   test of significance; p-value; confidence intervals;
+-   Interpreting t-test results;
+-   Concluding about the mean difference based on the t-test;
+:::
+:::
+
+# References

@@ -38,6 +38,7 @@ Same readings:
 -   [@Gertler2004] another example of the statistics application;
 -   [@Miguel2004] Deworming effect on children health;
 -   [@Hamory2021] Long-term economic effect of de-worming;
+-   [@Carter2017] Effect of electronics on students performance.
 
 ## Key concepts covered in the lecture {.smaller}
 

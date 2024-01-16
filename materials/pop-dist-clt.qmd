@@ -1,0 +1,488 @@
+---
+#title: "Pop dist and CLT"
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+# source(here::here("materials", "00-setup.R"), local = TRUE)
+library(knitr)
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+library(patchwork)
+ggplot2::theme_set(ggplot2::theme_minimal())
+knitr::opts_chunk$set(fig.width = 8)
+knitr::opts_chunk$set(fig.height = 4.5)
+source(here::here("materials", "00-aux-functions.R"), local = TRUE)
+```
+
+# Normally distributed population and the confidence intervals
+
+Suppose that we have measured travel time to school for the entire population of the HHs.
+
+Travel time is distributed normally with:
+
+-   $\mu$ - average travel time;
+-   $\sigma$ - standard deviation of $\mu$;
+
+## Population distribution {.smaller .nonincremental}
+
+```{r}
+dist_mean <- 24.1
+dist_sd <- 5.2
+z_95 <- qnorm(p = 0.025) %>% round(3)
+
+# dnorm(2)
+
+set.seed(11542)
+pop_dstance <- tibble(dist0 = rnorm(1182, dist_mean, dist_sd)) %>% 
+  mutate(dist = (dist0 - dist_mean) / dist_sd,
+         y = 0) %>% 
+  filter(dist < 3) %>% 
+  filter(dist > -3)
+
+gg_sd0 <- 
+  ggplot(NULL, aes(c(-3,3)))  +
+  labs(x = "Travel time, minutes", 
+       y = "Probability density",
+       title = "Distribution of the travel time from a HH to a school") +
+  scale_y_continuous(breaks = NULL, expand = expansion(mult = 0, add = 0),
+                     limits = c(0, 0.42)) +
+  scale_x_continuous(breaks = 0, labels = "Mean") +
+  labs() + 
+  theme(axis.line.x = element_line(), axis.ticks.x = element_line())
+  # geom_vline(xintercept = 0, linetype = 2, size = 1, data = NULL, inherit_aes = FALSE)
+
+# gg_sd0 + 
+gg_sd0a <- 
+  gg_sd0 +
+  geom_jitter(aes(x = dist, y = y), 
+              data = pop_dstance, height = 0.02, 
+              alpha = 0.2)
+  
+gg_sd1 <-
+  gg_sd0a +
+  scale_x_continuous(
+    breaks = -3:3, 
+    minor_breaks = NULL,
+    labels = c("-3 SD", "-2 SD","-1 SD", str_c("Mean=", dist_mean), "1 SD", "2 SD", "3 SD")
+    ) +
+  geom_vline(xintercept = 0)
+
+gg_sd2 <- 
+  gg_sd1 + 
+  geom_area(stat = "function", fun = dnorm, xlim = c(-3, 3),
+            colour = "black", size = 1, alpha = 0) +
+  labs(subtitle = "Area under curve is equal to 1") 
+
+gg_sd2a <- 
+  gg_sd2 + 
+  geom_area(stat = "function", fun = dnorm, xlim = c(-3, z_95),
+            fill = "#09629c", alpha = 0.50) + 
+  geom_label(aes(label = c("2.5%"), x = c(-2.25), y = c(0.085)),
+             fill = "#09629c", alpha = 0.5) +
+  geom_vline(xintercept = c(z_95), linetype = 4, colour = "#e28743",
+             size = 1) 
+
+gg_sd2b <- 
+  gg_sd2a +
+  geom_area(stat = "function", fun = dnorm, xlim = c(-z_95, 3),
+            fill = "#09629c", alpha = 0.50) + 
+  geom_label(aes(label = c("2.5%"), x = c(2.25), y = c(0.085)),
+             fill = "#09629c", alpha = 0.5) +
+  geom_vline(xintercept = c(-z_95), linetype = 4, colour = "#e28743",
+             size = 1) 
+
+gg_sd3 <-
+  gg_sd2b + 
+  geom_area(stat = "function", fun = dnorm, xlim = c(z_95, -z_95),
+            fill = "#eeeee4", alpha = 0.50) +
+  geom_label(aes(label = c("95%"), x = c(0), y = c(0.35))) +
+  
+  # geom_label(
+  #   aes(label = c(str_c("Z(P=2.5%)"), str_c("Z(P=97.5%)")),
+  #       x = c(z_95-0.35, -z_95+0.35), 
+  #       y = c(0.35, 0.35)),
+  #   fill = "#e28743", alpha = 0.25) +
+    
+  geom_vline(xintercept = c(z_95, -z_95), linetype = 4, colour = "#e28743",
+             size = 1) 
+
+gg_sd3a <- 
+  gg_sd3 +
+  scale_x_continuous(
+    breaks = c(-3, z_95, -1, 0, 1, -z_95, 3), 
+    minor_breaks = NULL,
+    labels = c("-3 SD", str_c("", round(z_95, 3), " SD"), "-1 SD", 
+               str_c("Mean=", dist_mean), 
+               "1 SD", str_c("", round(-z_95, 3), " SD"),  "3 SD")
+    )+ 
+  theme(axis.text.x = element_text(colour = "red"))
+
+gg_sd4 <- 
+  gg_sd3a + 
+  geom_segment(aes(xend = -2.9, x = z_95, y = 0.3, yend = 0.3),
+               arrow = grid::arrow(length = unit(0.3, "cm"), ends = "last")) +
+  geom_label(
+    aes(label = c(str_c("Z(P=2.5%)")), x = c(z_95-0.35), y = c(0.32)),
+    fill = "#e28743", alpha = 0.25) +
+  geom_label(
+    aes(label = c(str_c("A")), x = c(z_95-0.35), y = c(0.28)),
+    fill = "#e28743", alpha = 0.25)
+
+
+gg_sd5 <- 
+  gg_sd4 + 
+  geom_segment(aes(xend = -2.9, x = -z_95, y = 0.4, yend = 0.4),
+               arrow = grid::arrow(length = unit(0.3, "cm"), ends = "last")) +
+  geom_label(
+    aes(label = str_c("Z(P=97.5%)"), x = -z_95+0.35, y = 0.38),
+    fill = "#e28743", alpha = 0.25) +
+  geom_label(
+    aes(label = str_c("B"), x = -z_95+0.1, y = 0.33),
+    fill = "#e28743", alpha = 0.25) 
+
+gg_sd6 <- 
+  gg_sd5 +
+  scale_x_continuous(
+    breaks = c(-3, z_95, -1, 0, 1, -z_95, 3), 
+    minor_breaks = NULL,
+    labels = 
+      c("-3 SD", str_c("", round(z_95, 3), " SD"), "-1 SD", "Mean", 
+        "1 SD", str_c("", round(-z_95, 3), " SD"),  "3 SD") %>% 
+      str_c(" =\n") %>% 
+      str_c(
+         c(str_c(dist_mean, "-3*", dist_sd), 
+           str_c(dist_mean, "-2*", dist_sd),
+           str_c(dist_mean, "-", round(-z_95,2), "*", dist_sd),
+           str_c(dist_mean),
+           str_c(dist_mean, "+", round(-z_95,2), "*", dist_sd),
+           str_c(dist_mean, "+2*", dist_sd),
+           str_c(dist_mean, "+3*", dist_sd)
+           )
+         ) %>% 
+      str_c("=\n") %>% 
+      str_c(round(c(- 3, z_95, -1:1, -z_95, 3) * dist_sd + dist_mean, 2 ))
+    ) + 
+  xlab("Travel time to school, minutes")
+  
+```
+
+::: columns
+::: {.column width="50%"}
+::: r-stack
+```{r}
+#| fig-width: 5
+#| fig-height: 6
+set.seed(1)
+gg_sd0a
+```
+
+::: {.fragment fragment-index="2"}
+```{r}
+#| fig-width: 5
+#| fig-height: 6
+set.seed(1)
+gg_sd1
+```
+:::
+
+::: {.fragment fragment-index="3"}
+```{r}
+#| fig-width: 5
+#| fig-height: 6
+set.seed(1)
+gg_sd2
+```
+:::
+
+::: {.fragment fragment-index="5"}
+```{r}
+#| fig-width: 5
+#| fig-height: 6
+set.seed(1)
+gg_sd2a
+```
+:::
+
+::: {.fragment fragment-index="6"}
+```{r}
+#| fig-width: 5
+#| fig-height: 6
+set.seed(1)
+gg_sd2b
+```
+:::
+
+::: {.fragment fragment-index="7"}
+```{r}
+#| fig-width: 5
+#| fig-height: 6
+set.seed(1)
+gg_sd3
+```
+:::
+
+::: {.fragment fragment-index="8"}
+```{r}
+#| fig-width: 5
+#| fig-height: 6
+set.seed(1)
+gg_sd3a
+```
+:::
+
+::: {.fragment fragment-index="9"}
+```{r}
+#| fig-width: 5
+#| fig-height: 6
+set.seed(1)
+gg_sd4
+```
+:::
+
+::: {.fragment fragment-index="10"}
+```{r}
+#| fig-width: 5
+#| fig-height: 6
+set.seed(1)
+gg_sd5
+```
+:::
+
+::: {.fragment fragment-index="11"}
+```{r}
+#| fig-width: 5
+#| fig-height: 6
+set.seed(1)
+gg_sd6
+```
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: {.fragment fragment-index="1"}
+Travel time distribution is normal with mean $\mu$ and SD $\sigma$:
+-   Within 2 $\sigma$, there are 95.45% of all observations.
+:::
+
+::: {.fragment fragment-index="4"}
+Within what number of $\sigma$, exactly 95% of all observations are? Any ideas?
+:::
+
+::: {.fragment fragment-index="8"}
+95% of HH are located within $\pm `r -z_95` \sigma$.
+-   $\,`r -z_95` \,$ is the z-score, where:
+:::
+
+::: {.fragment fragment-index="9"}
+(A) probability to observe travel time below $\mu - `r -z_95` \sigma$
+    -   $P(x < \mu - `r -z_95` \sigma) = 0.025$
+:::
+
+::: {.fragment fragment-index="10"}
+(B) probability to pick a HH with a travel time below $\mu + `r -z_95` \sigma$
+    -   $P(x < \mu + `r -z_95` \sigma) = 0.975$
+:::
+:::
+:::
+
+## 95% Confidence interval for the mean is
+
+::: incremental
+-   an interval (a range), within which we can observe **95%** of observations.
+
+-   **95%** is the **confidence level**
+
+-   95% confidence level is a convention. Go higher, not lower!
+:::
+
+::: fragment
+::: callout-warning
+This definition is provided in the context of a population and it is different from the one relevant to hypothesis testing.
+
+Although the idea behind an interval of confidence is the same.
+:::
+:::
+
+## 90%, 95% and 99%, Confidence intervals in the population {.smaller}
+
+::: columns
+::: {.column width="25%"}
+Would a 90% confidence interval be wider or slimmer than the corresponding 95% confidence interval?
+
+::: {.fragment fragment-index="3"}
+Would a 99% confidence interval be wider or slimmer than the corresponding 95% confidence interval?
+:::
+:::
+
+::: {.column width="75%"}
+::: r-stack
+```{r}
+#| fig-width: 6.5
+#| fig-height: 5
+ci_gg1 <- 
+  make_two_dist_compare(10, CL = 0.95, angle = 0, suffix = "")[[1]] + 
+  labs(title = NULL, subtitle = NULL) + 
+  ylab(NULL) + guides(color = guide_none())
+
+ci_gg2 <- 
+  make_two_dist_compare(10, CL = 0.90, angle = 0, suffix = "")[[1]]+ 
+  labs(title = NULL, subtitle = NULL) + 
+  ylab(NULL) + guides(color = guide_none())
+
+ci_gg3 <- 
+  make_two_dist_compare(10, CL = 0.99, angle = 0, suffix = "")[[1]] + 
+  labs(title = NULL, subtitle = NULL) + 
+  ylab(NULL) + guides(color = guide_none())
+
+plot_spacer() / ci_gg1 /  plot_spacer()
+```
+
+::: {.fragment fragment-index="2"}
+```{r}
+#| fig-width: 6.5
+#| fig-height: 5
+ci_gg2 / ci_gg1 /  plot_spacer()
+```
+:::
+
+::: {.fragment fragment-index="4"}
+```{r}
+#| fig-width: 6.5
+#| fig-height: 5
+ci_gg2 / ci_gg1 /  ci_gg3
+```
+:::
+:::
+:::
+:::
+
+## The population can have any distribution
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig-width: 5
+#| fig-height: 7
+data <- read.table("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv", header=TRUE)
+data %>%
+  filter( price<300 ) %>%
+  ggplot( aes(x=price)) +
+  geom_density(fill="#69b3a2", color="#e9ecef", alpha=0.8)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| fig-width: 5
+#| fig-height: 7
+dat <- data.frame(cond = factor(rep(c("A","B", "C"), each=200)), 
+                   rating = c(rnorm(200), runif(200, min = -2, max = 5) , rgamma(200, shape = 1)))
+
+ggplot(dat, aes(x=rating, colour=cond)) + geom_density()
+```
+:::
+:::
+
+# The Central Limit Theorem (CLT)
+
+The CLT is the bridge that makes the transition from the population to a sample.
+
+. . .
+
+As the sample is used to **estimate** the population mean, the CLT says that:
+
+-   **almost any sample average \[estimate of a population mean\]**
+-   is approximately normally distributed,
+-   with the accuracy of the approximation increasing as the sample size increases [@Angrist2014, p.39]
+
+## The Central Limit Theorem (2)
+
+The estimate of the mean $\hat{\mu}$ in the sample of the size $n$
+
+-   tends to follow a normal distribution centered at the population's mean $\mu$,
+
+-   with the standard error, $\text{SE}(\hat{\mu})$ calculated based on the population's standard deviation, $\text{SE}(\hat{\mu}) = \sigma / \sqrt{n}$,
+
+-   when two conditions are satisfied:
+
+    1.  **Independence**. The sample is random.
+    
+    2.  **Normality**. The population is normally distributed. (only relevant for small samples $n < 30$, when $n > 30$ normality is satisfied by default).
+
+
+-   See: [@Diez2022]
+
+## The Central Limit Theorem (3)
+
+In other words:
+
+::: incremental
+-   When our **random** sample **is large enough**
+
+    -   (or the population is normally distributed for small samples),
+
+-   **sample estimate of mean** $\hat{\mu}$ approximates the population mean $\mu$:
+
+    -   $\hat{\mu} \approx \mu$;
+
+-   with the **standard error** that depends on the $\sigma$ (pop. SD) and the sample size ($n$):
+
+    -   $\text{SE}(\hat{\mu}) = \sigma / \sqrt{n}$.
+:::
+
+## The Central Limit Theorem (4)
+
+Because the population's SD ($\sigma$) is unknown, we rely on the sample to estimate:
+
+::: incremental
+-   the standard error:
+
+    -   $\text{SE}(\hat \mu) = \sigma / \sqrt{n} \approx \hat{\text{SE}}(\hat \mu) = s / \sqrt{n}$,
+
+    -   where $\sigma \approx s$;
+
+-   alone with the estimate of mean: $\hat{\mu} \approx \mu$;
+:::
+
+## Standard Error (1)
+
+SE is an **estimate** of the standard deviation **in the sampling distribution** of $\hat{\mu}$.
+
+$$\widehat{\text{SE}}(\hat{\mu}) = s / \sqrt{n}$$
+
+::: fragment
+Measures deviation (error) **of the** $\hat{\mu}$ estimate, from the population parameter ($\mu$), accounting for the size of the sample ($n$).
+:::
+
+## Standard Error (2)
+
+**"Error"** implies that **the estimate** contains a **random deviation/error**, compared to the population parameter.
+
+::: incremental
+-   Not to be confused with the **Sample Variance**
+
+    -   $s^2 = \frac{\sum_{i=1}^N [x_i - \bar{x}]^2 }{N-1}$
+
+-   With the sample size increasing to infinity:
+
+    -   **standard error approaches to zero**,
+
+    -   but the sample variance does not!
+:::
+
+## CLT in practice
+
+See the following online tools:
+
+-   [Sampling distributions](https://www.statcrunch.com/applets/type3&samplingdist)
+
+-   [CLT tool](https://ianmadd.shinyapps.io/CentralLimitTheorem/)

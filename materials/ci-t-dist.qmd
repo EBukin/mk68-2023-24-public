@@ -1,0 +1,907 @@
+---
+#title: "Student's Distribution"
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+# source(here::here("materials", "00-setup.R"), local = TRUE)
+library(knitr)
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+library(patchwork)
+ggplot2::theme_set(ggplot2::theme_minimal())
+knitr::opts_chunk$set(fig.width = 8)
+knitr::opts_chunk$set(fig.height = 4.5)
+source(here::here("materials", "00-aux-functions.R"), local = TRUE)
+```
+
+# The Confidence Interval
+
+Supposed that we have a population of unknown distribution, and
+
+-   we derive a random sample of a size $n$ and
+
+-   estimate sample mean $\hat \mu$ and $\text{SE}(\hat \mu)$
+
+. . .
+
+The Confidence Interval is the range around the sample mean, within which there is a 95% (or 99%) chance of observing our population mean.
+
+## How to find a CI?
+
+We need to know:
+
+-   how the sample means are distributed,
+
+-   when we repeat random sampling from the same population.
+
+. . .
+
+The CLT \[is very instrumental because it\] says:
+
+-   sample means are distributed normally, and
+
+-   are centered around the population mean,
+
+-   when the sample size is large (infinite)
+
+. . .
+
+But random samples are finite and often small in size...
+
+## The t-distribution
+
+We use **t-distribution** (instead of the normal) to adjust for the finite sample size and
+
+-   to describe the probability distribution of sample mean ($\hat \mu$) with variance ($\text{SE} (\hat \mu)$).
+
+. . .
+
+t-distribution helps us:
+
+-   to find the probability that the true population mean is beyond $\pm \text{SE} (\hat \mu)$ from the $\hat \mu$, conversely
+
+-   tells us how many $\pm \text{SE} (\hat \mu)$ from the $\hat \mu$ there is a 95% chance to observe the population mean for the sample of the size $n$.
+
+```{r}
+gg_nt_0a <-
+  ggplot(NULL, aes(c(-5, 5)))  +
+  labs(x = "Deviation from the mean, SD (Z-scores)", 
+       y = "Probability density", 
+       title = "Standard normal distribution") +
+  scale_x_continuous(breaks = -5:5, labels = c(-5:-1, "Pop. mean", 1:5), 
+                     expand = expansion()) +
+  theme(axis.line.x = element_line(), axis.ticks.x = element_line(),
+        legend.position = c(0.85, 0.85)) +
+  scale_y_continuous(expand = expansion()) +
+  geom_line(aes(colour = "Normal"), 
+            stat = "function", fun = dnorm, 
+            xlim = c(-5, 5), 
+            size = 1) +
+  scale_color_manual(values = c(
+    "#1b9e77",
+    "#d95f02",
+    "#7570b3",
+    "#e7298a",
+    "#66a61e",
+    "#e6ab02"
+  )) + 
+  guides(colour = guide_legend(title = "Distribution"))
+
+gg_nt_0 <- 
+  gg_nt_0a +
+  geom_line(aes(colour = "t (df= 1)"), 
+            stat = "function", fun = function(x) dt(x, df = 1),
+            xlim = c(-5, 5)) + 
+  labs(title = "Standard normal and t-distributions",
+       x = "Deviation from the mean, SD (Z-scores)\nDeviation from the mean, Standard Errors (t-scores)") 
+
+gg_nt_1 <-
+  gg_nt_0 +
+  geom_line(aes(colour = "t (df= 2)"), 
+            stat = "function", fun = function(x) dt(x, df = 2),
+            xlim = c(-5, 5), alpha = 0.85)
+gg_nt_2 <- 
+  gg_nt_1 +
+  geom_line(aes(colour = "t (df= 5)"), 
+            stat = "function", fun = function(x) dt(x, df = 5),
+            xlim = c(-5, 5), alpha = 0.75)
+gg_nt_3 <- 
+  gg_nt_2 +
+  geom_line(aes(colour = "t (df=20)"), 
+            stat = "function", fun = function(x) dt(x, df = 20),
+            xlim = c(-5, 5), alpha = 0.65)
+gg_nt_4 <-
+  gg_nt_3 +
+  geom_line(aes(colour = "t (df=900)"), 
+            stat = "function", fun = function(x) dt(x, df = 900),
+            xlim = c(-5, 5), size = 1.25,
+            linetype = 2)
+```
+
+## From the population to a sample (1) {.smaller}
+
+::: columns
+::: {.column width="75%"}
+::: r-stack
+```{r}
+#| fig-width: 7
+#| fig-height: 7
+gg_nt_0a
+```
+
+::: {.fragment fragment-index="2"}
+```{r}
+#| fig-width: 7
+#| fig-height: 7
+gg_nt_0
+```
+:::
+:::
+:::
+
+::: {.column width="25%"}
+Sample **estimates are less accurate** when the size is small.
+
+::: {.fragment fragment-index="1"}
+Therefore, for inference,
+
+-   we use **t-distribution** instead of the normal.
+
+-   t-scores instead of the z-scores
+:::
+:::
+:::
+
+## t-distribution (1) {.smaller}
+
+::: columns
+::: {.column width="75%"}
+::: r-stack
+```{r}
+#| fig-width: 7
+#| fig-height: 7
+gg_nt_0
+```
+:::
+:::
+
+::: {.column width="25%"}
+t-distribution has "thicker tails":
+
+::: incremental
+-   the probability of observing a more extreme parameter, compared to the population value is larger;
+
+-   the peak of t-distribution does not go too high;
+
+-   observations are more likely to fall beyond 2SE away from the mean;
+:::
+:::
+:::
+
+## t-distribution (2) {.smaller}
+
+::: columns
+::: {.column width="25%"}
+The shape of the t-distribution depends on **degrees of freedom**:
+
+::: {.fragment fragment-index="1"}
+$df = n - k$, where
+:::
+
+::: {.fragment fragment-index="2"}
+$n$ number of observations in the sample; $k$ number of estimated parameters;
+:::
+
+::: {.fragment fragment-index="3"}
+With an increase in $df$,
+
+-   t-distribution becomes similar to the normal distribution.
+:::
+:::
+
+::: {.column width="75%"}
+::: r-stack
+```{r}
+#| fig-width: 7
+#| fig-height: 7
+gg_nt_0
+```
+
+::: {.fragment fragment-index="4"}
+```{r}
+#| fig-width: 7
+#| fig-height: 7
+gg_nt_1
+```
+:::
+
+::: {.fragment fragment-index="5"}
+```{r}
+#| fig-width: 7
+#| fig-height: 7
+gg_nt_2
+```
+:::
+
+::: {.fragment fragment-index="6"}
+```{r}
+#| fig-width: 7
+#| fig-height: 7
+gg_nt_3
+```
+:::
+
+::: {.fragment fragment-index="7"}
+```{r}
+#| fig-width: 7
+#| fig-height: 7
+gg_nt_4
+```
+:::
+:::
+:::
+:::
+
+## t-distribution (3) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+::: r-stack
+```{r}
+#| fig-width: 5
+#| fig-height: 6.5
+make_two_dist_compare(5, 0.95, suffix = "SD")[[1]]
+```
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 6.5
+make_two_dist_compare(5, 0.95, suffix = "SE")[[2]]
+```
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: r-stack
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 6.5
+make_two_dist_compare(25, 0.950, suffix = "SD")[[1]]
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 6.5
+make_two_dist_compare(25, 0.950, suffix = "SE")[[2]]
+```
+:::
+:::
+:::
+:::
+
+## t-distribution app
+
+See the online tool here:
+
+<https://rpsychologist.com/d3/tdist/>
+
+# Application of the t-distribution
+
+## Recall the travel time example
+
+::: columns
+::: {.column width="70%"}
+::: r-stack
+```{r}
+#| fig-width: 7
+#| fig-height: 7
+make_two_dist_compare(20, 0.95)[[1]]
+```
+:::
+:::
+
+::: {.column width="30%"}
+::: fragment
+**For the population**:
+
+-   the standard normal distribution and Z-score provide
+
+-   the **confidence intervals**, where we can observe 95% of actual observations.
+:::
+:::
+:::
+
+## t-dist in use: travel time (1) {.smaller .nonincremental}
+
+```{r}
+dist_mean <- 24.1
+dist_sd <- 5.2
+z_95 <- qnorm(p = 0.025) %>% round(3)
+
+# dnorm(2)
+
+set.seed(11542)
+pop_dstance <- tibble(dist0 = rnorm(1182, dist_mean, dist_sd)) %>% 
+  mutate(dist = (dist0 - dist_mean) / dist_sd,
+         y = 0) %>% 
+  filter(dist < 3) %>% 
+  filter(dist > -3)
+
+
+
+nn_sample1 <- 25
+nn_sample2 <- 5
+nn_sample3 <- 100
+
+set.seed(115)
+
+
+pop_dstance_sample1 <- pop_dstance %>%  sample_n(nn_sample1)
+pop_dstance_sample2 <- pop_dstance %>%  sample_n(nn_sample2)
+pop_dstance_sample3 <- pop_dstance %>%  sample_n(nn_sample3)
+pop_dstance_sample4 <- pop_dstance %>%  sample_n(1000)
+
+# nn_mean <- mean(pop_dstance_sample1$dist0) #+ dist_mean
+# nn_sd <- sqrt(sum((pop_dstance_sample1$dist0 - nn_mean)^2)/(nn_sample1 - 1))
+# nn_se <- nn_sd / sqrt(nn_sample1)
+# 
+# nn_mean2 <- mean(pop_dstance_sample2$dist0) #+ dist_mean
+# nn_sd2 <- sqrt(sum((pop_dstance_sample2$dist0 - nn_mean2)^2)/(nn_sample2 - 1))
+# nn_se2 <- nn_sd2 / sqrt(nn_sample2)
+# 
+# nn_mean3 <- mean(pop_dstance_sample3$dist0) #+ dist_mean
+# nn_sd3 <- sqrt(sum((pop_dstance_sample3$dist0 - nn_mean3)^2)/(nn_sample3 - 1))
+# nn_se3 <- nn_sd3 / sqrt(nn_sample3)
+
+set.seed(11542)
+gg_time_pop_0 <-
+  ggplot() + 
+  aes(x = c(-3, 3) * dist_sd + dist_mean, y = 0.1) +
+  labs(x = "Treavel time, minutes", y = NULL) +
+  scale_y_continuous(breaks = NULL, expand = expansion(mult = 0, add = 0)) +
+  scale_x_continuous(breaks = -3:3 * dist_sd + dist_mean, minor_breaks = NULL,
+                     limits = c(-3, 3)* dist_sd + dist_mean, 
+                     expand = expansion(mult = 0, add = 0)) +
+  # labs() +
+  theme(axis.line.x = element_line(), axis.ticks.x = element_line()) +
+  geom_jitter(aes(x = dist0, y = .005),
+              data = pop_dstance, height = 0.005,
+              alpha = 0.15) +
+  geom_vline(xintercept = dist_mean) + 
+  geom_area(stat = "function",
+            fun = function(x) dnorm(x, dist_mean, dist_sd), 
+            xlim = c(-3, 3) * dist_sd + dist_mean,
+            colour = "black", size = 1, alpha = 0) 
+
+gg_time_pop_1 <-
+  gg_time_pop_0 + 
+  geom_area(stat = "function",
+            fun = function(x) dnorm(x, dist_mean, dist_sd), 
+            xlim = c(z_95, -z_95) * dist_sd + dist_mean, 
+            fill = "blue", alpha = 0.050) +
+  geom_label(aes(label = c("95%"), x = dist_mean,
+                 y = dnorm(dist_mean, dist_mean, dist_sd) * 0.95)) +
+  geom_vline(xintercept = c(z_95, -z_95) * dist_sd + dist_mean, linetype = 4, 
+             colour = "#e28743", size = 1) +
+  scale_color_manual(values = c("green", "blue", "red")) + 
+  theme(legend.position = c(0.9, 0.9))
+
+
+get_sample_tplot <- function(dta, col = "green", title = "Sample 1") {
+  nn_size <- nrow(dta)
+  nn_mean <- mean(dta$dist0) #+ dist_mean
+  nn_sd <- sqrt(sum((dta$dist0 - nn_mean)^2)/(nn_size - 1))
+  nn_se <- nn_sd / sqrt(nn_size)
+  tlocal_95 <- qt(p = 0.025, df = nn_size - 1) %>% round(3)
+  
+  gg_time_pop_1_s1 <-
+    gg_time_pop_1 +
+    geom_jitter(
+      aes(x = dist0, y = .01, colour = str_c(title, " (n=", nn_size, ")")),
+      data = dta,
+      height = 0.01,
+      alpha = 1,
+      size = 2.5
+      ) +
+    guides(color = guide_legend(title = NULL)) +
+  scale_color_manual(values =col)
+  
+  ggtime_sample_1a <-
+    ggplot() +
+    aes(x = c(-3, 3) * dist_sd + dist_mean, y = 0.1) +
+    labs(x = NULL, y = NULL) +
+    scale_y_continuous(breaks = NULL, expand = expansion(mult = 0, add = 0)) +
+    scale_x_continuous(
+      breaks = round(-3:3 * nn_se + nn_mean, 1),
+      minor_breaks = NULL,
+      limits = c(-3, 3) * dist_sd + dist_mean,
+      expand = expansion(mult = 0, add = 0)
+    ) +
+    # labs() +
+    theme(axis.line.x = element_line(), axis.ticks.x = element_line()) +
+    geom_jitter(
+      aes(x = dist0, y = .005),
+      data = dta,
+      height = 0.005,
+      color = col,
+      size = 1.25
+    ) +
+    geom_vline(xintercept = nn_mean, colour = col, size = 1.5)
+  
+  ggtime_sample_1b <-
+    ggtime_sample_1a +
+    geom_area(
+      stat = "function",
+      fun = function(x)
+        dt((x - nn_mean) / nn_se, df = nn_size),
+      xlim =  c(-3, 3)* dist_sd + dist_mean,
+      colour = "black",
+      size = 1,
+      alpha = 0
+    ) 
+  
+  ggtime_sample_1c <- 
+    ggtime_sample_1b +
+    geom_area(
+      stat = "function",
+      fun = function(x)
+        dt((x - nn_mean) / nn_se, df = nn_size),
+      xlim = c(tlocal_95,-tlocal_95) * nn_se + nn_mean,
+      fill = col,
+      size = 1,
+      alpha = 0.15
+    ) +
+    geom_vline(
+      xintercept = c(tlocal_95,-tlocal_95) * nn_se + nn_mean,
+      linetype = 4,
+      colour = col,
+      size = 1
+    ) +
+    geom_label(
+      aes(
+        label = (c(tlocal_95,-tlocal_95) * nn_se + nn_mean) %>% round(2),
+        x = c(tlocal_95,-tlocal_95) * 1.5 * nn_se + nn_mean,
+        y = dt(tlocal_95, df = nn_size) * 1.5
+      ),
+      fill = col,
+      alpha = 0.15
+    )
+  
+  ggtime_sample_1d <-ggtime_sample_1c + geom_vline(xintercept = dist_mean)
+  
+  list(gg_time_pop_1_s1, ggtime_sample_1a, ggtime_sample_1b, 
+       ggtime_sample_1c, ggtime_sample_1d)
+  
+}
+
+
+
+gg_time_pop_all_samples <-
+  gg_time_pop_1 +
+  geom_jitter(
+    aes(x = dist0, y = .01, color = str_c("S1", " (n=", nrow(pop_dstance_sample2), ")")),
+    data = pop_dstance_sample2, height = 0.01, alpha = 1, size = 1.5
+  ) +
+  guides(color = guide_legend(title = NULL)) +
+  scale_color_manual(values = c("red", "green", "blue", "purple")) +
+  geom_jitter(
+    aes(x = dist0, y = .01, colour = str_c("S2", " (n=", nrow(pop_dstance_sample1), ")")),
+    data = pop_dstance_sample1, height = 0.01, alpha = 1, size = 1.5
+  ) +
+  geom_jitter(
+    aes(x = dist0, y = .01, colour = str_c("S3", " (n=", nrow(pop_dstance_sample3), ")")),
+    data = pop_dstance_sample3, height = 0.01, alpha = 1, size = 1.5
+  )#+
+  # geom_jitter(
+  #   aes(x = dist0, y = .01, colour = str_c("S4", " (n=", nrow(pop_dstance_sample4), ")")),
+  #   data = pop_dstance_sample4, height = 0.01, alpha = 0.2, size = 1.5
+  # ) 
+
+gg_time_pop_all_samples2 <- 
+  gg_time_pop_all_samples +
+  geom_jitter(
+    aes(x = dist0, y = .01, colour = str_c("S4", " (n=", nrow(pop_dstance_sample4), ")")),
+    data = pop_dstance_sample4, height = 0.01, alpha = 0.2, size = 1.5
+  )
+
+gg_time_s1 <- get_sample_tplot(pop_dstance_sample1, col = "red", title = "S1")
+gg_time_s2 <- get_sample_tplot(pop_dstance_sample2, col = "green", title = "S2")
+gg_time_s3 <- get_sample_tplot(pop_dstance_sample3, col = "blue", title = "S3")
+gg_time_s4 <- get_sample_tplot(pop_dstance_sample4, col = "purple", title = "S4")
+# gg_time_s3[[1]]
+
+sample_sums <- 
+  pop_dstance_sample1 %>% mutate(Sample = "S1") %>% 
+  bind_rows( pop_dstance_sample2 %>% mutate(Sample = "S2")) %>% 
+  bind_rows( pop_dstance_sample3 %>% mutate(Sample = "S3")) %>% 
+  bind_rows( pop_dstance_sample4 %>% mutate(Sample = "S4")) %>% 
+  group_by(Sample) %>% 
+  summarise(
+    `$n$` = n(),
+    `$\\hat\\mu$` = mean(dist0) %>% round(2) ,
+    `$s$` =  round((sum((dist0 - `$\\hat\\mu$`)^2) / (n() - 1)) ^ 0.5, 2),
+    `$\\text{SE}$` = round(`$s$` / sqrt(n()) , 2))
+# %>% 
+#   tidyr::pivot_longer(-1) %>%
+#   tidyr::pivot_wider(names_from = 1, values_from = value) 
+
+```
+
+::: columns
+::: {.column width="55%"}
+We have a population of travel times to schools.
+
+Let us now:
+
+::: {.fragment fragment-index="2"}
+1 Derive a random sample of N observations.
+:::
+
+::: {.fragment fragment-index="4"}
+2 Estimate $\hat \mu$ and $\text{SE}(\hat \mu)$
+
+```{r}
+sample_sums %>% 
+  filter(Sample == "S1") %>% 
+  # select(1:2) %>% 
+  kable(row.names = F, digits = 2)
+```
+:::
+
+::: {.fragment fragment-index="6"}
+3 Construct the t-distribution for the sample estimates of the mean.
+:::
+
+::: {.fragment fragment-index="7"}
+4 Compute **95% confidence intervals**: chances that the population mean is within this range are 95%;
+:::
+
+::: {.fragment fragment-index="8"}
+5 Conclude that 95% CI is the range where the population mean is 95% likely to be given our sample size, $\hat \mu$ and $\text{SE}(\hat \mu)$
+:::
+
+::: {.fragment fragment-index="4"}
+:::
+
+::: {.fragment fragment-index="9"}
+Now, let us repeat steps 1-5 for new samples of different sizes.
+:::
+:::
+
+::: {.column width="45%"}
+::: r-stack
+```{r}
+#| fig-height: 2
+#| fig-width: 7
+gg_time_pop_0
+```
+
+::: {.fragment fragment-index="1"}
+```{r}
+#| fig-height: 2
+#| fig-width: 7
+gg_time_pop_1
+```
+:::
+
+::: {.fragment fragment-index="2"}
+```{r}
+#| fig-height: 2
+#| fig-width: 7
+gg_time_s1[[1]]
+```
+:::
+
+::: {.fragment fragment-index="10"}
+```{r}
+#| fig-height: 2
+#| fig-width: 7
+gg_time_pop_all_samples
+```
+:::
+:::
+
+::: r-stack
+::: {.fragment fragment-index="4"}
+```{r}
+#| fig-height: 2.25
+#| fig-width: 7
+gg_time_s1[[2]]
+```
+:::
+
+::: {.fragment fragment-index="6"}
+```{r}
+#| fig-height: 2.25
+#| fig-width: 7
+gg_time_s1[[3]]
+```
+:::
+
+::: {.fragment fragment-index="7"}
+```{r}
+#| fig-height: 2.25
+#| fig-width: 7
+gg_time_s1[[4]]
+```
+:::
+
+::: {.fragment fragment-index="10"}
+```{r}
+#| fig-height: 5.5
+#| fig-width: 7
+gg_time_s1[[4]] / gg_time_s2[[4]] / gg_time_s3[[4]]
+```
+:::
+:::
+:::
+:::
+
+## t-dist in use: confidence intervals {.smaller}
+
+::: columns
+::: {.column width="50%"}
+There are four samples of different size:
+
+Each contains estimated parameters, which are different from the population.
+
+::: {.fragment fragment-index="2"}
+```{r}
+sample_sums %>%
+  bind_rows(
+    tibble(Sample = "Pop.",
+           `$n$` = Inf,
+           `$\\hat\\mu$` = dist_mean,
+           `$s$` =  dist_sd,
+           `$\\text{SE}$` = 0)) %>% 
+  kable(row.names = F, digits = 2)
+```
+:::
+
+::: {.callout-important appearance="simple"}
+::: {.fragment fragment-index="3"}
+Using t-distribution, for each sample of size $n$ we compute a **95% confidence interval**.
+:::
+
+::: {.fragment fragment-index="4"}
+A **95% confidence interval** provides a range, within which the population mean lies with the probability of 95%.
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: r-stack
+```{r}
+#| fig-width: 6
+#| fig-height: 3
+gg_time_pop_all_samples2 
+```
+
+::: {.fragment fragment-index="1"}
+```{r}
+#| fig-width: 6
+#| fig-height: 7
+gg_time_pop_all_samples2 / gg_time_s1[[4]] / gg_time_s2[[4]] / gg_time_s3[[4]] / gg_time_s4[[4]]
+```
+:::
+
+::: {.fragment fragment-index="4"}
+```{r}
+#| fig-width: 6
+#| fig-height: 7
+gg_time_pop_all_samples2 / gg_time_s1[[5]] / gg_time_s2[[5]] / gg_time_s3[[5]] / gg_time_s4[[5]]
+```
+:::
+:::
+:::
+:::
+
+## 95% Confidence intervals of the mean {.smaller}
+
+::: columns
+::: {.column width="50%"}
+**95% confidence interval** of the mean is:
+
+-   the range, within which we may find the population mean in 95% of random samples made from the same population.
+
+-   we are 95% confident in observing the population parameter given the current sample size and $df$
+
+```{r}
+# sample_sums %>%
+  # bind_rows(
+  #   tibble(Sample = "Pop.",
+  #          `$n$` = Inf,
+  #          `$\\hat\\mu$` = dist_mean,
+  #          `$s$` =  dist_sd,
+  #          `$\\text{SE}$` = 0)) %>% 
+  # arrange((Sample)) |> 
+  # kable(row.names = F, digits = 2)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| fig-width: 6
+#| fig-height: 7
+gg_time_s1[[5]] / gg_time_s2[[5]] / gg_time_s3[[5]] / gg_time_s4[[5]]
+```
+:::
+:::
+
+## 90%, 95%, and 99% Confidence intervals of the mean {.smaller}
+
+::: incremental
+90%, 95%, and 99% are different **levels of confidence**;
+
+-   Confidence level (CL) is the opposite of the level of significance $\alpha$:
+
+    -   $\text{CL} = 1 - \alpha$
+
+-   It is possible to compute confidence intervals at a different CL.
+
+-   They will change in the same way as CI for the normally distributed variable shown before.
+:::
+
+## Interpreting Confidence Interval
+
+Source: <https://rpsychologist.com/d3/ci/>
+
+## Calculating a Confidence Interval (1) {.smaller}
+
+$P[...]$ - the probability that the population mean $\mu$ lies within the **lower and upper** margins of the confidence interval:
+
+$$P[\hat\mu - c_{df, (1-\alpha/2)} \cdot {\text{SE}}(\hat\mu) \leq \mu \leq \hat\mu + c_{df, (1-\alpha/2)} \cdot  {\text{SE}}(\hat\mu) ] = 1 - \alpha$$
+
+::: columns
+::: {.column width="50%"}
+-   $\hat\mu$ - estimated mean;
+-   ${\text{SE}}(\hat\mu)$ - the standard errors;
+-   $\alpha$ - level of significance (as before);
+:::
+
+::: {.column width="50%"}
+-   $\mu$ - unknown population mean;
+-   $c_{df, 1-\alpha/2}$ - the critical value of the $t$ distribution given $\alpha$, $df$ and two-tailed test nature;
+-   $df$ - number of degrees of freedom (as before);
+:::
+:::
+
+::: fragment
+$$\text{CI} = \{\; \hat\mu - c_{df, (1-\alpha/2)} \cdot {\text{SE}}(\hat\mu)\; ; \; \hat\mu + c_{df, (1-\alpha/2)} \cdot {\text{SE}}(\hat\mu) \; \}$$
+:::
+
+## Calculating a Confidence Interval (2) {.smaller}
+
+::: columns
+::: {.column width="60%"}
+Sample of the size `r nn_sample2` is derived from the population. Estimated statistics for the travel time from HHs to school in minutes are:
+
+```{r}
+ddta1 <- sample_sums %>%filter(Sample == "S2") 
+aalpha <- 0.05
+lb <- round(ddta1[[3]] - ddta1[[5]] * qt(p =  0.975, df = ddta1[[2]]-1), 3)
+ub <- round(ddta1[[3]] + ddta1[[5]] * qt(p =  0.975, df = ddta1[[2]]-1), 3)
+ddta1 %>% kable(row.names = F, digits = 2)
+
+
+```
+
+Calculate the `r (1 - aalpha) * 100` confidence intervals for this mean.
+
+$df$ is: [`r nn_sample2 - 1`]{.fragment fragment-index="2"}
+
+$c_{df, (1-\alpha/2)}$ is: [$c_{`r nn_sample2 - 1`, (1-`r aalpha`/2)} = `r round(qt(p = 0.975, df = ddta1[[2]]-1), 3)`$]{.fragment fragment-index="5"}
+
+Lower bound is: [$`r ddta1[[3]]` - `r ddta1[[5]]` * `r round(qt(p = 0.975, df = ddta1[[2]]-1), 3)` = `r lb`$]{.fragment fragment-index="6"}
+
+Upper bound is: [$`r ddta1[[3]]` + `r ddta1[[5]]` * `r round(qt(p = 0.975, df = ddta1[[2]]-1), 3)` = `r ub`$]{.fragment fragment-index="7"}
+
+CI is: [$[`r lb` \; ; \; `r ub`]$]{.fragment fragment-index="8"}
+:::
+
+::: {.column width="40%"}
+::: {.fragment fragment-index="4"}
+```{r eval = TRUE, echo = FALSE, results = "asis"}
+c(1:9, 15, 20, 25, 50, 100, 1000) %>% 
+  map_dfr(~{
+    c(0.9, 0.95, 0.975) %>% 
+      set_names(qt(., .x) %>% round(4), .) %>% 
+      enframe() %>% 
+      mutate(df = .x)
+  }) %>% 
+  pivot_wider(names_from = "name", values_from = "value")  %>% 
+  knitr::kable()
+```
+:::
+:::
+:::
+
+## Calculating a Confidence Interval (3) {.smaller}
+
+::: columns
+::: {.column width="60%"}
+Sample of the size `r nn_sample1` is derived from the population. Variable measured travel time from HHs to school in minutes. Estimated statistics are:
+
+```{r}
+ddta1 <- sample_sums %>%filter(Sample == "S1") 
+aalpha <- 0.01
+lb <- round(ddta1[[3]] - ddta1[[5]] * qt(p =  0.975, df = ddta1[[2]]-1), 3)
+ub <- round(ddta1[[3]] + ddta1[[5]] * qt(p =  0.975, df = ddta1[[2]]-1), 3)
+ddta1 %>% kable(row.names = F, digits = 2)
+```
+
+Calculate the `r (1 - aalpha) * 100` confidence intervals for this mean.
+
+$df$ is: [`r nn_sample2 - 1`]{.fragment fragment-index="2"} $c_{`r nn_sample2 - 1`, (1-`r aalpha`/2)}$ is: [`r round(qt(p = 0.975, df = ddta1[[2]]-1), 3)`]{.fragment fragment-index="5"}
+
+Lower bound is: [$`r ddta1[[3]]` - `r ddta1[[5]]` * `r round(qt(p = 0.975, df = ddta1[[2]]-1), 3)` = `r lb`$]{.fragment fragment-index="6"}
+
+Upper bound is: [$`r ddta1[[3]]` + `r ddta1[[5]]` * `r round(qt(p = 0.975, df = ddta1[[2]]-1), 3)` = `r ub`$]{.fragment fragment-index="7"}
+
+CI is: [$`r lb` \; ; \; `r ub`$]{.fragment fragment-index="8"}
+
+::: {.fragment fragment-index="10"}
+<!-- Conclude whether this sample yielded the Type 2 error. Population parameters are: -->
+
+```{r}
+# bind_rows(
+#   tibble(
+#     Sample = "Pop.",
+#     `$n$` = Inf,
+#     `$\\hat\\mu$` = dist_mean,
+#     `$s$` =  dist_sd,
+#     `$\\text{SE}$` = 0
+#   )
+# ) %>%
+#   kable(row.names = F, digits = 2)
+```
+:::
+:::
+
+::: {.column width="40%"}
+::: {.fragment fragment-index="4"}
+```{r eval = TRUE, echo = FALSE, results = "asis"}
+c(1:9, 15, 20, 25, 50, 100, 1000) %>% 
+  map_dfr(~{
+    c(0.975, 0.99, 0.995) %>% 
+      set_names(qt(., .x) %>% round(4), .) %>% 
+      enframe() %>% 
+      mutate(df = .x)
+  }) %>% 
+  pivot_wider(names_from = "name", values_from = "value")  %>% 
+  knitr::kable()
+```
+:::
+:::
+:::
+
+## More on the t-distribution and t-test
+
+Open intro:
+
+[7.1A - t-distribution](https://youtu.be/uVEj2uBJfq0)
+
+[7.1B - Inference for one mean](https://youtu.be/RYVIGj1l4xs)
+
+[7.2 - Paired data](https://youtu.be/RYVIGj1l4xs)
+
+[7.3 - Difference of two means](https://youtu.be/K0QZ9_4w0HU)
+
+Khan academy:
+
+[Module: Tests about a population mean](https://www.khanacademy.org/math/statistics-probability/significance-tests-one-sample/tests-about-population-mean/v/writing-hypotheses-for-significance-test-about-means)
+
+[More significance testing videos](https://www.khanacademy.org/math/statistics-probability/significance-tests-one-sample/more-significance-testing-videos/v/hypothesis-testing-and-p-values)

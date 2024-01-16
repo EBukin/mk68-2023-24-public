@@ -1,0 +1,117 @@
+---
+#title: "Week 05. Hypothesis testing II. t-tests. Confidence intervals."
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+library(knitr)
+library(tidyverse)
+```
+
+## t-scores (1) {.smaller}
+
+```{r eval = TRUE, echo = FALSE, results = "asis"}
+# $df$
+# $\alpha \, \text{for a} \, \frac{\text{two-sided}}{(\text{one-sided})}$
+tsstat <- 
+  c(1:60, seq(65, 200,5), seq(250, 1000,50), seq(2000, 10000, 1000)) %>% 
+  map_dfr(~{
+    c(0.9, 0.95, 0.975, 0.99, 0.995) %>% 
+      set_names(qt(., .x) %>% round(3), .) %>% 
+      enframe() %>% 
+      mutate(df = .x)
+  }) %>% 
+  pivot_wider(names_from = "name", values_from = "value")  
+# %>% 
+  # mutate(a = "") %>% 
+  # select(1, a, everything()) 
+```
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+tsstat %>% slice(1:15) %>% knitr::kable()
+```
+
+:::
+
+::: {.column width="50%"}
+```{r}
+tsstat %>% slice(16:30) %>% knitr::kable()
+```
+
+:::
+
+::::
+
+
+## t-scores (2)  {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+tsstat %>% slice(31:45) %>% knitr::kable()
+```
+
+:::
+
+::: {.column width="50%"}
+```{r}
+tsstat %>% slice(46:60) %>% knitr::kable()
+```
+
+:::
+
+::::
+
+
+
+## t-scores (3)  {.smaller}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+tsstat %>% slice(61:75) %>% knitr::kable()
+```
+
+:::
+
+::: {.column width="50%"}
+```{r}
+tsstat %>% slice(76:90) %>% knitr::kable()
+```
+
+:::
+
+::::
+
+## t-scores (4) {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+tsstat %>% slice(90:104) %>% knitr::kable()
+```
+
+:::
+
+::: {.column width="50%"}
+```{r}
+tsstat %>% slice(105:120) %>% knitr::kable()
+```
+
+:::
+
+:::

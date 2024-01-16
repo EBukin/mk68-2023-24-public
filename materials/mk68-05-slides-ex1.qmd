@@ -1,0 +1,262 @@
+---
+#title: "Week 05. Hypothesis testing II. t-tests. Confidence intervals."
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+# source(here::here("materials", "00-setup.R"), local = TRUE)
+knitr::opts_chunk$set(fig.width = 8)
+knitr::opts_chunk$set(fig.height = 4.5)
+```
+
+# Example 1: Effect of a drug on sleep (1) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+**Question**: Does the drug increase sleeping time **at the 5% level of significance**?
+
+-   Null **hypothesis**: the drug has a zero effect
+-   Alternative: the drug has a nonzero effect
+
+**Data**:
+
+-   sleep time for each patient before they started taking drugs (control)
+-   the same after they took drugs (treatment)
+-   for each patient separately, we computed a difference in sleep time between control and treatment.
+-   measures are made for 10 patients
+:::
+
+::: {.column width="50%"}
+::: fragment
+**The estimated parameters are**:
+
+```{r}
+library(tidyverse)
+library(psych)
+library(knitr)
+slp <- 
+    sleep %>% 
+    filter(group == 1) %>% 
+    select(extra)
+describe(slp, skew = F, ranges = F) %>% 
+  kable(row.names = F)
+```
+:::
+
+::: fragment
+-   Can we conclude that the mean is different from zero?
+:::
+:::
+:::
+
+## Example 1: Effect of a drug on sleep (2)
+
+**Can we conclude that the mean is different from zero?**
+
+::: fragment
+-   **NO!** we cannot.
+:::
+
+::: fragment
+**Because:**
+
+-   the mean difference could **result from a small sample or sample's variation.**
+
+-   to conclude about the population, we need to take into account the sample distribution.
+:::
+
+::: fragment
+We need to perform a Statistical Hypothesis Testing with:
+
+-   The one-sample two-sided t-test.
+
+-   Compare mean to a zero;
+:::
+
+## One-sample t-test (1): What?
+
+One-sample t-test
+
+::: columns
+::: {.column width="65%"}
+-   $H_0$ [mean is equal to the parameter `mu` specified (or zero if not specified);]{.fragment fragment-index="1"}
+:::
+
+::: {.column width="35%"}
+-   $H_1$ [mean is not equal to zero;]{.fragment fragment-index="2"}
+:::
+:::
+
+::: {.fragment fragment-index="4"}
+-   To decide whether to reject or accept the null hypothesis, we need to rely on:
+:::
+
+::: columns
+::: {.column width="60%"}
+::: {.fragment fragment-index="5"}
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "1,2,4-7,10"
+t.test(slp$extra, mu = 0)
+# 	One Sample t-test
+# data:  slp$extra
+# t = 1.3257, df = 9, p-value = 0.2176
+# alternative hypothesis: true mean is not equal to 0
+# 95 percent confidence interval:
+#  -0.5297804  2.0297804
+# sample estimates:
+# mean of x 
+#      0.75 
+```
+:::
+:::
+
+::: {.column width="40%"}
+::: {.fragment fragment-index="6"}
+-   The test of significance
+-   The confidence interval
+-   The p-value
+:::
+:::
+:::
+
+## One-sample t-test (2): The Test of Significance
+
+1.  Check the $t$ statistics against the critical value $c_{df , \, 1 - \alpha / 2}$.
+
+::: columns
+::: {.column width="60%"}
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "1,4"
+t.test(slp$extra, mu = 0)
+# 	One Sample t-test
+# data:  slp$extra
+# t = 1.3257, df = 9, p-value = 0.2176
+# alternative hypothesis: true mean is not equal to 0
+# 95 percent confidence interval:
+#  -0.5297804  2.0297804
+# sample estimates:
+# mean of x 
+#      0.75 
+```
+:::
+
+::: {.column width="40%"}
+::: fragment
+-   $df=9$
+-   $c_{0.975, 9} = `r round(qt(0.975, df = 9), 4)`$
+-   if $|t| \leq c_{df , \, 1 - \alpha / 2}$ - fail to reject $H_0$;
+:::
+:::
+:::
+
+::: fragment
+-   if $|t| > c_{df , \, 1 - \alpha / 2}$ - reject $H_0$ in favor of $H_1$ at $\alpha$ significance level;
+:::
+
+## One-sample t-test (2): Confidence intervals
+
+2.  Check the **confidence interval** of the mean
+
+::: columns
+::: {.column width="60%"}
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "1,6,7"
+t.test(slp$extra, mu = 0)
+# 	One Sample t-test
+# data:  slp$extra
+# t = 1.3257, df = 9, p-value = 0.2176
+# alternative hypothesis: true mean is not equal to 0
+# 95 percent confidence interval:
+#  -0.5297804  2.0297804
+# sample estimates:
+# mean of x 
+#      0.75 
+```
+:::
+
+::: {.column width="40%"}
+::: fragment
+-   if CI includes the value from $H_0$ (0) - fail to reject $H_0$;
+:::
+:::
+:::
+
+::: fragment
+-   if CI does not include the number from $H_0$, we reject $H_0$ in favor of $H_1$ at $\alpha$ significance level;
+:::
+
+## One-sample t-test (2): p-value
+
+::: columns
+::: {.column width="60%"}
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "1,4"
+t.test(slp$extra, mu = 0)
+# 	One Sample t-test
+# data:  slp$extra
+# t = 1.3257, df = 9, p-value = 0.2176
+# alternative hypothesis: true mean is not equal to 0
+# 95 percent confidence interval:
+#  -0.5297804  2.0297804
+# sample estimates:
+# mean of x 
+#      0.75 
+```
+:::
+
+::: {.column width="40%"}
+::: fragment
+-   if $p-value < \alpha$, we reject $H_0$ in favor of $H_1$ at the $p-value$ significance level;
+:::
+:::
+:::
+
+::: fragment
+-   if $p-value \geq \alpha$, we fail to reject $H_0$;
+:::
+
+## One-sample t-test (3): Conclusion
+
+::: columns
+::: {.column width="60%"}
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "1,4,7"
+t.test(slp$extra, mu = 0)
+# 	One Sample t-test
+# data:  slp$extra
+# t = 1.3257, df = 9, p-value = 0.2176
+# alternative hypothesis: true mean is not equal to 0
+# 95 percent confidence interval:
+#  -0.5297804  2.0297804
+# sample estimates:
+# mean of x 
+#      0.75 
+```
+:::
+
+::: {.column width="40%"}
+::: fragment
+-   We fail to reject $H_0$
+:::
+:::
+:::
+
+::: fragment
+-   The evidence is insufficient to conclude that the change in sleep time is significantly different from 0 at the 5% level of the sign.
+:::
