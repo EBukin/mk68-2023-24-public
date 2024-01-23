@@ -35,8 +35,8 @@ knitr::opts_chunk$set(out.width = "100%")
 
 # GGplot2 --------------------------------------------------------------------
 ggplot2::theme_set(ggplot2::theme_minimal())
-options(ggplot2.continuous.colour = "brew")
-options(ggplot2.discrete.colour = "brew")
+# options(ggplot2.continuous.colour = "brew")
+# options(ggplot2.discrete.colour = "brew")
 
 # # Output folders -------------------------------------------------------------
 # data_clean <- "data-clean/"
