@@ -1,0 +1,239 @@
+---
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+source(here::here("materials", "00-setup.R"), local = TRUE)
+knitr::opts_chunk$set(fig.width = 8)
+knitr::opts_chunk$set(fig.height = 4.5)
+```
+
+## Sampling from the population
+
+```{r}
+#| echo: false
+library(ggforce)
+library(tidyverse)
+library(concaveman)
+
+cir_coord <- function(radius, n, x0 = 0, y0 = 0) {
+  r <- radius*runif(n)
+  degs <- 360*runif(n)
+  theta <- 2*pi*degs/360
+  list(
+    radius = radius,
+    n = n,
+    x = r*sin(theta) + x0,
+    y = r*cos(theta) + y0,
+    x0 = x0,
+    y0 = y0
+  )
+}
+
+
+
+n <- 7
+set.seed(12113)
+gg_sample_1 <-
+  list(
+    c("Population", str_c("Sample ", 1:n)),
+    c(500, round(runif(n, 50, 100))),
+    c(10, rep(2, n)),
+    c(0, rep_len(c(24, 18), length.out = n)),
+    c(0, seq(6, -6, length.out = n)),
+    c("", as.character(1:n))
+  ) %>%
+  pmap_dfr(~ {
+    circle_coords <- cir_coord(..3, ..2, ..4, ..5)
+    tibble(
+      Type = ..1,
+      x = circle_coords$x,
+      y = circle_coords$y,
+      x0 = circle_coords$x0,
+      y0 = circle_coords$y0,
+      descr = glue::glue(
+        "with mean {if (..1 == 'Population') 'Mu' else str_c('\\'mu_hat_', ..6, '\\'')} and variance {if (..1 == 'Population') 'sigma' else str_c('\\'s_hat_', ..6, '\\'')}",
+        
+      )
+    )
+  })  %>%
+  ggplot() +
+  aes(x,
+      y,
+      group = Type,
+      colour = Type,
+      fill = Type) +
+  geom_point() +
+  geom_mark_hull(aes(
+    fill = Type,
+    label = Type,
+    description = descr
+  ), concavity = 5) +
+  xlim(-10, 35) +
+  # ylim(-15, 15) +
+  theme_void() +
+  theme(legend.position = "bottom") +
+  labs(title = "Repeated sampling from the same population",
+       subtitle = "Each sample estimate a different mean and variance. Populational meand and variance are unknown.")
+```
+
+```{r echo=FALSE, fig.width=13}
+pop_val <- 3
+bias_val <- 2
+bias_plots_dta <- 
+  list(
+  c("Unbiased", "Biased", "Unbiased", "Biased"),
+  c("Efficient", "Efficient", "Inefficient", "Inefficient"),
+  rep(pop_val, 4),
+  c(0, bias_val, 0, bias_val),
+  c(0.2, 0.2, 0.8, 0.8),
+  rep(500, 4),
+  c(1:4)
+) %>%
+  pmap_dfr(~{
+    tibble(
+      Type1 = ..1,
+      Type2 = ..2,
+      # Type = str_c("Population ", ..7, " leads to ",..1, " & ", ..2, " sample estimates"),
+      Type = str_c(..1, " & ", ..2),
+      `Populaiton value` = ..3,
+      `Repeated sample number` = seq(1, ..6),
+      `Sample estimate` = rnorm(..6, ..3 + ..4, ..5)
+      )
+  }) %>% 
+  mutate(Type = as.factor(str_c(#"Sample-based Estimates: ",
+                                Type)))
+
+make_plt <- 
+  function(x) {
+    
+  x %>%
+  ggplot() +
+  aes(x = `Sample estimate`,
+      y = `Repeated sample number`,
+      # fill = Type,
+      colour = Type,
+      group = Type) +
+  geom_point() +
+  geom_vline(aes(
+      xintercept = pop_val,
+      colour  = "Population Regression Coefficients"))  +
+  facet_wrap(.~Type, scales = "free") +
+  # facet_wrap(Type1~Type2, scales = "free") +
+  xlim(1, 7) +
+  # scale_y_continuous(trans = "reverse") +
+  theme_minimal() + 
+  theme(legend.position="bottom", legend.title = element_blank()) +
+  guides(fill = guide_none()) +
+  scale_colour_brewer(palette = "Set1") +
+      theme(legend.position = "none")#+
+  # labs(title = "Bias or inefficiency occurs due to violation of one or several assumptions")
+  }
+```
+
+```{r}
+gg_sample_1
+```
+
+## Unbiased and efficient estimates{.smaller}
+
+```{r}
+gg_sample_unbiased <- 
+  c(1, 2, 5, 10, 15, 25, 100, 250, 500) %>%
+  map( ~ {
+    bias_plots_dta %>%
+      filter(Type1 == "Unbiased", Type2 == "Efficient") %>%
+      slice(1:.x) %>%
+      make_plt +
+      expand_limits(y = c(1:500)) +
+      scale_color_manual(values = c("red", "blue"))
+  })
+```
+
+::: r-stack
+```{r}
+gg_sample_unbiased[[1]]
+```
+::: fragment
+```{r}
+gg_sample_unbiased[[2]]
+```
+:::
+::: fragment
+```{r}
+gg_sample_unbiased[[3]]
+```
+:::
+::: fragment
+```{r}
+gg_sample_unbiased[[4]]
+```
+:::
+::: fragment
+```{r}
+gg_sample_unbiased[[5]]
+```
+:::
+::: fragment
+```{r}
+gg_sample_unbiased[[6]]
+```
+:::
+::: fragment
+```{r}
+gg_sample_unbiased[[7]]
+```
+:::
+::: fragment
+```{r}
+gg_sample_unbiased[[8]]
+```
+:::
+::: fragment
+```{r}
+gg_sample_unbiased[[9]]
+```
+:::
+:::
+
+## Unbiased but **inefficient**
+
+```{r}
+gg_sample_unbiased_inef <- 
+  bias_plots_dta %>% 
+  filter(Type1 == "Unbiased", Type2 != "Efficient") %>% 
+  make_plt  +
+  scale_color_manual(values = c("red", "darkgreen"))
+
+gg_sample_unbiased[[9]] + gg_sample_unbiased_inef
+```
+
+## **Biased** but efficient
+
+```{r}
+gg_sample_4 <- 
+  bias_plots_dta %>% 
+  filter(Type1 != "Unbiased", Type2 == "Efficient") %>% 
+  make_plt  +
+  scale_color_manual(values = c("red", "red"))
+(gg_sample_unbiased[[9]] + gg_sample_unbiased_inef) / (gg_sample_4 + patchwork::plot_spacer())
+```
+
+## **Biased** and **inefficient**
+
+```{r}
+gg_sample_5 <- 
+  bias_plots_dta %>% 
+  filter(Type1 != "Unbiased", Type2 != "Efficient") %>% 
+  make_plt  +
+  scale_color_manual(values = c("red", "darkorange"))
+(gg_sample_unbiased[[9]] + gg_sample_unbiased_inef) / 
+  (gg_sample_4 + gg_sample_5)
+```
+

@@ -1,0 +1,440 @@
+---
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+source(here::here("materials", "00-setup.R"), local = TRUE)
+knitr::opts_chunk$set(fig.width = 8)
+knitr::opts_chunk$set(fig.height = 4.5)
+
+
+get_sum_stat <- function(dta, var, group_var, dig = 2, sep = "|") {
+  
+  # var <- "TOTHHMEM"
+  # group_var <- "Group"
+  # dig <- 2
+  # sep <- "|"
+  
+  group_var2 <- sym(group_var)
+  dta %>% 
+    select(var, group_var) %>% 
+    pivot_longer(cols = var) %>% 
+    group_by(name, !!group_var2) %>% 
+    summarise(
+      across(value , 
+             list(n = ~ n(), 
+                  mean = ~ mean(., na.rm = TRUE) %>% round(dig), 
+                  sd = ~ sd(., na.rm = TRUE) %>% round(dig), 
+                  se = ~ (sd(., na.rm = TRUE)/sqrt(n())) %>% round(dig)),
+             .names = "{.fn}"
+      )
+    ) %>% 
+    mutate(`Mean (SD) [SE]` = str_c(mean, " (", sd, ") [", se, "]")) %>% 
+    select(-mean, -sd, -se) %>% 
+    ungroup() %>% 
+    pivot_wider(names_from = group_var, 
+                values_from = c(n, `Mean (SD) [SE]`), 
+                names_sep = sep)
+}
+```
+
+## Multiple Linear Regression
+
+$$y = \hat {\beta}_{0} + \hat {\beta}_{1}x_1 + \hat {\beta}_{2}x_2 + \hat {\beta}_{3}x_3 + \cdots + \hat {\beta}_{k}x_k + \hat u$$
+
+::: incremental
+-   $\hat u$ - Error term, or disturbance containing factors other than $x_1, x_2, \cdots, x_k$ that affect $y$
+
+-   $\hat {\beta}_{0}$ - intercept (constant term);
+
+-   $\hat {\beta}_{1}$, $\hat {\beta}_{2}$, $\hat {\beta}_{k}$ - coefficients / parameters associated with $x_1$, $x_2$, ... $x_k$;
+
+-   $k$ - entire set of independent variables;
+:::
+
+## Motivation befind MLR
+
+::: incremental
+-   To incorporate more explanatory factors into a model;
+
+-   Explicitly hold fixed (some) other factors;
+
+-   Allow for more flexible functional forms;
+
+-   To correct the selection bias problem in the absence of (poor quality of) the RCT;
+
+-   To establish the ceteris paribus in observational data;
+:::
+
+## Interpretation
+
+-   The multiple linear regression shows the effect of each variable, holding other explanatory variables fixed;
+
+::: fragment
+```{r}
+#| echo: false
+#| fig-asp: 0.15
+here("materials", "img", "ex2-interpretation.png") %>%
+  image_read() %>%
+  image_ggplot(interpolate = TRUE)
+```
+:::
+
+::: fragment
+::: callout-important
+### We assume that all unobserved factors do not change if the explanatory variables are changed.
+:::
+:::
+
+## Example 1. Wage equation
+
+```{r}
+#| echo: false
+#| fig-asp: 0.25
+#| 
+here("materials", "img", "ex2-exmple-00.png") %>%
+  image_read() %>%
+  image_ggplot(interpolate = TRUE)
+```
+
+## Example 2. Average test scores and spending
+
+```{r}
+#| echo: false
+#| fig-asp: 0.2
+here("materials", "img", "ex2-exmple-01.png") %>%
+  image_read() %>%
+  image_ggplot(interpolate = TRUE)
+```
+
+## Example 3. CEO salary, sales and CEO tenure
+
+```{r}
+#| echo: false
+#| fig-asp: 0.15
+here("materials", "img", "ex2-exmple-03.png") %>%
+  image_read() %>%
+  image_ggplot(interpolate = TRUE)
+```
+
+::: incremental
+-   Model assumes a constant elasticity relationship between CEO salary and the sales of his or her firm.
+
+-   Model assumes a quadratic relationship between CEO salary and his or her tenure with the firm.
+:::
+
+## Mechanics
+
+$$y = \hat {\beta}_{0} + \hat {\beta}_{1}x_1 + \hat {\beta}_{2}x_2 + \hat {\beta}_{3}x_3 + \cdots + \hat {\beta}_{k}x_k + \hat u$$
+
+::: incremental
+1.  MLR uses the Ordinary Least Squares (OLS) method to **estimate regression parameters** $\beta$.
+
+    -   Such parameters $\beta$ are found that the sum of squared errors is minimal.
+
+2.  As any estimate of $\beta$ is based on a sample, we need to relay on the **inference** to test a hypothesis about the true coefficients in the population.
+:::
+
+# Example MLR (1). Effect of fuel taxes on petrol consumption
+
+We use data on motor fuel consumption and related variables, for the year 2001. Each observation represents a state in the United States. (based on the data from @weisberg2013applied). Variables are:
+
+-   $Tax$ : Gasoline state tax rate, cents per liter
+-   $Dlic$ : The number of licensed drivers per 1000 population over the age of 16;
+-   $Income$ : in 1000 USD Per capita personal income (year 2000)
+-   $Miles$ : Miles of Federal-aid highway miles in the state
+-   $Fuel$ : Gasoline consumption per capita (liter)
+
+## 1. Problem formulation {.smaller}
+
+How do fuel taxes affect gasoline consumption?:
+
+::: fragment
+### 2. Regression model and hypothesis
+
+Write a regression equation:
+
+::: fragment
+$$Fuel = \hat\beta_0 + \hat\beta_1  Tax + \hat\beta_2  Dlic + \hat\beta_3 Income + \hat\beta_4  Miles + \hat{u}$$
+:::
+
+Discuss, what effects can we expect from change in each variable $x$ on $y$?
+
+::: fragment
+Hypotheses:
+
+-   $\hat\beta_0$ [$>0$ because on average some consumption should occur]{.fragment}
+-   $\hat\beta_1$ [$<0$ taxes make flue more expensive leading people to consume less]{.fragment}
+-   $\hat\beta_2$ [$>0$ more people with driving licences increase consumption of flue]{.fragment}
+-   $\hat\beta_3$ [$>0$ higher income relaxes budget constraints allowing to drive more]{.fragment}
+-   $\hat\beta_4$ [$>0$ a larger road network makes people drive more]{.fragment}
+:::
+:::
+
+```{r}
+fule_cons <- as_tibble(alr4::fuel2001)
+fule_cons <- mutate(fule_cons, 
+                    Dlic = Drivers / (Pop/ 1000),
+                    Fuel = FuelC / Pop * 1000,
+                    Income = Income / 1000,
+                    logMiles = log(Miles))
+fule_cons <- select(fule_cons, Tax, Dlic, Income, logMiles, Fuel)
+fit_fule_1 <- lm(Fuel ~  Tax + Dlic + Income + logMiles, fule_cons)
+```
+
+## Exploratory data analysis (1) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+```{r}
+psych::describe(fule_cons, fast = T) %>% 
+  rownames_to_column() %>% 
+  tidyr::pivot_longer(-1) %>%
+  tidyr::pivot_wider(names_from = name, values_from = value) %>% 
+  select(-vars, -n, -min, -max, -range) %>% 
+  kable(digits = 2)
+```
+
+::: fragment
+**Variable of interest:** `Tax`.
+
+**Outcome variable:** `Fule`.
+
+::: {.callout-note appearance="simple"}
+### What kind of relationship exists between Tax and Fuel?
+:::
+:::
+:::
+
+::: {.column width="50%"}
+```{r}
+#| fig-width: 10
+#| fig-height: 9
+ggpairs(fule_cons)
+```
+:::
+:::
+
+## Exploratory data analysis (2)
+
+### What kind of relationship exists between Tax and Fuel?
+
+::: r-stack
+```{r}
+#| fig-width: 8
+#| fig-height: 4
+fule_cons %>% 
+  ggplot() +
+  aes(y = Fuel, x = Tax) + 
+  geom_point() + 
+  xlab("Tax, cents per liter") + 
+  ylab("Fuel consumption, liter per capita")
+```
+
+::: fragment
+```{r}
+#| fig-width: 8
+#| fig-height: 4
+fule_cons %>% 
+  ggplot() +
+  aes(y = Fuel, x = Tax) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  xlab("Tax, cents per liter") + 
+  ylab("Fuel consumption, liter per capita")
+```
+:::
+:::
+
+## 4. Estimating a Simple Linear Reg.
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "1,2,5-8"
+fit_fule_0 <- lm(Fuel ~  Tax, fule_cons)
+summary(fit_fule_0)
+# Coefficients:
+#             Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)  715.485     55.770  12.829   <2e-16 ***
+# Tax           -5.078      2.701  -1.881    0.066 .  
+# Residual standard error: 86.79 on 49 degrees of freedom
+# Multiple R-squared:  0.06731,	Adjusted R-squared:  0.04828 
+# F-statistic: 3.536 on 1 and 49 DF,  p-value: 0.06599
+```
+
+### What does it show?
+
+::: incremental
+-   The estaimted effect of taxes is -5.1. Full answer:
+    -   A unit change in tax level (1 cent increase in taxes per liter)
+    -   **reduces** fuel consumption by 5.1 liters per person
+    -   assuming all other factors are fixed.
+-   However, p-value \> 0.05. The same effect of taxes may not hold for the population.
+-   Is this the true **causal effect**? Vote .... Yes/no?
+-   NO! There is no Ceteris Paribus here. We do not control for other things with a **Simple** regression. We need a **Multiple regression**
+:::
+
+## 4. Estimating the Multiple Linear Regression
+
+Multiple linear regression helps to reveal the true causal effect of `Tax` by
+
+-   controlling all other things.
+-   making them equal when the tax changes by one unit.
+
+::: fragment
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "1,2,5-6,8-9"
+fit_fule_1 <- lm(Fuel ~  Tax + Dlic + Income + logMiles, fule_cons)
+summary(fit_fule_1)
+# Coefficients:
+#             Estimate Std. Error t value Pr(>|t|)    
+# (Intercept) 154.1928   194.9062   0.791 0.432938    
+# Tax          -4.2280     2.0301  -2.083 0.042873 *  
+# Dlic          0.4719     0.1285   3.672 0.000626 ***
+# Income       -6.1353     2.1936  -2.797 0.007508 ** 
+# logMiles     26.7552     9.3374   2.865 0.006259 ** 
+# 
+# Residual standard error: 64.89 on 46 degrees of freedom
+# Multiple R-squared:  0.5105,	Adjusted R-squared:  0.4679 
+# F-statistic: 11.99 on 4 and 46 DF,  p-value: 9.331e-07
+```
+:::
+
+## 6. Inspecting and interpreting the results
+
+Here we need to:
+
+-   perform the HT about estimated coefficients;
+
+-   interpretation of their economic meaning;
+
+-   compare estimates with ex-ante expectations.
+
+## The Intercept {.smaller}
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "1,2,5"
+fit_fule_1 <- lm(Fuel ~  Tax + Dlic + Income + logMiles, fule_cons)
+summary(fit_fule_1)
+# Coefficients:
+#             Estimate Std. Error t value Pr(>|t|)    
+# (Intercept) 154.1928   194.9062   0.791 0.432938    
+# Tax          -4.2280     2.0301  -2.083 0.042873 *  
+# Dlic          0.4719     0.1285   3.672 0.000626 ***
+# Income       -6.1353     2.1936  -2.797 0.007508 ** 
+# logMiles     26.7552     9.3374   2.865 0.006259 ** 
+# 
+# Residual standard error: 64.89 on 46 degrees of freedom
+# Multiple R-squared:  0.5105,	Adjusted R-squared:  0.4679 
+# F-statistic: 11.99 on 4 and 46 DF,  p-value: 9.331e-07
+```
+
+::: incremental
+-   Positive but insignificant at the 5% level. (p-value = 0.432).
+
+-   Contradicts our ex-ante hypothesis about some basic level of fuel consumption;
+
+-   Suggests that the absence of a road network could drive fuel consumption to zero.
+:::
+
+## The Slope of Taxes {.smaller}
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "1,2,6"
+fit_fule_1 <- lm(Fuel ~  Tax + Dlic + Income + logMiles, fule_cons)
+summary(fit_fule_1)
+# Coefficients:
+#             Estimate Std. Error t value Pr(>|t|)    
+# (Intercept) 154.1928   194.9062   0.791 0.432938    
+# Tax          -4.2280     2.0301  -2.083 0.042873 *  
+# Dlic          0.4719     0.1285   3.672 0.000626 ***
+# Income       -6.1353     2.1936  -2.797 0.007508 ** 
+# logMiles     26.7552     9.3374   2.865 0.006259 ** 
+# 
+# Residual standard error: 64.89 on 46 degrees of freedom
+# Multiple R-squared:  0.5105,	Adjusted R-squared:  0.4679 
+# F-statistic: 11.99 on 4 and 46 DF,  p-value: 9.331e-07
+```
+
+::: incremental
+-   Negative and significant at the 5% level (p-value = 0.043).
+
+-   One cent increase in taxes per liter causes flue consumption to reduce by -4.2 liter per capita, given that all other factors remain fixed.
+
+    -   Note: $Tax$ Gasoline state tax rate, cents per liter and $Fuel$ Gasoline consumption per capita (liter)
+
+-   This is in line with our ex-ante hypothesis.
+:::
+
+## The Slope of Income {.smaller}
+
+Note: $Income$ in 1000 USD Per capita personal income (the year 2000)
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "1,2,8"
+fit_fule_1 <- lm(Fuel ~  Tax + Dlic + Income + logMiles, fule_cons)
+summary(fit_fule_1)
+# Coefficients:
+#             Estimate Std. Error t value Pr(>|t|)    
+# (Intercept) 154.1928   194.9062   0.791 0.432938    
+# Tax          -4.2280     2.0301  -2.083 0.042873 *  
+# Dlic          0.4719     0.1285   3.672 0.000626 ***
+# Income       -6.1353     2.1936  -2.797 0.007508 ** 
+# logMiles     26.7552     9.3374   2.865 0.006259 ** 
+# 
+# Residual standard error: 64.89 on 46 degrees of freedom
+# Multiple R-squared:  0.5105,	Adjusted R-squared:  0.4679 
+# F-statistic: 11.99 on 4 and 46 DF,  p-value: 9.331e-07
+```
+
+::: incremental
+-   Negative and significant at the 5% level (p-value = 0.043).
+
+-   An increase in income by 1000 USD per person causes fuel consumption to reduce by -6.1 liter per capita, ceteris paribus.
+
+-   This contradicts our ex-ante hypothesis. Why?
+:::
+
+## The Slope of logMiles {.smaller}
+
+Note: $logMiles$ is the logarithm of miles. Interpretation differs because this is a level-log transformation
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "1,2,9"
+fit_fule_1 <- lm(Fuel ~  Tax + Dlic + Income + logMiles, fule_cons)
+summary(fit_fule_1)
+# Coefficients:
+#             Estimate Std. Error t value Pr(>|t|)    
+# (Intercept) 154.1928   194.9062   0.791 0.432938    
+# Tax          -4.2280     2.0301  -2.083 0.042873 *  
+# Dlic          0.4719     0.1285   3.672 0.000626 ***
+# Income       -6.1353     2.1936  -2.797 0.007508 ** 
+# logMiles     26.7552     9.3374   2.865 0.006259 ** 
+# 
+# Residual standard error: 64.89 on 46 degrees of freedom
+# Multiple R-squared:  0.5105,	Adjusted R-squared:  0.4679 
+# F-statistic: 11.99 on 4 and 46 DF,  p-value: 9.331e-07
+```
+
+::: incremental
+-   Positive and significant at the 5% level (p-value = 0.043).
+
+-   An increase in road network by 1% causes fuel consumption to increase by 26.7/100 (0.26) liter per capita, given ceteris paribus.
+:::

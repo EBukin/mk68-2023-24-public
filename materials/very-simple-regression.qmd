@@ -1,0 +1,838 @@
+---
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+library(knitr)
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+library(ggbrace)
+library(ggpmisc)
+library(here)
+library(patchwork)
+library(synthpop)
+ggplot2::theme_set(ggplot2::theme_minimal())
+# source(here::here("materials", "00-setup.R"), local = TRUE)
+knitr::opts_chunk$set(fig.width = 8)
+knitr::opts_chunk$set(fig.height = 4.5)
+knitr::opts_chunk$set(fig.retina = 2)
+knitr::opts_chunk$set(out.width = "100%")
+```
+
+# (Very) Simple Linear Regression
+
+two-variables linear or bi-variate linear regression model.
+
+> Explains how $y$ - Dependent variable varies with changes in $x$ - independent variable.
+
+## SLR on population and sample {.smaller}
+
+::: columns
+::: {.column width="50%"}
+### Population regression (PRF)
+
+::: fragment
+> Always unknown
+
+$$y = {\beta}_{0} + {\beta}_{1}x + u$$
+
+-   $y$ - dependent variable
+-   $x$ - independent variable
+-   ${\beta}_{0}$ - the true value of the intercept (constant term)
+-   ${\beta}_{1}$ - the true value of the slope
+-   $u$ - the true value of the error term or disturbance
+:::
+:::
+
+::: {.column width="50%"}
+### Estimated regression
+
+::: fragment
+> What we learn from the sample of size $n$, where $i \in {1, 2, \dots, n}$
+
+$$y_i = \hat{\beta}_{0} + \hat{\beta}_{1} x_i + \hat{u_i}$$
+
+-   $y_i$ - dependent variable from $i$ obs. in the sample
+-   $x_i$ - independent variable
+-   $\hat{\beta}_{0}$ - estimated intercept (constant term)
+-   $\hat{\beta}_{1}$ - estimated slope\
+-   $\hat{u_i}$ - estimated error term or disturbance
+:::
+:::
+:::
+
+## Plot size and farmland prices
+
+```{r}
+source(here::here("materials", "01-simple-reg-plots.R"), local = TRUE)
+```
+
+::: columns
+::: {.column width="50%"}
+We simulate a population of $`r n_pop`$ agricultural fields. Each field has only two characteristics:
+
+-   price of 1 ha of land in in a land plot in Euro
+-   size of a land plot in ha
+
+Each field could be different in quality of soil, landscape, accessibility but we assume that **the other things are equal**.
+:::
+
+::: {.column width="50%"}
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+pp_1
+```
+:::
+:::
+
+::: footer
+See [@Ritter2020] for a discussion on the size-price relationship.
+:::
+
+## Regression Line
+
+::: r-stack
+```{r}
+#| fig-width: 7
+#| fig-height: 4
+pp_1
+```
+
+::: fragment
+```{r}
+#| fig-width: 7
+#| fig-height: 4
+pp_2
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 7
+#| fig-height: 4
+pp_3
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 7
+#| fig-height: 4
+pp_4
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 7
+#| fig-height: 4
+pp_5
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 7
+#| fig-height: 4
+pp_6
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 7
+#| fig-height: 4
+pp_7
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 7
+#| fig-height: 4
+pp_8
+```
+:::
+:::
+
+## Regression: Coefficients
+
+Regression parameters / coefficient ($\hat{\beta}_0$ and $\hat{\beta}_1$) are estimated using the [Ordinary Least Squares](https://en.wikipedia.org/wiki/Ordinary_least_squares) (OLS) method. These are:
+
+::: fragment
+**The intercept**: ($\hat{\beta}_0$)
+
+-   is the value of $\hat{y}$, when all regressors ($x$) are zero.
+:::
+
+::: fragment
+**The slope**: ($\hat{\beta}_1$)
+
+-   change in the **expected value of** $\hat{y}$ (in units of $y$), when $x$ **increases by one unit**.
+:::
+
+## Regression: Coefficients interpretation
+
+::: columns
+::: {.column width="40%"}
+```{r}
+#| fig-width: 4
+#| fig-heigts: 6
+pp_4
+```
+:::
+
+::: {.column width="60%"}
+In the example of land price, where $\hat{\beta_0} = `r bta0`$ and $\hat{\beta_1} = `r bta1`$:
+
+::: fragment
+Intercept:
+
+-   On average, starting price of a land plot with near to zero size is `r bta0` Euros per ha.
+:::
+
+::: fragment
+Slope:
+
+-   The **expected price of 1 ha of land** increases by `r bta1` Euros when the plot size increases by 1 HA
+:::
+:::
+:::
+
+```{r}
+set.seed(1)
+bt0 <- bta0
+bt1 <- bta1
+
+exmpl_tbl <-
+  land_pop %>%
+  sample_n(18) %>%
+  mutate(
+    yhat = bt0 + bt1 * area,
+    resid = value - yhat,
+    resid_sq = resid ^ 2
+  ) %>% 
+  select(
+    `x` = area,
+    `y` = value,
+    `hat(y) == hat(beta)[0] + hat(beta)[1] * x` = yhat,
+    `hat(u) == y - hat(y)` = resid,
+    `hat(u)^2 == (y - hat(y))^2` = resid_sq
+  )
+
+
+parse_plot_ggtbl <- function(dta) {
+  dta <- 
+    dta %>%
+    mutate(
+      across(everything(), ~ scales::number(., accuracy = 0.01, big.mark = " ")),
+      across(everything(), ~ifelse(row_number() == nrow(dta) - 1, "\u2026", .))
+      )
+  
+  # thm <- gridExtra::ttheme_default(padding = unit(c(1, 1), "mm"), parse = T)
+  
+  ggplot() +
+    theme_void() +
+    # annotate("table_npc",
+    #          xmin = 0, xmax = 1,
+    #          ymin = 0, ymax = 1,
+    #          label = list(dta))+
+    ggpp::geom_table(aes(
+      x = 0,
+      y = 0,
+      label = list(dta)
+    ),
+    parse = TRUE#, 
+    # table.theme = thm
+    ) +
+    scale_x_continuous(expand = expansion(0, 0))+ 
+    scale_y_continuous(expand = expansion(0, 0))
+
+}
+
+
+# exmpl_tbl %>% select(1:2) %>% parse_plot_ggtbl
+# exmpl_tbl %>% select(1:3) %>% parse_plot_ggtbl
+
+```
+
+## Regression: OLS Algorithm {.smaller}
+
+```{r}
+set.seed(1)
+bt0 <- bta0
+bt1 <- bta1
+
+exmpl_tbl <-
+  land_pop %>%
+  sample_n(18) %>%
+  mutate(
+    yhat = bt0 + bt1 * area,
+    resid = value - yhat,
+    resid_sq = resid ^ 2
+  ) %>% 
+  select(
+    `x` = area,
+    `y` = value,
+    `hat(y) == hat(beta)[0] + hat(beta)[1] * x` = yhat,
+    `hat(u) == y - hat(y)` = resid,
+    `hat(u)^2 == (y - hat(y))^2` = resid_sq
+  )
+
+
+parse_plot_ggtbl <- function(dta) {
+  dta <- 
+    dta %>%
+    mutate(
+      across(everything(), ~ scales::number(., accuracy = 0.01, big.mark = " ")),
+      across(everything(), ~ifelse(row_number() == nrow(dta) - 1, "\u2026", .))
+      )
+  
+  # thm <- gridExtra::ttheme_default(padding = unit(c(1, 1), "mm"), parse = T)
+  
+  ggplot() +
+    theme_void() +
+    # annotate("table_npc",
+    #          xmin = 0, xmax = 1,
+    #          ymin = 0, ymax = 1,
+    #          label = list(dta))+
+    ggpp::geom_table(aes(
+      x = 0,
+      y = 0,
+      label = list(dta)
+    ),
+    parse = TRUE#, 
+    # table.theme = thm
+    ) +
+    scale_x_continuous(expand = expansion(0, 0))+ 
+    scale_y_continuous(expand = expansion(0, 0))
+
+}
+
+
+# exmpl_tbl %>% select(1:2) %>% parse_plot_ggtbl
+# exmpl_tbl %>% select(1:3) %>% parse_plot_ggtbl
+
+```
+
+::: columns
+::: {.column width="40%"}
+::: r-stack
+```{r}
+#| fig-height: 4
+#| fig-width: 3
+exmpl_tbl %>% select(1:2) %>% parse_plot_ggtbl
+```
+
+::: {.fragment fragment-index="1"}
+```{r}
+#| fig-height: 4
+#| fig-width: 3
+exmpl_tbl %>% select(1:3) %>% parse_plot_ggtbl
+```
+:::
+
+::: {.fragment fragment-index="2"}
+```{r}
+#| fig-height: 4
+#| fig-width: 3
+exmpl_tbl %>% select(1:4) %>% parse_plot_ggtbl
+```
+:::
+
+::: {.fragment fragment-index="3"}
+```{r}
+#| fig-height: 4
+#| fig-width: 3
+exmpl_tbl %>% select(1:5) %>% parse_plot_ggtbl
+```
+:::
+:::
+:::
+
+::: {.column width="60%"}
+::: {.fragment fragment-index="1"}
+1 Proposes $\hat{\beta_0}$ and $\hat{\beta_1}$ so that actual values are: $y_i = \hat{\beta}_0 + \hat{\beta}_1 \cdot x_i + \hat{u}_i$
+:::
+
+::: {.fragment fragment-index="2"}
+2 Computes **fitted values** ($\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 \cdot x_i$) and **residuals** ($\hat{u}_i = y_i - \hat{y}_i$).
+:::
+
+::: {.fragment fragment-index="4"}
+3 Computes **squared residuals** and the sum of it $\sum \hat{u}^2$
+:::
+
+::: {.fragment fragment-index="5"}
+4 Repeats 1-3 with new estimates of $\hat{\beta_0}$ and $\hat{\beta_1}$;
+:::
+
+::: {.fragment fragment-index="5"}
+5 Compare new **sum of squared residuals** $\sum \hat{u}$ to the previous one.
+:::
+
+::: {.fragment fragment-index="6"}
+6 Repeats 4-5 to minimize **sum of squared residuals** until it no longer reduces.
+:::
+
+::: {.fragment fragment-index="7"}
+7 Estimates of $\hat{\beta_0} = `r bt0`$ and $\hat{\beta_1} = `r bt1`$ are values, where sum of squared residuals are minimal ($\sum \hat{u}^2 = `r scales::number_format(0.1, big.mark = "\\,") (sum(resid(fit0)^2))`$).
+:::
+:::
+:::
+
+## Population Regression Function and Random sampling
+
+::: incremental
+-   **we never have the entire population**
+
+-   instead, **we can only derive (random) samples**
+
+-   Therefore, absolute estimates of the population's parameters (slope and intercept) are insufficient.
+
+    -   We need to perform ...
+
+    -   Hypothesis testing!
+:::
+
+```{r echo=FALSE}
+n_smpls <- 6
+n_size <- 9
+```
+
+::: fragment
+To illustrate this, let us follow-up on the simulated population and derive **`r n_smpls` random samples** of **`r n_size` observations** in each sample.
+:::
+
+## Sample variation {.smaller}
+
+**population regression line is in red** and **estimated regression line is in blue**
+
+::: fragment
+```{r echo=FALSE, fig.width=16, fig.height=8}
+#| fig-width: 8
+#| fig-height: 4
+# Finding optimal seed
+# all_seeds <-
+#   c(2000:2200) %>%
+#   map_dfr(~{
+#     set.seed(.x)
+#     # browser()
+#     lm(value ~ area, land_pop %>% sample_n(n_size)) %>%
+#       broom::tidy() %>% select(1:2) %>%
+#       pivot_wider(values_from = "estimate", names_from = "term") %>%
+#       mutate(seed = .x, area_pop = bt1, inter_pop = bt0)
+#   }) %>%
+#   mutate(diff1 = abs(area - area_pop),
+#          diff2 = abs(`(Intercept)` - inter_pop ),
+#          diff21 = (`(Intercept)` - inter_pop ),
+#          diff3 = area - area_pop) %>%
+#   group_by(a = diff3 < 0) %>%
+#   arrange(a, desc(diff1))
+# 
+# terrible_seeds <-
+#   all_seeds %>%
+#   slice(1:ceiling(n_smpls)) %>%
+#   ungroup() %>%
+#   sample_n(ceiling(n_smpls)) %>%
+#     pull(seed)
+
+plot_dta <- 
+  c(#2037, 2176, 2129, 2040, 
+    2123, 2095, 2150, 2176, 2163, 2057#, 2012, 2031
+    ) %>% 
+  set_names(str_c("Sample " , seq_along(.))) %>% 
+  imap_dfr(~{set.seed(.x); land_pop %>% sample_n(n_size) %>% mutate(Sample = .y)}) %>% 
+  mutate(Smpl = as.factor(Sample))
+
+
+plot_dta %>%
+  ggplot() +
+  aes(x = area, y = value, group = Smpl) +
+  geom_point(alpha = 1, colour = "black", size = 1, fill = "black", shape = 21) +
+  geom_abline(aes(slope = bt1, intercept = bt0), colour = "red", size = 1.5) + 
+  xlab("Plot size, ha") + 
+  ylab("Land price, Euro / ha") +
+  facet_wrap(. ~ Smpl, ncol = ceiling(n_smpls / 2)) + 
+  expand_limits(x = 0, y = 0) +
+  theme_minimal() +
+  geom_smooth(method = "lm", se = F)+
+  scale_x_continuous(
+    breaks = scales::breaks_extended(5),
+    expand = c(0, 0),
+    limits = c(0, max(plot_dta$area))
+  ) +
+  scale_y_continuous(
+    breaks = scales::breaks_extended(10),
+    expand = c(0, 0),
+    limits = c(0, max(plot_dta$value))
+  )
+
+```
+:::
+
+## Regression: Inference
+
+::: columns
+::: {.column width="70%"}
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "4-6,10"
+fit0 <- lm(value ~ area, land_pop)
+summary(fit0)
+#> Coefficients:
+#>             Estimate Std. Error t value Pr(>|t|)    
+#> (Intercept) 656.4388     0.7503   874.9   <2e-16 ***
+#> area        810.8136     0.2574  3150.0   <2e-16 ***
+#> ---
+#> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#> 
+#> Residual standard error: 515 on 1999998 degrees of freedom
+#> Multiple R-squared:  0.8322,	Adjusted R-squared:  0.8322 
+#> F-statistic: 9.922e+06 on 1 and 1999998 DF,  p-value: < 2.2e-16
+```
+:::
+
+::: {.column width="30%"}
+$H_0:\beta = 0$
+
+$H_1:\beta \neq 0$
+
+::: fragment
+$t = {\hat{\beta}}/{se_{\hat\beta}}$
+:::
+
+::: fragment
+$t^* = c_{df, \, 1 - \alpha /2}$
+:::
+:::
+:::
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+$df = n - k$ with $n$ number of observations and $k$ number of regressors $k = 2$ (one for the intercept and one the slope).
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+-   Reject $H_0$, when
+
+    -   $|t| > t^*$, or
+
+    -   $\text{p-value} < 0.05$, or
+
+    -   ${\hat{\beta}}/{se_{\hat\beta}} > 2$ (rule of thumb).
+
+-   Fail to reject $H_0$ otherwise.
+:::
+:::
+:::
+
+## Regression: Goodness of Fit
+
+::: columns
+::: {.column width="70%"}
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "11"
+fit0 <- lm(value ~ area, land_pop)
+summary(fit0)
+#> Coefficients:
+#>             Estimate Std. Error t value Pr(>|t|)    
+#> (Intercept) 656.4388     0.7503   874.9   <2e-16 ***
+#> area        810.8136     0.2574  3150.0   <2e-16 ***
+#> ---
+#> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#> 
+#> Residual standard error: 515 on 1999998 degrees of freedom
+#> Multiple R-squared:  0.8322,	Adjusted R-squared:  0.8322 
+#> F-statistic: 9.922e+06 on 1 and 1999998 DF,  p-value: < 2.2e-16
+```
+:::
+
+::: {.column width="30%"}
+Explanatory power of the model:
+
+-   R-squared
+:::
+:::
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+R-squared: measures the fraction of variance in the dependent variable that is explained by the independent variable.
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+Adjusted R-squared: accounts for the number of independent variables, usually decreasing compared to the R-squared, when we add irrelevant independent variables.
+:::
+:::
+:::
+
+## Key Takaway concepts
+
+-   Regression coefficients: an intercept and a slope
+
+-   Interpretation of the regression coefficients
+
+-   Statistical inference about the regression coefficients
+
+-   Fitted (predicted) values
+
+-   Error terms
+
+-   Adjusted R squared.
+
+# Self-study: Simple Linear Regression Examples
+
+Review examples below at home:
+
+-   Discuss how would you interpret the coefficients?
+
+## Example 1 {.smaller}
+
+![](img/ex1-slr-pic-1.png){width="100%"}
+
+::: incremental
+Comment on (1) what relationship is measured by this regression? (2) what are the interpretations of the coefficients?
+
+-   $\beta_0$ indicates the **expected level** of $yield$ (in the units of $yield$ ) given **zero** level of $fertilizer$ application given that other things (rainfall, land quality, etc.)
+
+-   $\beta_1$ indicates the **expected change** in $yield$ (in the units of $yield$ ) given **one unit change** (usually increase, but not always) in $fertilizer$ application given that other factors remain fixed (rainfall, land quality, etc.)
+:::
+
+::: footer
+Source: [@wooldridge2020introductory]
+:::
+
+## Example 2
+
+![](img/ex1-slr-pic-2.png){width="100%"}
+
+::: incremental
+Interpret the slope:
+
+-   With the one year increase in education, average hourly wage increases / (decreases) by $\beta_1$.
+:::
+
+## Example 3 Ozone $O^3$ in stratosphere {.smaller}
+
+The goal of this example is to show that simple linear regression could be used for exposing trends and showing how those trends change significantly after the introduction of a new policy.
+
+::: incremental
+-   Ozone $O^3$ - forms in the stratosphere from oxygen under influence of ultraviolet radiation;
+-   The amount of ozone in the atmosphere is very small;
+-   Ozone absorbs most of the ultraviolet radiation from the sun;
+-   Ozone holes expose humanity to solar radiation.
+:::
+
+## Background {.smaller}
+
+::: incremental
+-   In 1971, [James Lovelock](https://en.wikipedia.org/wiki/James_Lovelock) had discovered a new compound in the earth's atmosphere, trichlorofluoromethane, a chlorofluorocarbon (CFC). See: [@Lovelock1971]
+
+-   In 1974 [Sherwood Rowland](https://en.wikipedia.org/wiki/F._Sherwood_Rowland) and [Mario Molina](https://en.wikipedia.org/wiki/Mario_Molina) [@Molina1974] discovered the mechanism how CFC gases damage the ozone layer by photolysis. (In 1995 together with [Paul Crutzen](https://en.wikipedia.org/wiki/Paul_J._Crutzen) they were awarded a 1995 Nobel Prize in Chemistry)
+
+-   In 1987, [The Montreal Protocol](https://www.unep.org/ozonaction/who-we-are/about-montreal-protocol) was accepted by 191 countries aiming to reduce the levels of ozone depleting substances (ODSs) in the atmosphere.
+
+-   It took humanity only 14 years to bridge scientific finding with the global policy.
+:::
+
+::: footer
+Data source: [gml.noaa.gov](https://gml.noaa.gov/aftp/data/hats/cfcs/cfc11/combined/HATS_global_F11.txt)
+:::
+
+## The problem:
+
+Let us establish a causal effect between the Montreal Protocol and the global CFC-11 emissions/concentration.
+
+## CFC-11 content in the atmosphere
+
+```{r echo = FALSE, fig.width=9, fig.height=5}
+cfc_dta <-
+  here("materials", "data", "CATS_mlo_F11_Day.dat") %>%
+  read_delim(quote = "", delim = " ") %>%
+  mutate(date = as.Date(str_c(HATS_F11_YYYY, "-", HATS_F11_MM , "-01"))) %>%
+  select(date, CFC11 = HATS_Global_F11, CFC11_sd = HATS_Global_F11_sd) %>%
+  filter_all(function(x)
+    ! is.nan(x)) %>%
+  mutate(Period = case_when(date <= as.Date("1989-01-1") ~ "Before", TRUE ~ "After") %>%
+           factor(c("Before", "After"))) %>%
+  mutate(
+    year = lubridate::year(date),
+    date = lubridate::year(date) + lubridate::month(date) / 12
+  ) # %>%
+# group_by(Period) %>%
+# mutate(CFC11 = CFC11 - lag(CFC11))
+
+# dta <- cfc_dta %>% filter(date < 1994)
+make_cf_plots <- function(dta) {
+  cf_pt <-
+    dta %>%
+    ggplot()  +
+    aes(x = date, y = CFC11) +
+    geom_point(alpha = 0.2) +
+    geom_vline(xintercept = 1987, # as.Date("1987-09-16"),
+               linetype = "dashed") +
+    geom_vline(xintercept = 1989, # as.Date("1989-01-01"),
+               linetype = "solid") +
+    theme_bw() +
+    ylab("Global mean CFC-11 (F11) concentration (ppt)") +
+    scale_x_continuous(breaks = seq(1972, 2022, 2),
+                       minor_breaks = seq(1972, 2022, 0.5)) +
+    # scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+    theme(axis.text.x = element_text(
+      angle = -45,
+      vjust = 0.5,
+      hjust = 0
+    )) +
+    scale_color_manual(values = c("#e41a1c", "#377eb8"))
+  # cf_pt
+  
+  cf_pt1 <- cf_pt + aes(colour = Period)
+  
+  agged_dta <-
+    dta %>%
+    mutate(date = year) %>%
+    select(date, year, Period, CFC11) %>%
+    group_by(date, year, Period) %>%
+    summarise(CFC11 = mean(CFC11))
+  
+  ghg_formula <- y  ~ x
+  
+  out_pt <-
+    cf_pt +
+    aes(colour = Period) +
+    stat_poly_line(
+      data = dta,
+      aes(colour = Period),
+      se = FALSE,
+      formula = ghg_formula
+    )  +
+    stat_poly_eq(
+      data = agged_dta,
+      aes(colour = Period, label = after_stat(eq.label)),
+      formula = ghg_formula,
+      label.x = "left",
+      label.y = "top",
+      size = 4
+    )
+  
+  tbl_plot <-
+    agged_dta %>%
+    ggplot()  +
+    geom_blank() +
+    aes(
+      x = date,
+      y = CFC11,
+      group = Period,
+      colour = Period
+    ) +
+    stat_fit_tb(
+      # data = filter(cfc_dta, Period == "Before"),
+      # aes(group = period),
+      method = "lm",
+      method.args = list(formula = ghg_formula),
+      tb.vars = c(
+        Parameter = "term",
+        Estimate = "estimate",
+        "s.e." = "std.error",
+        "italic(t)-statistics" = "statistic",
+        "italic(p)-value" = "p.value"
+      ),
+      table.theme = ttheme_gtbw,
+      tb.params = c("Intercept" = 1, "year" = 2),
+      label.y = "center",
+      label.x = "center",
+      parse = TRUE,
+      alpha = 0.1
+    ) +
+    facet_wrap(Period ~ ., nrow = 2) +
+    theme_void()  +
+    scale_color_manual(values = c("#e41a1c", "#377eb8"))
+  
+  
+  cf_pt2 <-
+    out_pt +
+    ggpp::annotate("plot_npc",
+                   npcx = .9,
+                   npcy = 0.1,
+                   label = tbl_plot)
+  
+  list(cf_pt = cf_pt,
+       cf_pt1 = cf_pt1,
+       cf_pt2 = out_pt,
+       cf_pt3 = cf_pt2)
+  
+}
+```
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+cfc_dta %>% filter(date < 1994) %>% make_cf_plots() %>% `[[`(1)
+```
+
+## To establish a causal relationship,
+
+::: columns
+::: {.column width="50%"}
+we can:
+
+::: incremental
+-   split data into **Before** and **After** The Montreal Protocol;
+
+-   fit two separate simple regressions: $\text{CFC-11} = \hat \beta_0 + \hat \beta_1 \cdot \text{year} + \hat u$
+:::
+:::
+
+::: {.column width="50%"}
+### Why Ceteris Paribus is satisfied here?
+
+::: fragment
+::: incremental
+-   There are no other factors which could have affected the CFC-11 emissions but the Montreal Protocol.
+
+-   Technology change, although endogenous, has forced to reduce CFC-11 emissions due to the Protocol.
+:::
+:::
+:::
+:::
+
+## CFC-11 content over time (Monthly averages)
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+cfc_dta %>% filter(date < 1994) %>% make_cf_plots() %>% `[[`(2)
+```
+
+## Results of the SLR (1): Coefficients values
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+cfc_dta %>% filter(date < 1994) %>% make_cf_plots() %>% `[[`(3)
+```
+
+## Results of the simple regression (2)
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+cfc_dta %>% filter(date < 1994) %>% make_cf_plots() %>% `[[`(4)
+```

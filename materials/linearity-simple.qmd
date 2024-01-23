@@ -1,0 +1,626 @@
+---
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+library(knitr)
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+library(ggbrace)
+library(ggpmisc)
+library(GGally)
+library(equatiomatic)
+library(here)
+library(patchwork)
+library(synthpop)
+ggplot2::theme_set(ggplot2::theme_minimal())
+# source(here::here("materials", "00-setup.R"), local = TRUE)
+knitr::opts_chunk$set(fig.width = 8)
+knitr::opts_chunk$set(fig.height = 4.5)
+knitr::opts_chunk$set(fig.retina = 2)
+knitr::opts_chunk$set(out.width = "100%")
+```
+
+# Linearity
+
+::: incremental
+-   the expected value of the dependent variable is a straight-line function of the independent variable
+
+-   If linearity is violated:
+
+    -   the estimates are **biased** and regression is invalid!
+:::
+
+## Can we draw a straight line through the dots?
+
+```{r}
+nnn <- 50
+set.seed(10)
+lin_dta <-
+  tibble(x = runif(nnn, 0, 10),
+         y = x * 0.75 + rnorm(nnn)*2 + 3)
+
+set.seed(10)
+nnn <- 1000
+lin_dta2 <-
+  tibble(x = runif(nnn, 0, 10),
+         y = x * 0.75 + rnorm(nnn)*2 + 3)
+
+get_plots <- function(dta, fit01 = lm(y ~ x, dta)) {
+  
+  dta <-
+    dta |>
+    mutate(
+      fitted = fitted(fit01),
+      residuals = residuals(fit01),
+      bar_min = ifelse(fitted < fitted + residuals, fitted, fitted + residuals),
+      bar_max = ifelse(fitted > fitted + residuals, fitted + residuals, fitted)
+    ) |> 
+    arrange(x)
+  
+  gglin_a <- dta |> ggplot() + aes(x, y) + geom_point()
+  gglin_b <- gglin_a + geom_path(aes(y = fitted))
+    
+    # geom_abline(aes(intercept = fit01[[1]][[1]],
+    #                                    slope = fit01[[1]][[2]]))
+  gglin_c <- gglin_b +
+    geom_segment(aes(
+      xend = x,
+      yend = fitted,
+      color = "Residuals"
+    ))
+  
+  gglin_d1 <-
+    dta |>
+    ggplot() + 
+    aes(x = fitted, y = residuals) +
+    geom_point() +
+    xlab("Fitted values") +
+    ylab("Residuals")
+  
+  gglin_d2 <- 
+    gglin_d1 +
+    geom_smooth(se = FALSE, aes(colour = "Smoothing line")) 
+  
+  gglin_d3 <-
+    dta |>
+    ggplot() + aes(x = fitted, y = residuals) +
+    geom_segment(aes(
+      xend = fitted,
+      y = 0,
+      yend = residuals,
+      color = "Residuals"
+    )) +
+    geom_hline(aes(yintercept = 0),
+               linetype = 2,
+               linewidth = 0.5) +
+    geom_point() 
+  
+  gglin_d4 <-
+    gglin_d3 +
+    geom_smooth(se = FALSE, aes(colour = "Smooth line")) +
+    xlab("Fitted values") +
+    ylab("Residuals")
+  
+  list(
+    gglin_a = gglin_a,
+    gglin_b = gglin_b,
+    gglin_c = gglin_c,
+    gglin_d1 = gglin_d1, 
+    gglin_d2 = gglin_d2, 
+    gglin_d3 = gglin_d3, 
+    gglin_d4 = gglin_d4
+  )
+  
+} 
+
+```
+
+::: columns
+::: {.column width="50%"}
+```{r}
+set.seed(112)
+nnn <- 50
+lin_dta <-
+  tibble(x = runif(nnn, 0, 10),
+         y = x * 0.75 + rnorm(nnn)*2 + 3)
+
+nnn <- 150
+nonlin_dta <-
+  tibble(x = runif(nnn, 0, 25),
+         y = x ^ 2 / 2 + 0.25 * x + rnorm(nnn)* 20 + 100)
+```
+
+::: r-stack
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(lin_dta)[[1]]
+```
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(lin_dta)[[2]]
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(lin_dta)[[3]] + theme(legend.position = c(.9, .1))
+```
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: r-stack
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(nonlin_dta)[[1]]
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(nonlin_dta)[[2]]
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(nonlin_dta)[[3]] + theme(legend.position = c(.9, .1))
+```
+:::
+:::
+:::
+:::
+
+## Linearity: detection
+
+To detect non-linearity, we inspect data visually with:
+
+-   Scatter plots of dependent variable $y$ plotted versus independent variables ($x$).
+
+-   Scatter plot of **residuals** versus **predicted/fitted** values
+
+## Linearity detection (1) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+We've estimated a regression mode $Y = \beta_0 + \beta_1 x$ on 50 observations. Results:
+
+::: r-stack
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(lin_dta)[[2]] + labs(title = "Regression line")
+```
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(lin_dta)[[3]] + labs(title = "Regression line and residuals")  + 
+  theme(legend.position = c(.9, .1))
+```
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+To check nonlinearity, we need to plot fitted values on $x$ axis and residuals on $y$ axis.
+
+If we can draw a horizontal line through the dots, we have linearity, if not, we have non-linearity.
+:::
+
+::: r-stack
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 4.5
+get_plots(lin_dta)[[6]] + theme(legend.position = c(.9, .1)) + theme(legend.position = c(.9, .1))
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 4.5
+get_plots(lin_dta)[[7]] + theme(legend.position = c(.9, .1))
+```
+:::
+:::
+:::
+:::
+
+## Linearity detection (2) {.smaller}
+
+Here we use the same population but increase our sample size to 150 observations. (Small sample size may cause seeming nonliearities).
+
+::: columns
+::: {.column width="50%"}
+::: r-stack
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+nnn <- 150
+lin_dta2 <-
+  tibble(x = runif(nnn, 0, 10),
+         y = x * 0.75 + rnorm(nnn)*2 + 3)
+
+get_plots(lin_dta2)[[2]] + labs(title = "Regression line")
+```
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(lin_dta2)[[3]] + labs(title = "Regression line and residuals")  + 
+  theme(legend.position = c(.9, .1))
+```
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: r-stack
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(lin_dta2)[[6]] + theme(legend.position = c(.9, .1)) + 
+  theme(legend.position = c(.9, .1))
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(lin_dta2)[[7]] + theme(legend.position = c(.9, .1))
+```
+:::
+:::
+:::
+:::
+
+## Linearity detection (3) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+::: r-stack
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(nonlin_dta)[[2]] + labs(title = "Regression line")
+```
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(nonlin_dta)[[3]] + labs(title = "Regression line and residuals")  + 
+  theme(legend.position = c(.9, .1))
+```
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: r-stack
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(nonlin_dta)[[6]] + theme(legend.position = c(.9, .1)) + 
+  theme(legend.position = c(.9, .1))
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(nonlin_dta)[[7]] + theme(legend.position = c(.9, .1))
+```
+:::
+:::
+:::
+:::
+
+## Linearity: resolutions
+
+1.  Functional form: multiple regression and transformation.
+
+2.  (non) linear transformation to the dependent and/or independent variables;
+
+    -   **does change the way how we must interpret coefficients**;
+
+3.  find a different independent variable;
+
+4.  propose a different functional form;
+
+## Example of linearity resolution {.smaller}
+
+::: columns
+::: {.column width="50%"}
+We had nonlinearity with a simple regression: $y = \beta_0 + \beta_1x$.
+
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(nonlin_dta)[[3]] + 
+  labs(title = "Regression line and residuals")  + 
+  theme(legend.position = c(.9, .1))
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+Let us estimate a multiple regression: $y = \beta_0 + \beta_1 x + \beta_2 x^2$.
+:::
+
+::: r-stack
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(nonlin_dta, 
+          fit01 = lm(y ~ x + I(x^2), nonlin_dta)
+          )[[2]] + 
+  labs(title = "Regression line (multiple regession)")  + 
+  theme(legend.position = c(.9, .1))
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(nonlin_dta, 
+          fit01 = lm(y ~ x + I(x^2), nonlin_dta)
+          )[[3]] + 
+  labs(title = "Regression line (multiple regession) and residuals")  + 
+  theme(legend.position = c(.9, .1))
+```
+:::
+:::
+:::
+:::
+
+## Example of linearity resolution (cont.) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+After the linear transformation of $x$ and multiple regression $y = \beta_0 + \beta_1x$, our regression line is a curve (non linear).
+
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(nonlin_dta, 
+          fit01 = lm(y ~ x + I(x^2), nonlin_dta)
+          )[[3]] + 
+  labs(title = "Regression line (multiple regession) and residuals")  + 
+  theme(legend.position = c(.9, .1))
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+Residuals vs. Fitted plot also changes:
+:::
+
+::: r-stack
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(nonlin_dta)[[7]] + theme(legend.position = c(.9, .1))
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+get_plots(nonlin_dta, 
+          fit01 = lm(y ~ x + I(x^2), nonlin_dta)
+          )[[7]] + 
+  theme(legend.position = c(.9, .1))
+```
+:::
+:::
+:::
+:::
+
+## Common linear transformations {.smaller}
+
+|    Model    | Dep. Var. | Indep. Var. |      Interpretation of $\beta_1$      |                         Interpretation                          |
+|:------------:|:------------:|:------------:|:------------:|:---------------:|
+| Level-level |    $y$    |     $x$     |     $\Delta y = \beta_1 \Delta x$     |    1 unit change in $x$ causes $\beta_1$ units change in $y$    |
+|  Level-log  |    $y$    |  $log(x)$   | $\Delta y = (\beta_1/100)\% \Delta x$ |   1 % change in $x$ causes $\beta_1/100$ units change in $y$    |
+|  Log-level  | $log(y)$  |     $x$     | $\% \Delta y = (100\beta_1) \Delta x$ |    1 unit change in $x$ causes $100 \beta_1$ % change in $y$    |
+|   Log-log   | $log(y)$  |  $log(x)$   |  $\% \Delta y = \beta_1 \% \Delta x$  | 1 % change in $x$ causes $\beta_1$ % change in $y$ (elasticity) |
+
+-   Power transformation ($x^2$, $\sqrt x$), Box-Cox transformations;
+
+-   Variables normalization to the standard normal distribution;
+
+-   Tailor expansion (Cobb-Douglas, Trans-log)
+
+# Linearity Example 1: Anscombe quartet
+
+## The Anscombe quartet
+
+-   Four data sets of 11 observations each and two variables (x and y).
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+```{r}
+#| code-fold: true
+anscombe %>%
+  mutate(id = row_number()) %>%
+  pivot_longer(c(contains("x"), contains("y")), names_to = "Variables") %>%
+  mutate(`Data set` = str_extract(Variables, "\\d"),
+         Variables = str_remove(Variables, "\\d")) %>%
+  pivot_wider(names_from = Variables, values_from = value) %>%
+  group_by(`Data set`) %>%
+  summarise(across(c(x, y), ~ mean(.), .names = "mean_{.col}"),
+            across(c(x, y), ~ sd(.), .names = "sd_{.col}"))
+```
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+### SLR y on x {.smaller}
+
+```{r echo=FALSE}
+#| code-fold: true
+norm_anscombe <-
+  anscombe %>% rownames_to_column() %>%
+  pivot_longer(c(contains("x"), contains("y")), names_to = "Variables") %>%
+  mutate(data_sample = str_extract(Variables, "\\d")) %>%
+  mutate(var = str_extract(Variables, "\\D")) %>%
+  select(-Variables) %>%
+  pivot_wider(names_from = var, values_from = value) %>%
+  arrange(data_sample, rowname) 
+
+norm_anscombe %>%
+    group_by(data_sample) %>%
+    nest %>%
+    
+    mutate(fits =
+               map2(data, data_sample,
+                    ~ {
+                        new_varname <- str_c("Data set ", .y)
+                        lm(y ~ x, .x) %>%
+                            broom::tidy() %>%
+                            mutate(`Data set` = new_varname) %>%
+                            select(`Data set`, everything())
+                    })) %>%
+    pull(fits) %>%
+    bind_rows() 
+```
+:::
+:::
+:::
+
+## Scatter plots
+
+```{r}
+#| code-fold: true
+fig_norm_anscombe <-
+  norm_anscombe %>%
+  mutate(data_sample = str_c("Data set ", data_sample))
+
+fig_norm_anscombe %>%
+  ggplot() + 
+  aes(x, y, group = data_sample) + 
+  geom_point() +
+  geom_smooth(
+    data = filter(fig_norm_anscombe, data_sample == "Model 2"),
+    method = "lm",
+    formula = y ~ x + I(x ^ 2)
+  ) +
+  geom_smooth(
+    data = filter(fig_norm_anscombe, 
+                  data_sample == "Model 3", y < 11)
+    ) +
+  geom_abline(slope = 0.5, intercept = 3, colour = "red") +
+  theme_bw() + facet_wrap(. ~ data_sample) 
+
+```
+
+## Residuals vs fitted
+
+```{r echo=FALSE}
+library(patchwork)
+# Creating a data for two models only
+anscombe_data <-
+  anscombe %>% select(contains("1"), contains("2"))
+# Fitting two models
+mod_1_fit <- lm(y1 ~ x1, anscombe_data)
+mod_2_fit <- lm(y2 ~ x2, anscombe_data)
+# Calculating residuals and fitted values
+anscombe_data$residuals_1 <- residuals(mod_1_fit)
+anscombe_data$residuals_2 <- residuals(mod_2_fit)
+anscombe_data$fitted_1 <- fitted(mod_1_fit)
+anscombe_data$fitted_2 <- fitted(mod_2_fit)
+# Displaying edited data:
+# anscombe_data %>% knitr::kable("pipe", digits = 2)
+
+asnc_plot_dta <- 
+  anscombe_data %>% 
+  mutate(id = row_number()) %>% 
+  pivot_longer(c(contains("1"), contains("2"))) %>% 
+  mutate(model = str_c("Data set ", str_extract(name, "\\d")),
+         stats = str_extract(name, "\\D{1,}\\B") %>% 
+           str_replace("_", "")) %>% 
+  select(-name) %>% 
+  pivot_wider(names_from = stats)
+
+ansc_scat <- 
+  asnc_plot_dta %>% 
+  ggplot(aes(x, y, group = model)) + 
+  geom_point() + 
+  labs(title = "Scatter plot y ~ x") +
+  facet_grid(rows = vars(model), switch = "y") + 
+  theme_bw()
+
+
+ansc_obs_pred <-
+  asnc_plot_dta %>% 
+  ggplot(aes(fitted, y, group = model)) + 
+  geom_point() + 
+  geom_smooth(se = F, formula = y ~ x, method = "lm") + 
+  labs(
+    title = "Observed vs predicted",
+    y = "Observed values of y",
+    x = "Fitted values of: \nfitted(lm(y~x, anscombe_data))") +
+  facet_grid(rows = vars(model), switch = "y") + 
+  theme_bw()
+
+
+ansc_resid_predict <-
+  asnc_plot_dta %>% 
+  ggplot(aes(fitted, residuals, group = model)) + 
+  geom_point() + 
+  geom_smooth(data = asnc_plot_dta %>% filter(str_detect(model, "1")), 
+              formula = y ~ x + x^2 + x^3, 
+              se = F,  method = "lm", span = 1) + 
+  geom_smooth(
+      data = asnc_plot_dta %>% filter(!str_detect(model, "1")),
+      se = F,  method = "loess", colour = "red") + 
+  labs(
+    title = "Residuals vs predicted",
+    y = "Residuals: residuals(lm(y~x, anscombe_data))",
+    x = "Predicted values of: \nfitted(lm(y~x, anscombe_data))") +
+  facet_grid(rows = vars(model), switch = "y") + 
+  theme_bw()
+
+```
+
+```{r}
+#| echo: false
+ansc_obs_pred + ansc_resid_predict
+```
