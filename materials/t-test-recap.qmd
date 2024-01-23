@@ -1,0 +1,416 @@
+---
+#title: "t-test recap"
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+    incremental: false
+editor_options: 
+  chunk_output_type: consoles
+---
+
+# Example of an exam assignment
+
+The slides below show you what you can expect on an exam based on the material of the past weeks. Please note that:
+
+-   these slides try to show all possible types of questions,
+
+-   they exaggerated the complexity of the exam.
+
+-   on the exam, only a few questions will be asked
+
+## Definition question
+
+Answer two of the three questions below:
+
+-   What measures of the central tendency do we most commonly apply in social sciences?
+
+-   What effect do extremely large observations have on the mean and standard deviation?
+
+-   Is median one of the quantiles or it is a measure of the central tendency?
+
+## Problem introduction
+
+An RCT experimenter was designed to understand the effect of technology (Minimal vs Optimal) on rice yields. Researchers:
+
+1.  Randomly selected 60 farms, and
+
+2.  Trained half of them in applying Optimal technology (treatment), and
+
+3.  Half of the farmers remained with the same minimal technology (control).
+
+During the production season, researchers recorded for each farm:
+
+-   technology, rice variety, rice yield, and nitrogen fertilizer use.
+
+The research objective is to measure the effect of technology on rice yield.
+
+Answer questions on the following slides based on this example.
+
+## Descriptive analysis (1) {.smaller}
+
+```{r}
+library(knitr)
+library(kableExtra)
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+library(patchwork)
+library(synthpop)
+library(forcats)
+library(modelsummary)
+library(GGally)
+ggplot2::theme_set(ggplot2::theme_minimal())
+knitr::opts_chunk$set(fig.width = 8)
+knitr::opts_chunk$set(fig.height = 6.5)
+
+library(agridat)
+data(gomez.splitsplit)
+library(faux)
+
+set.seed(1221)
+fert_dta <- gomez.splitsplit
+fert_dta <- 
+  gomez.splitsplit |> 
+  as_tibble() |> 
+  mutate(nitro2 = nitro + runif(nrow(fert_dta), -10, 10)) |> 
+  mutate(nitro = ifelse(nitro2 <0, 0, nitro2)) |> 
+  select(nitrogen = nitro, tech = management, variety = gen, yield) |>
+  filter(variety %in% c("V2", "V1")) |>
+  filter(tech %in% c("Minimum", "Optimum")) |> 
+  mutate(tech = ifelse(tech == "Minimum", "Minimum (control)", "Optimum (treatment)") |> 
+           factor(),
+         variety = fct_drop(variety))
+
+fert_dta <- 
+  fert_dta |> 
+  mutate(
+    tech2 =  ifelse(tech == "Minimum (control)", -1, 1),
+    potassium1 = faux::rnorm_pre(nitrogen, r = 0.8) |> norm2unif(max = 50),
+    potassium = potassium1 + norm2unif(faux::rnorm_pre(tech2, r = 0.9), max = 15),
+    phosphorus = faux::rnorm_pre(potassium, r = 0.35) |> norm2unif(max = 75),
+    ) |> 
+  select(-tech2, -potassium1) |> 
+  select(yield, tech, variety, nitrogen, potassium, phosphorus)
+
+# |> 
+#   correlation::correlation()
+# 
+# modelsummary::datasummary_balance(
+#   . ~ tech, 
+#   fert_dta |> select(-variety, -yield), 
+#   stars = TRUE)
+
+# fert_dta |> select(-variety, -yield) |> 
+#   GGally::ggpairs(mapping = aes(colour = tech))
+```
+
+### Continuous variables
+
+```{r}
+fert_dta |> modelsummary::datasummary_skim(output = "kableExtra")
+```
+
+### Categorical variables
+
+```{r}
+modelsummary::datasummary_skim(fert_dta, "categorical", output = "kableExtra")
+```
+
+## Checks and Balances (1)
+
+::: columns
+::: {.column width="75%"}
+```{r}
+#| fig-width: 9
+#| fig-height: 6.5
+a1 <-
+  fert_dta |> ggplot() + aes(x = nitrogen, y = tech, colour = tech, fill = tech) + 
+  geom_boxplot(alpha = 0.25) + 
+  xlab("Nitrogen application, kg/ha") + ylab("Technology")
+a2 <-
+  fert_dta |> ggplot() + aes(x = potassium, y = tech, colour = tech, fill = tech) + 
+  geom_boxplot(alpha = 0.25) + 
+  xlab("Potassium application, kg/ha") + ylab("Technology")
+a3 <-
+  fert_dta |> ggplot() + aes(x = phosphorus, y = tech, colour = tech, fill = tech) + 
+  geom_boxplot(alpha = 0.25) + 
+  xlab("Phosphorus application, kg/ha") + ylab("Technology")
+
+b1 <-
+  fert_dta |> ggplot() + aes(x = nitrogen, colour = tech, fill = tech) + 
+  geom_density(alpha = 0.25) + xlab("Nitrogen application, kg/ha") + ylab("Technology")
+b2 <-
+  fert_dta |> ggplot() + aes(x = potassium, colour = tech, fill = tech) + 
+  geom_density(alpha = 0.25) + xlab("Potassium application, kg/ha") + ylab("Technology")
+b3 <-
+  fert_dta |> ggplot() + aes(x = phosphorus, colour = tech, fill = tech) + 
+  geom_density(alpha = 0.25) + xlab("Phosphorus application, kg/ha") + ylab("Technology")
+
+(a1 + a2 + a3) / (b1 + b2 + b3) + patchwork::plot_layout(guides = "collect")
+```
+:::
+
+::: {.column width="25%"}
+-   What differences do you observe between technologies in terms of the fertilizers used?
+
+-   What can we conclude about the quality of random assignment based on this plot?
+:::
+:::
+
+## Checks and Balances (2) {.smaller}
+
+```{r}
+modelsummary::datasummary_balance(
+  . ~ tech,
+  fert_dta |> select(-variety, -yield),
+  stars = TRUE, 
+  output = "kableExtra")
+```
+
+Significance levels are: '+'=.1, '\*'=.05, '\*\*'=.01, '\*\*\*'=0.001
+
+-   What can we conclude about the quality of random assignment based on this table?
+
+-   Perform hypothesis testing about the difference in mean fertilizer application between the two technologies.
+
+## Effect of technology on yields {.smaller}
+
+::: columns
+::: {.column width="75%"}
+```{r}
+#| fig-width: 9
+#| fig-height: 6.5
+a <- fert_dta |> ggplot() + aes(x = yield, y = variety) + geom_boxplot() + 
+  xlab("Rice yield, T/ha") + ylab("Variety")
+b <- fert_dta |> ggplot() + aes(x = yield, y = tech) + geom_boxplot() + 
+  xlab("Rice yield, T/ha") + ylab("Technology")
+
+c <- fert_dta |> ggplot() + aes(x = yield, colour = variety, fill = variety) + 
+  geom_density(alpha = 0.3) + xlab("Rice yield, T/ha") + 
+  scale_color_brewer(type = "quak", palette = "Set1") + 
+  scale_fill_brewer(type = "quak", palette = "Set1")
+d <- fert_dta |> ggplot() + aes(x = yield, colour = tech, fill = tech) + 
+  geom_density(alpha = 0.3) + xlab("Rice yield, T/ha") + 
+  scale_color_brewer(type = "quak", palette = "Set2") + 
+  scale_fill_brewer(type = "quak", palette = "Set2")
+
+(a + b) / (c + d)
+```
+:::
+
+::: {.column width="25%"}
+::: incremental
+-   Our key objective is to quantify the effect of technology on yields.
+
+-   What differences do you observe between technologies in terms of rice yields?
+
+-   Can we conclude about the causal effect of technologies based on this plot?
+:::
+:::
+:::
+
+## HT: effect of technology on yields {.smaller}
+
+::: columns
+::: {.column width="65%"}
+```{r}
+modelsummary::datasummary_balance(
+  . ~ tech, fert_dta |> select(tech, yield),
+  stars = TRUE, output = "kableExtra")
+```
+
+Significance levels are: '+'=.1, '\*'=.05, '\*\*'=.01, '\*\*\*'=0.001
+
+```{r}
+#| eval: false
+#| echo: true
+t.test(yield ~ tech, data = fert_dta)
+# 
+# 	Welch Two Sample t-test
+# 
+# data:  yield by tech
+# t = -1.4497, df = 57.939, p-value = 0.1525
+# alternative hypothesis: true difference in 
+#     means between group Minimum (control) 
+#     and group Optimum (treatment) is 
+#     not equal to 0
+# 95 percent confidence interval:
+#  -0.9633503  0.1540836
+# sample estimates:
+#  mean in group Minimum (control) 
+#                         5.234200 
+# mean in group Optimum (treatment)
+#                         5.638833 
+```
+:::
+
+::: {.column width="35%"}
+::: incremental
+-   Why do we need this?
+
+-   What is the difference between the test in text and the table?
+
+-   Formulate H0 and H1.
+
+-   Conclude about the effect of technology on yields.
+
+-   What statistics did you use?
+
+-   What is the highest level of significance for your results?
+:::
+:::
+:::
+
+## Conclude about the effect of technology on yields
+
+::: incremental
+-   Does the optimal technology have any effect on yields?
+
+-   What is this effect?
+
+-   Do we have the ceteris paribus ensured here?
+
+-   What else can influence the effect of technology on yield?
+:::
+
+## Differences in yields between varieties {.smaller}
+
+::: columns
+::: {.column width="75%"}
+```{r}
+#| fig-width: 9
+#| fig-height: 6.5
+fert_dta |> ggplot() + aes(x = yield, y = variety, colour = tech) + geom_boxplot() + 
+  xlab("Rice yield, T/ha") + ylab("Variety")
+```
+:::
+
+::: {.column width="25%"}
+::: incremental
+-   What does this plot show?
+
+-   Considering previous results,
+
+-   Can we conclude about the quality of random assignment now?
+
+-   If there is a causal effect of technology on yields, which effect is this?
+
+-   How does the effect change depending on the variety?
+:::
+:::
+:::
+
+## HT: effect of variety on yields {.smaller}
+
+::: columns
+::: {.column width="65%"}
+```{r}
+modelsummary::datasummary_balance(
+  . ~ variety, fert_dta |> select(variety, yield),
+  stars = TRUE, output = "kableExtra")
+```
+
+Significance levels are: '+'=.1, '\*'=.05, '\*\*'=.01, '\*\*\*'=0.001
+
+```{r}
+#| eval: false
+#| echo: true
+t.test(yield ~ variety, data = fert_dta)
+# 	Welch Two Sample t-test
+# 
+# data:  yield by variety
+# t = -6.5019, df = 57.917, p-value = 2.013e-08
+# alternative hypothesis: true difference in means
+#     between group V1 and group V2 is not equal to 0
+# 95 percent confidence interval:
+#  -1.8375243 -0.9724091
+# sample estimates:
+# mean in group V1 mean in group V2 
+#         4.734033         6.139000 
+```
+:::
+
+::: {.column width="35%"}
+::: incremental
+-   Formulate H0 and H1.
+
+-   Conclude about the yield difference between varieties.
+
+-   Based on our sample, can we conclude that variety has a causal effect on yields?
+
+-   Does our sample ensure the ceteris paribus? How does our sample ensure it?
+:::
+:::
+:::
+
+## Conclude again
+
+::: incremental
+-   Does the random assignment of technology ensure the ceteris paribus here?
+
+-   What are the most relevant other factors that may influence the ceteris paribus in our sample?
+
+-   Given that what can we conclude about the causal effect of technology on yields?
+
+-   After today's lecture you should be able to answer the following:
+
+    -   Can we "control" the effects of the other factors?
+
+    -   What econometric method can we use to re-establish the ceteris paribus?
+
+    -   How (can we at all) measure the effects of other factors such as fertilizer application on the yields?
+:::
+
+## How to measure the effect of nitrogen fertilizer on yield?
+
+```{r}
+a1 <- 
+  fert_dta |> 
+  ggplot() + 
+  aes(y = yield, x = nitrogen, colour = tech) + 
+  geom_point() + 
+  ylab("Rice yield, T/ha") + xlab("Nitrogen application, kg/ha")
+
+a2 <- a1 + geom_smooth(method = "lm", se = FALSE)
+```
+
+::: r-stack
+```{r}
+#| fig-width: 10
+#| fig-height: 6
+a1
+```
+
+::: fragment
+```{r}
+#| fig-width: 10
+#| fig-height: 6.5
+a2
+```
+:::
+:::
+
+## Framework for interpreting any statistical test {.smaller}
+
+***For your reference and information.***
+
+The keywords/concepts below are meant to improve the clarity of communication when delivering the hypothesis testing results. Please utilize them! They will help make your results understandable for the audience and the reader.
+
+1.  Test name and what it is about (t-test about means comparison between two groups).
+
+2.  $H_0$ and $H_1$.
+
+3.  Estimated parameters (means, coefficients, differences, variance ratio), $df$ / n observations.
+
+4.  Level of significance of the HT. ($\alpha = 0.05$ or 5% level of significance)
+
+5.  Rejection rule: $\text{p-value} < \alpha$ or $|t| < c_{df, \, 1 - \alpha /2}$ (statistics vs critical value) or $1 - \alpha$ confidence intervals (95% CI).
+
+6.  Conclusions: reject/fail to reject;
+
+7.  Implications
+
+    -   what do these conclusions imply for your analysis?
+
+    -   (for example. ... reject $H_0$. Thus, the mean "outcome" in the treatment group XX is higher than that in the control group, suggesting about the great success of our intervention ...).
