@@ -74,6 +74,94 @@ pp_2a <-
               colour = "#e41a1c",
               linewidth = 1.5) 
 
+pp_aux1 <- 
+  pp_1 +
+  scale_x_continuous(
+    breaks = c(1.125, 3.625),
+    labels = c("Small plot", "Large plot"),
+    # expand = c(0, 0),
+    limits = c(0, max(plot_pop_dta$area))
+  ) + 
+  geom_vline(aes(xintercept = 2.5)) +
+  geom_abline(aes(slope = bta1, intercept = bta0),
+              colour = "#e41a1c",
+              linewidth = 1.5) 
+
+plot_pop_dta2 <- 
+  plot_pop_dta %>%
+  mutate(plot_size = ifelse(area < 2.5, "Small plot", "Large plot") |> factor(levels = c("Small plot", "Large plot")),
+         plot_large = ifelse(area < 2.5, 0, 1))
+
+pp_aux2 <- 
+  pp_1 %+% plot_pop_dta2 +
+  aes(x = plot_large, y = value) + 
+  scale_x_continuous(
+    breaks = c(0, 1),
+    labels = c("0\n(Small plot)", "1\n(Large plot)") 
+  ) + 
+  xlab("Plot type by size") 
+
+
+fit01 <- lm(value ~ plot_large, plot_pop_dta2)
+
+pp_aux3 <- 
+  pp_aux2 +
+  geom_abline(aes(slope = fit01[[1]][[2]], intercept = fit01[[1]][[1]]),
+              colour = "#e41a1c",
+              linewidth = 1.5) 
+
+
+pp_aux4 <- 
+  pp_aux3 +
+  geom_errorbar(
+    aes(x = 0.05, ymin = 0, ymax = fit01[[1]][[1]]),
+    width = 0.1,
+    colour = "#377eb8",
+    linewidth = 1.5
+  ) +
+  ggplot2::annotate(
+    "label",
+    alpha = 0.9,
+    x = 0.1,
+    y = fit01[[1]][[1]] / 2,
+    label = expression(beta[0] == 1699.595),
+    hjust = 0,
+    colour = "#377eb8",
+    size = 5
+  )
+
+pp_aux5 <- 
+  pp_aux4 +
+  geom_segment(
+    x = 0,
+    xend = 1,
+    y = fit01[[1]][[1]]  ,
+    yend = fit01[[1]][[1]] ,
+    linetype = 2,
+    colour = "#4daf4a",
+    size = 1.5
+  ) +
+  geom_errorbar(
+    aes(
+      x = 1.05,
+      ymin =  fit01[[1]][[1]],
+      ymax =  fit01[[1]][[1]] + fit01[[1]][[2]]
+    ),
+    width = 0.1,
+    colour = "#4daf4a",
+    size = 1.5
+  ) +
+  ggplot2::annotate(
+    "label",
+    alpha = 0.9,
+    x = 0.9,
+    y = bta0 + 1 * bta1 + bta1 * 1.5,
+    label = expression(beta[1] == 810.95),
+    hjust = 0,
+    colour = "#4daf4a",
+    size = 5
+  ) 
+
 pp_2 <-
   pp_2a  +
   ggplot2::annotate(

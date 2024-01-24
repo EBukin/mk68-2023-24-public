@@ -44,18 +44,39 @@ get_sum_stat <- function(dta, var, group_var, dig = 2, sep = "|") {
 }
 ```
 
-## Multiple Linear Regression
+## Multiple Linear Regression vocabulary
+
+Regression equation: 
 
 $$y = \hat {\beta}_{0} + \hat {\beta}_{1}x_1 + \hat {\beta}_{2}x_2 + \hat {\beta}_{3}x_3 + \cdots + \hat {\beta}_{k}x_k + \hat u$$
 
 ::: incremental
--   $\hat u$ - Error term, or disturbance containing factors other than $x_1, x_2, \cdots, x_k$ that affect $y$
+-   $y$ the dependent variable;
+
+-   $x_1, x_2, x_3, \cdots x_k$ the independent variables from the set $k$;
 
 -   $\hat {\beta}_{0}$ - intercept (constant term);
 
 -   $\hat {\beta}_{1}$, $\hat {\beta}_{2}$, $\hat {\beta}_{k}$ - coefficients / parameters associated with $x_1$, $x_2$, ... $x_k$;
 
--   $k$ - entire set of independent variables;
+:::
+
+## Multiple Linear Regression vocabulary (cont.)
+
+After we estimate the regression equation and obtain our estimates $\hat {\beta}_{0}, \hat {\beta}_{1}, \hat {\beta}_{2}, \cdots, \hat {\beta}_{k}$ we can calculate:
+
+::: fragment
+$\hat y$ fitted of predicted value or the dependent variable and 
+$\hat u$ error terms
+:::
+
+::: fragment
+$$\hat y = \hat {\beta}_{0} + \hat {\beta}_{1}x_1 + \hat {\beta}_{2}x_2 + \hat {\beta}_{3}x_3 + \cdots + \hat {\beta}_{k}x_k$$
+:::
+
+
+::: fragment
+$$\hat u = y - \hat y$$
 :::
 
 ## Motivation befind MLR

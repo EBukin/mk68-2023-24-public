@@ -454,7 +454,7 @@ get_plots(nonlin_dta,
 ## Common linear transformations {.smaller}
 
 |    Model    | Dep. Var. | Indep. Var. |      Interpretation of $\beta_1$      |                         Interpretation                          |
-|:------------:|:------------:|:------------:|:------------:|:---------------:|
+|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|
 | Level-level |    $y$    |     $x$     |     $\Delta y = \beta_1 \Delta x$     |    1 unit change in $x$ causes $\beta_1$ units change in $y$    |
 |  Level-log  |    $y$    |  $log(x)$   | $\Delta y = (\beta_1/100)\% \Delta x$ |   1 % change in $x$ causes $\beta_1/100$ units change in $y$    |
 |  Log-level  | $log(y)$  |     $x$     | $\% \Delta y = (100\beta_1) \Delta x$ |    1 unit change in $x$ causes $100 \beta_1$ % change in $y$    |
@@ -468,12 +468,12 @@ get_plots(nonlin_dta,
 
 # Linearity Example 1: Anscombe quartet
 
-## The Anscombe quartet
+## The Anscombe quartet {.smaller}
 
 -   Four data sets of 11 observations each and two variables (x and y).
 
 ::: columns
-::: {.column width="50%"}
+::: {.column width="45%"}
 ::: fragment
 ```{r}
 #| code-fold: true
@@ -490,9 +490,9 @@ anscombe %>%
 :::
 :::
 
-::: {.column width="50%"}
+::: {.column width="55%"}
 ::: fragment
-### SLR y on x {.smaller}
+### SLR y on x 
 
 ```{r echo=FALSE}
 #| code-fold: true

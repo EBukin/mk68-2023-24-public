@@ -30,7 +30,9 @@ knitr::opts_chunk$set(out.width = "100%")
 
 two-variables linear or bi-variate linear regression model.
 
-> Explains how $y$ - Dependent variable varies with changes in $x$ - independent variable.
+> Explains how $y$ the Dependent variable
+> varies with 
+> changes in $x$ the independent variable.
 
 ## SLR on population and sample {.smaller}
 
@@ -110,7 +112,7 @@ pp_1
 ```{r}
 #| fig-width: 7
 #| fig-height: 4
-pp_2
+pp_2a
 ```
 :::
 
@@ -160,6 +162,107 @@ pp_7
 #| fig-height: 4
 pp_8
 ```
+:::
+:::
+
+## Regression Line (cont.)
+
+::: columns
+::: {.column width="50%"}
+::: r-stack
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+pp_2a
+```
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+pp_aux1
+```
+:::
+:::
+:::
+::: {.column width="50%"}
+::: fragment
+`plot_large` is a dummy variable also called an "indicator variable"
+:::
+::: r-stack
+
+::: fragment
+```{r}
+print(plot_pop_dta2, n = 12)
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+pp_aux2
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+pp_aux3
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+pp_aux4
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+pp_aux5
+```
+:::
+:::
+:::
+:::
+
+
+## Regression Line (cont.)
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+pp_aux5
+```
+:::
+::: {.column width="50%"}
+::: fragment
+```{r}
+#| eval: false
+#| echo: true
+t.test(value ~ plot_size, plot_pop_dta2)
+# 	Welch Two Sample t-test
+# data:  value by plot_size
+# t = -29.887, df = 594.75, p-value < 2.2e-16
+# alternative hypothesis: true difference in means 
+#    between group Small plot and group Large plot 
+#    is not equal to 0
+# 95 percent confidence interval:
+#  -2094.443 -1836.148
+# sample estimates:
+# mean in group Small plot 
+#                 1699.595
+# mean in group Large plot 
+#                 3664.890 
+```
+:::
 :::
 :::
 

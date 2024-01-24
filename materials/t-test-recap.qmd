@@ -35,15 +35,17 @@ An RCT experimenter was designed to understand the effect of technology (Minimal
 
 1.  Randomly selected 60 farms, and
 
+    -   each farmer decide what rice variety to produce out of two available.
+
 2.  Trained half of them in applying Optimal technology (treatment), and
 
 3.  Half of the farmers remained with the same minimal technology (control).
 
 During the production season, researchers recorded for each farm:
 
--   technology, rice variety, rice yield, and nitrogen fertilizer use.
+-   technology, rice variety, rice yield, and fertilizers use.
 
-The research objective is to measure the effect of technology on rice yield.
+The research objective is to **measure the effect of technology on rice yield**.
 
 Answer questions on the following slides based on this example.
 
