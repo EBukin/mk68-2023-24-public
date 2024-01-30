@@ -1,0 +1,573 @@
+---
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+# source(here::here("materials", "00-setup.R"), local = TRUE)
+# knitr::opts_chunk$set(fig.width = 8)
+# knitr::opts_chunk$set(fig.height = 4.5)
+library(knitr)
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+library(ggbrace)
+library(ggpmisc)
+library(GGally)
+library(modelsummary)
+library(parameters)
+library(performance)
+library(effectsize)
+library(here)
+library(patchwork)
+library(equatiomatic)
+ggplot2::theme_set(ggplot2::theme_minimal())
+# source(here::here("materials", "00-setup.R"), local = TRUE)
+knitr::opts_chunk$set(fig.width = 8)
+knitr::opts_chunk$set(fig.height = 4.5)
+knitr::opts_chunk$set(fig.retina = 2)
+knitr::opts_chunk$set(out.width = "100%")
+
+
+get_sum_stat <- function(dta, var, group_var, dig = 2, sep = "|") {
+  
+  # var <- "TOTHHMEM"
+  # group_var <- "Group"
+  # dig <- 2
+  # sep <- "|"
+  
+  group_var2 <- sym(group_var)
+  dta %>% 
+    select(var, group_var) %>% 
+    pivot_longer(cols = var) %>% 
+    group_by(name, !!group_var2) %>% 
+    summarise(
+      across(value , 
+             list(n = ~ n(), 
+                  mean = ~ mean(., na.rm = TRUE) %>% round(dig), 
+                  sd = ~ sd(., na.rm = TRUE) %>% round(dig), 
+                  se = ~ (sd(., na.rm = TRUE)/sqrt(n())) %>% round(dig)),
+             .names = "{.fn}"
+      )
+    ) %>% 
+    mutate(`Mean (SD) [SE]` = str_c(mean, " (", sd, ") [", se, "]")) %>% 
+    select(-mean, -sd, -se) %>% 
+    ungroup() %>% 
+    pivot_wider(names_from = group_var, 
+                values_from = c(n, `Mean (SD) [SE]`), 
+                names_sep = sep)
+}
+
+
+parse_plot_ggtbl <- function(dta, parse = TRUE, drop_line = TRUE) {
+  dta <- 
+    dta %>%
+    mutate(
+      across(where(is.numeric), ~ scales::number(., accuracy = 0.01, big.mark = " "))
+      )
+  
+  if (drop_line) {
+    dta <- 
+      dta %>%
+      mutate(
+        across(everything(), ~ifelse(row_number() == nrow(dta) - 1, "\u2026", .))
+        )
+  }
+  
+  # thm <- gridExtra::ttheme_default(padding = unit(c(1, 1), "mm"), parse = T)
+  
+  ggplot() +
+    theme_void() +
+    # annotate("table_npc",
+    #          xmin = 0, xmax = 1,
+    #          ymin = 0, ymax = 1,
+    #          label = list(dta))+
+    ggpp::geom_table(aes(
+      x = 0,
+      y = 0,
+      label = list(dta)
+    ),
+    parse = parse#, 
+    # table.theme = thm
+    ) +
+    scale_x_continuous(expand = expansion(0, 0))+ 
+    scale_y_continuous(expand = expansion(0, 0))
+
+}
+
+
+kable_part <- function(x, rown_number = FALSE) {
+  
+  if (rown_number) {
+    x <- x %>% mutate(id = row_number()) %>% select(id, everything())
+  }
+  xx <- x %>% slice(1:7) %>% 
+    mutate(across(everything(), ~ as.character(.)))
+
+  xx[6, seq(1, ncol(xx))] <- "$\\cdots$"
+  xx %>% kable(row.names = FALSE, align = "c")
+}
+```
+
+## 1. Problem setting
+
+We would like to assess the effect of the "Conservation Reserve Program" (CPR) on the agricultural land prices.
+
+::: incremental
+Conservation Reserve Program
+
+-   is a subsidy
+-   obligates farms NOT TO GROW ANY CROPS on the enrolled land
+-   pays monetary compensation in exchange;
+:::
+
+::: fragment
+As this is a risk less income, it may increase the land price.
+
+-   However, if the land is productive, such set-aside measure may reduce farmland price.
+:::
+
+```{r}
+landprice_dta <- 
+  alr4::MinnLand %>% 
+  as_tibble()  %>%
+  # filter(year == 2007) %>% 
+  select(acrePrice, acres, region, 
+         tillable, crpPct, productivity) %>% 
+  filter(if_all(everything(), ~!is.na(.)))
+
+fit_land_0 <- lm(
+  acrePrice ~ crpPct + acres + region + tillable +  productivity, 
+  landprice_dta)
+
+fit_land_1 <- lm(
+  log(acrePrice) ~ crpPct + acres + region + tillable +  productivity, 
+  landprice_dta)
+```
+
+## 2. Regression model formulation {.smaller}
+
+Hedonic price model [@palmquist1989] is an econometric approach of quantifying monetary values of differentiated characteristics of goods or services, which are subjects of economic exchange.
+
+The theory of the hedonic price model allows us to estimate the price as a function of all characteristics of a good. Available variables in our data [@taff2007compensated] are:
+
+::: fragment
+::: columns
+::: {.column width="50%"}
+-   `acrePrice` - sale price in dollars per acre;
+-   `crpPct` - the percentage of the farm area enrolled in CRP;
+-   `acres` - size of the farm in acres;
+-   `region` - region in the state Minnesota;
+:::
+
+::: {.column width="50%"}
+-   `tillable` - percentage of farm that is rated arable by the assessor;
+-   `productivity` - average agronomic productivity scaled 1 to 100, with larger numbers for more productive land;
+:::
+:::
+
+::: fragment
+EQ: **Write down a regression equation.**
+:::
+
+
+::: fragment
+```{r}
+#| results: asis
+extract_eq(fit_land_0, wrap = TRUE, terms_per_line = 3 , use_coefs = FALSE)
+```
+:::
+
+::: fragment
+EQ: **Formulate the ex-ante hypothesis about the sign and magnitude of the coefficient XXX ?. In 1-2 sentences, explain why (based on what theory, common seance) you make this hypothesis.**
+:::
+
+:::
+
+## 3 Exploratory data analysis {.smaller}
+
+### 3.1 The data
+
+```{r}
+library(knitr)
+set.seed(121123)
+landprice_dta %>% 
+  filter(crpPct  > 0) %>% 
+  sample_n(15) %>%
+  kable()
+  # kable_part(rown_number = 15)
+```
+
+## 3.2 Summary statistics {.smaller}
+
+```{r}
+f <- All(landprice_dta) ~ N + Mean + SD + Min + Median + Max + Histogram
+datasummary(f, landprice_dta)
+  # get_sum_stat(
+  #   c("acrePrice", "acres", "tillable", "crpPct", "productivity" ),
+  #   group_var = "ggrp",
+  #   sep = ""
+  # ) %>% 
+  # kable()
+
+landprice_dta %>% 
+  mutate(ggrp = "") %>%
+  modelsummary::datasummary_skim(type = "categorical")
+```
+
+## 3.3 Regional differences {.smaller}
+
+::: columns
+::: {.column width="75%"}
+```{r}
+#| fig-width: 8
+#| fig-height: 6
+landprice_dta %>% 
+  ggplot() + 
+  aes(y = acrePrice , x = region, colour = region) + 
+  geom_boxplot() + 
+  scale_y_log10(n.breaks = 10) +
+  annotation_logticks(sides = "l") + 
+  ylab("Land price, USD/acre")
+```
+:::
+
+::: {.column width="25%"}
+-   What kind of plat is this?
+-   **What (if any) transformation of Y axis is used on the plot?**
+-   What can we conclude about the land prices by region?
+-   EQ: **What are the possible causes of price differences between the regions?**
+-   EQ: **Does the region causes land prices to be different?**
+:::
+:::
+
+## 3.4 Distributions
+
+::: columns
+::: {.column width="75%"}
+```{r}
+#| fig-width: 8
+#| fig-height: 6
+landprice_dta %>% 
+  # bind_rows(landprice_dta %>% mutate(region = "Entire state")) %>% 
+  ggplot() + 
+  aes(x = acrePrice , group = region, colour = region, fill = region) + 
+  geom_density(alpha = 0.4) +
+  # geom_boxplot() + 
+  scale_x_log10(n.breaks = 10) +
+  annotation_logticks(sides = "b") + 
+  xlab("Land price, USD/acre")
+```
+:::
+
+::: {.column width="25%"}
+-   What kind of plot is this?
+-   What does it show?
+-   **What (if any) transformation of X axis is used on the plot?**
+-   What differences and similarities does it manifest?
+:::
+:::
+
+## 3.5 Scatter plots
+
+::: columns
+::: {.column width="75%"}
+::: r-stack
+```{r}
+#| fig-width: 8
+#| fig-height: 6
+landprice_dta %>%
+  select(-region) %>%
+  ggpairs(lower = NULL, upper = NULL)
+```
+
+::: fragment
+```{r}
+#| fig-width: 8
+#| fig-height: 6
+landprice_dta %>%
+  select(-region) %>%
+  ggpairs(lower = NULL)
+```
+:::
+
+::: fragment
+```{r}
+#| fig-width: 8
+#| fig-height: 6
+landprice_dta %>%
+  select(-region) %>%
+  ggpairs(lower = list(continuous = wrap(
+    "smooth", alpha = 0.15, size = 0.2
+  )))
+```
+:::
+:::
+:::
+::: {.column width="25%"}
+-   EQ: **What kind of relationship exist between `acrePrices` (land price per acre, USD) and `acres` (plot size in acres) variables?** (Linear/non linear, strong/weak correlation, positive/negative)
+
+-   EQ: same question for any other pair of variables.
+:::
+:::
+
+## 4. Estimating the regression
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "1-3,7-16,18-20"
+fit_land_0 <- lm(
+  acrePrice ~ crpPct + acres + region + tillable +  productivity, 
+  landprice_dta)
+summary(fit_land_0)
+# Coefficients:
+#                      Estimate Std. Error t value Pr(>|t|)    
+# (Intercept)           80.2822   102.3493   0.784   0.4328    
+# crpPct                -6.9429     1.0727  -6.473 1.02e-10 ***
+# acres                 -1.2898     0.1650  -7.818 6.00e-15 ***
+# regionWest Central   995.2924    58.0391  17.149  < 2e-16 ***
+# regionCentral       1950.2114    64.5434  30.215  < 2e-16 ***
+# regionSouth West    1291.8278    58.3426  22.142  < 2e-16 ***
+# regionSouth Central 1747.5506    62.5597  27.934  < 2e-16 ***
+# regionSouth East    2040.6768    72.4923  28.150  < 2e-16 ***
+# tillable               2.1123     0.9691   2.180   0.0293 *  
+# productivity          23.6903     1.3300  17.812  < 2e-16 ***
+# 
+# Residual standard error: 1332 on 8777 degrees of freedom
+# Multiple R-squared:  0.2654,	Adjusted R-squared:  0.2647 
+# F-statistic: 352.4 on 9 and 8777 DF,  p-value: < 2.2e-16
+```
+
+## 6. Results interpretation {.smaller}
+
+::: columns
+::: {.column width="70%"}
+```{r}
+model_parameters(fit_land_0, summary = TRUE, ci = NULL) %>% 
+  print_md(digits = 2)
+```
+:::
+::: {.column width="30%"}
+::: fragment
+Note units of measurement: 
+
+`acrePrice` sale price in USD per acre; 
+
+`crpPct` is % of all farm acres enrolled under program (CRP);
+
+`acres` size of the farm in acres;
+
+`region` is the sub-regions in the state of Minnesota;
+
+`tillable` is the percentage of farm that is rated arable by the assessor;
+
+`productivity` is the average agronomic productivity scaled 1 to 100, with larger numbers for more productive land.
+:::
+:::
+:::
+
+::: fragment
+EQ: **Write down full interpretation of and perform a hypothesis testing on each coefficient.**
+:::
+
+## 5. Checking the linearity assumption
+
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig-width: 7
+#| fig-height: 6
+plot(x = landprice_dta$acrePrice , y = landprice_dta$acres)
+```
+
+::: fragment
+Is relationship between `acrePrice` and `acres` linear?
+:::
+
+:::
+::: {.column width="50%"}
+
+::: fragment
+```{r}
+#| fig-width: 7
+#| fig-height: 6
+plot(fit_land_0, which = 1)
+```
+:::
+
+::: fragment
+Is the linearity assumption satisfied in our regression?
+:::
+:::
+:::
+
+## 4. Regression re-specification {.smaller}
+
+```{r}
+fit_land_1 <- lm(
+  log(acrePrice) ~ crpPct + log(acres) + region + tillable + productivity, 
+  landprice_dta)
+# parameters(fit_land_1, summary = TRUE) %>% print_html(digits = 5)
+```
+
+
+Let us transform `acrePrice` and `acres`variables with the log transformation and estimate the regression again. The old regression is:
+
+```{r}
+#| results: asis
+extract_eq(fit_land_0, wrap = TRUE, terms_per_line = 3 , use_coefs = FALSE)
+```
+
+
+::: fragment
+**Write down the new regression equation with the transformations.**
+:::
+
+
+::: fragment
+```{r}
+#| results: asis
+extract_eq(fit_land_1, wrap = TRUE, terms_per_line = 3 , use_coefs = FALSE)
+```
+:::
+
+## 4.1 Results of the re-sprcified regression {.smaller}
+
+```{r}
+fit_land_1 <- lm(
+  log(acrePrice) ~ crpPct + log(acres) + region + tillable + productivity, 
+  landprice_dta)
+
+# model_parameters(fit_land_1, summary = TRUE, ci = NULL) %>% 
+#   print_md(digits = 2)
+
+modelsummary(list(`log(acrePrice)` = fit_land_1), 
+  output = "markdown",
+  estimate = "{estimate} ({std.error}){stars}",
+  statistic = NULL, gof_omit = c("AIC|BIC|Log|F|RMSE"), 
+  stars = TRUE, 
+  notes = c(
+    # "Note: ",
+    "p-values are: '+' p < 0.1, '\\*' p < 0.05, '\\*\\*' p < 0.01, '\\*\\*\\*' p < 0.001. 
+    Standard errors are reported in parentheses"))
+```
+
+## 5. Re-checking Linearity
+
+::: columns
+::: {.column width="50%"}
+Before:
+
+```{r}
+#| fig-width: 7
+#| fig-height: 7
+plot(fit_land_0, which = 1)
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+After the log transformation:
+
+```{r}
+#| fig-width: 7
+#| fig-height: 7
+plot(fit_land_1, which = 1)
+```
+:::
+:::
+:::
+
+## 6.1 Results interpretation (with log tranformation) {.smaller}
+
+::: columns
+::: {.column width="55%"}
+```{r}
+# model_parameters(fit_land_1, summary = TRUE, ci = NULL) %>% 
+#   print_md(digits = 3)
+modelsummary(list(`log(acrePrice)` = fit_land_1), 
+  output = "markdown",
+  estimate = "{estimate} ({std.error}){stars}",
+  statistic = NULL, gof_omit = c("AIC|BIC|Log|F|RMSE"), 
+  stars = TRUE, 
+  notes = c(
+    # "Note: ",
+    "p-values are: '+' p < 0.1, '\\*' p < 0.05, '\\*\\*' p < 0.01, '\\*\\*\\*' p < 0.001. 
+    Standard errors are reported in parentheses"))
+```
+:::
+
+::: {.column width="45%"}
+Log transformation requires adjusting the interpretation:
+
+::: fragment
+$\log(y) = \beta \log (x)$ is a **log-log** transformation
+
+-   1 **% (percent)** change in $x$ causes $\beta$ **% (percent)** change in $y$ (AKA Elasticity).
+:::
+
+
+::: fragment
+$\log(y) = \beta x$ is a **log-level** transformation
+
+-   1 **unit** change in $x$ causes $100 \beta$ **% (percent)** change in $y$.
+:::
+
+
+::: fragment
+$y = \beta \log(x)$ is a **level-log** transformation
+
+-   1 **% (percent)** change in $x$ causes $\beta / 100$ **unit** in $y$.
+:::
+
+::: fragment
+EQ: **Interpret selected coefficients and perform statistical hypothesis testing on them.**
+:::
+:::
+:::
+
+## 8. Comparing two models and concluding {.smaller}
+
+::: columns
+::: {.column width="70%"}
+```{r}
+modelsummary(
+  list(`acrePrice` = fit_land_0, 
+       `log(acrePrice)` = fit_land_1), 
+  output = "kableExtra",
+  estimate = "{estimate} ({std.error}){stars}",
+  statistic = NULL, gof_omit = c("AIC|BIC|Log|F|RMSE"), 
+  stars = TRUE)
+```
+
+__Note:__
+^^ + p < 0.1, * p < 0.05, ** p < 0.01, *** p < 0.001
+
+:::
+::: {.column width="30%"}
+Conclude:
+
+::: fragment
+EQ: **Which model would you choose to explain the effect of `crpPct` on the price of land?**
+:::
+
+::: fragment
+EQ: **Which model best explains the relationship between X and Y?**
+:::
+
+::: fragment
+**What is the effect of `crpPct` on land price?**
+:::
+
+::: fragment
+**Which estimated effects are different from your ex-ante hypothesis? Provide a plausible explanation why are they different?**
+:::
+:::
+:::
