@@ -17,47 +17,44 @@ On each farm, they demarcate 3 experimental fields and train farmers how to appl
 
 In each trial, random plots (out of the demarcated ones) were selected on each farm for applying different levels of fertilizers.
 
-The authors measured: 
+The authors measured:
 
--   returns as [output value of (treatment  - control) - inputs cost] / [inputs cost] 
--   yields change (treatment  - control) / (control) * 100
+-   returns as \[output value of (treatment - control) - inputs cost\] / \[inputs cost\]
+-   yields change (treatment - control) / (control) \* 100
 
 ## Results {.smaller}
 
 ![](img/duflo2008_T1.png)
 
-
 ::: columns
 ::: {.column width="50%"}
-
-Column (1) reports the mean in returns and yields between control and treatment fields for different rates of fertilizer application over all growing seasons.
-
+Column (1) reports the mean in returns and yields between control and treatment fields for different rates of fertilizer application overall growing seasons.
 :::
+
 ::: {.column width="50%"}
--   What yields change is associated with different levels of fertilizers application?
+-   What yield change is associated with different levels of fertilizer application?
 
--   Can we conclude that fertilizers application improves yields/returns on average in the population?
+-   Can we conclude that fertilizer application improves yields/returns on average in the population?
 
--   What rates of fertilizers application improve yields/returns on average in the population?
+-   What rates of fertilizer application improve yields/returns on average in the population?
 :::
 :::
 
 ## Is the ceteris paribus ensured in this RCT?
 
-Authors were criticized if the ceteris paribus holds in their experiment 
+Authors were criticized if the ceteris paribus holds in their experiment
 
--   specifically with respect to the monetary return levels.
+-   specifically concerning the monetary return levels.
 
 -   monetary outcomes often depend on many observed and unobserved factors, therefore, they are often seen as "endogenous" in econometrics.
 
-    -   What other factors can have an effect on the return?
-    
-    -   How can we ensure that other factors have no effect on the return?
-    
+    -   What other factors can affect the return?
+
+    -   How can we ensure that other factors do not affect the return?
+
 ## Authors solution is the regression analysis
 
 ::: fragment
-
 $$
 \begin{aligned}
 \operatorname{Return} &= \beta_0 +
@@ -70,31 +67,34 @@ $$
 $$
 :::
 
-If other factors have no effect on return,
+If other factors affect the return,
 
 -   What signs/values coefficients $\beta_\cdot$ should have?
 
--   Formulate ex-ante hypothesis about the expected signs of the coefficients.
+-   Formulate ex-ante hypotheses about the expected signs of the coefficients.
 
-## Checks and balance (1)
+## Checks and balances (1)
 
 ![](img/duflo2008_T2.png)
 
-Note: p-values are '\\*' p < 0.1, '\\*\\*' p < 0.05, '\\*\\*\\*' p < 0.01. Standard errors are reported in parentheses.
+Note: p-values are '\*' p \< 0.1, '\*\*' p \< 0.05, '\*\*\*' p \< 0.01. Standard errors are reported in parentheses.
 
-## Checks and balance (2)
+## Checks and balances (2)
 
 ::: columns
 ::: {.column width="75%"}
 ![](img/duflo2008_T2.png)
 
-Dependent variables: Return %.
+Note: p-values are '\*' p \< 0.1, '\*\*' p \< 0.05, '\*\*\*' p \< 0.01. Standard errors are reported in parentheses.
+
+The dependent variable in all regressions is Return %. Only sub-samples are different between the columns.
 :::
 
 ::: {.column width="25%"}
-
--   What effect education or other factors have on the return?
+-   What effect does education or other factors have on the return?
 
 -   Has the RCT experiment ensured the ceteris paribus?
+
+-   What about the GOF? How well do regressions explain variance in return? Is it enough to make any (previous) conclusions?
 :::
 :::

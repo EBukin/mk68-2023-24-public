@@ -1,0 +1,89 @@
+---
+title: "Week 07. Multiple Linear Regression. Practice."
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+    incremental: false 
+editor_options: 
+  chunk_output_type: console
+---
+
+# Causal interpretation of the MLR
+
+## Multiple Regression Controls for the factors that matter...
+
+::: fragment
+-   These are only the factors that are included in the model.
+:::
+
+::: fragment
+::: {.callout-note appearance="simple"}
+### All other factors that are not included in the MLR are assumed to remain constant!
+
+-   External Ceteris Paribus is assumed.
+:::
+:::
+
+::: fragment
+Violation of the Ceteris Paribus causes Bias.
+:::
+
+## Assumptions {.smaller}
+
+> ensure that the linear regression estimates are **unbiased** and **efficient**
+
+> They essentially ensure the ceteris paribus.
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+::: {.callout-important appearance="minimal"}
+### OLS is unbiased. Assumptions 1 to 4 are satisfied:
+
+1.  Linearity
+2.  Random Sampling
+3.  No Collinearity
+4.  No Endogeneity
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+::: {.callout-warning appearance="minimal"}
+### OLS is unbiased and efficient or Best Linear Unbiased Estimator (BLUE)
+
+5.  Homoscedasticity (No Autocorrelation)
+:::
+:::
+:::
+:::
+
+::: fragment
+::: {.callout-caution appearance="minimal"}
+### OLS is a Classical linear model (CLM). Assumptions 1 to 6 are satisfied
+
+6.  Error Terms Normality
+:::
+:::
+
+# Example 1. Hedonic Land prices model
+
+{{< include mlr-example-land-price.qmd >}}
+
+# Example 2. Production function
+
+{{< include mlr-example-production-function.qmd >}}
+
+# Example 3. @Duflo2008 How High Are Rates of Return to Fertilizer? Evidence from Field Experiments in Kenya
+
+{{< include mlr-rct-example-duflo2008.qmd >}}
+
+# Regression in Excel
+
+You can use Excel to perform a regression analysis. There are many tutorials online.
+
+See for example: [https://youtu.be/9wX1a1J4WOI](https://youtu.be/9wX1a1J4WOI?si=9S_Sa46Urfk_QBEB)
+
+# References
