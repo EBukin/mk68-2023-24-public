@@ -208,7 +208,7 @@ rice_dta_0 %>%
   kable()
 ```
 
-## 3.2 Summary statistics
+## 3.2 Summary statistics {.smaller}
 
 ```{r}
 f <- All(rice_dta_0) ~ N + Mean + SD + Min + Median + Max + Histogram

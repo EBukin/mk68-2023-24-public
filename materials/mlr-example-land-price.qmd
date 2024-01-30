@@ -271,7 +271,7 @@ landprice_dta %>%
 :::
 :::
 
-## 3.5 Scatter plots
+## 3.5 Scatter plots {.smaller}
 
 ::: columns
 ::: {.column width="75%"}
