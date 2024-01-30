@@ -212,9 +212,9 @@ rice_dta_0 %>%
 
 ```{r}
 f <- All(rice_dta_0) ~ N + Mean + SD + Min + Median + Max + Histogram
-datasummary(f, rice_dta_0)
+datasummary(f, rice_dta_0, output = "markdown")
 rice_dta_0 %>% 
-  modelsummary::datasummary_skim(type = "categorical")
+  modelsummary::datasummary_skim(type = "categorical", output = "markdown")
 ```
 
 ## 3.3 What effect BIMAS program have? {.smaller}
@@ -235,11 +235,9 @@ rice_dta_0 %>%
 :::
 
 ::: {.column width="25%"}
-What kind of plot is this?
-
-What can we conclude about the differences in rice output by program participation?
-
-EQ: **Does the program participation cause rice output to be different?**
+-  What kind of plot is this?
+-  What can we conclude about the differences in rice output by program participation?
+-  EQ: **Does the program participation cause rice output to be different?**
 :::
 :::
 
@@ -329,11 +327,13 @@ summary(fit_rice_0)
 ::: {.column width="50%"}
 ```{r}
 #| results: asis
-extract_eq(fit_rice_0, wrap = TRUE, terms_per_line = 3 , use_coefs = TRUE)
+extract_eq(fit_rice_0, wrap = TRUE, terms_per_line = 2 , use_coefs = TRUE)
 ```
 
 ::: fragment
-This first regression is in `level-level` form (without any linear transformation). Thus, interpretations are straightforward: 1 unit change in $x$ causes $\hat \beta$ unit change in $y$
+This first regression is in `level-level` form (without any linear transformation). Thus, interpretations are straightforward:
+
+-  1 unit change in $x$ causes $\hat \beta$ unit change in $y$.
 :::
 :::
 
@@ -349,7 +349,7 @@ mod_rows <- tribble(
 )
 attr(mod_rows, 'position') <- c(1, 2)
 mod_notes <- c(
-  "Notes: p-values are '+' p < 0.1, '\\*' p < 0.05, '\\*\\*' p < 0.01, '\\*\\*\\*' p < 0.001. Standard errors are reported in parentheses")
+  "p-values are '+' p < 0.1, '\\*' p < 0.05, '\\*\\*' p < 0.01, '\\*\\*\\*' p < 0.001. Standard errors are reported in parentheses")
 lin_prod <- 
   modelsummary(
   list(`Linear prod. fun (level-level)` = fit_rice_0#, 
@@ -465,9 +465,7 @@ plot(fit_rice_0, which = 1)
 
 ## 4. Model re-specification {.smaller}
 
-Estimating the Cobb-Douglas production function:
-
--   Please note, that $\log(\cdot)$ stands for a natural logarithm.
+Estimating the Cobb-Douglas production function. Note, that $\log(\cdot)$ stands for a natural logarithm.
 
 ```{r}
 #| results: asis
@@ -542,13 +540,13 @@ cd_prod <-
 :::
 
 ::: {.column width="20%"}
-What has changed?
+-  What has changed?
 
-Has any coefficient changed the sign?
+-  Has any coefficient changed the sign?
 
-Has any coefficient become significant / insignificant?
+-  Has any coefficient become significant / insignificant?
 
-How have the goodness of fit measures (GOF) changed?
+-  How have the goodness of fit measures (GOF) changed?
 :::
 :::
 

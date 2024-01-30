@@ -1,0 +1,100 @@
+---
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+editor_options: 
+  chunk_output_type: console
+---
+
+## Objective {.smaller}
+
+In [@Duflo2008] authors are trying to estimate the effect of fertilizers application on farms profit.
+
+They employ and randomized controlled trial experiment randomly selecting farmers between children's parents in certain schools.
+
+On each farm, they demarcate 3 experimental fields and train farmers how to apply certain quantities of fertilizers on these fields. They also supervised the farmers over the growing seasons accurately collected the harvest and measured the outcome each time.
+
+In each trial, random plots (out of the demarcated ones) were selected on each farm for applying different levels of fertilizers.
+
+The authors measured: 
+
+-   returns as [output value of (treatment  - control) - inputs cost] / [inputs cost] 
+-   yields change (treatment  - control) / (control) * 100
+
+## Results {.smaller}
+
+![](img/duflo2008_T1.png)
+
+
+::: columns
+::: {.column width="50%"}
+
+Column (1) reports the mean in returns and yields between control and treatment fields for different rates of fertilizer application over all growing seasons.
+
+:::
+::: {.column width="50%"}
+-   What yields change is associated with different levels of fertilizers application?
+
+-   Can we conclude that fertilizers application improves yields/returns on average in the population?
+
+-   What rates of fertilizers application improve yields/returns on average in the population?
+:::
+:::
+
+## Is the ceteris paribus ensured in this RCT?
+
+Authors were criticized if the ceteris paribus holds in their experiment 
+
+-   specifically with respect to the monetary return levels.
+
+-   monetary outcomes often depend on many observed and unobserved factors, therefore, they are often seen as "endogenous" in econometrics.
+
+    -   What other factors can have an effect on the return?
+    
+    -   How can we ensure that other factors have no effect on the return?
+    
+## Authors solution is the regression analysis
+
+::: fragment
+
+$$
+\begin{aligned}
+\operatorname{Return} &= \beta_0 +
+\beta_1 \operatorname{Farm size} + 
+\beta_2 \operatorname{Education} + 
+\beta_3 \operatorname{Income} \\ & + 
+\beta_4 \operatorname{Experience in fertilizer use} + \cdots \\ & + 
+\beta_k \operatorname{Other factors} + \epsilon
+\end{aligned}
+$$
+:::
+
+If other factors have no effect on return,
+
+-   What signs/values coefficients $\beta_\cdot$ should have?
+
+-   Formulate ex-ante hypothesis about the expected signs of the coefficients.
+
+## Checks and balance (1)
+
+![](img/duflo2008_T2.png)
+
+Note: p-values are '\\*' p < 0.1, '\\*\\*' p < 0.05, '\\*\\*\\*' p < 0.01. Standard errors are reported in parentheses.
+
+## Checks and balance (2)
+
+::: columns
+::: {.column width="75%"}
+![](img/duflo2008_T2.png)
+
+Dependent variables: Return %.
+:::
+
+::: {.column width="25%"}
+
+-   What effect education or other factors have on the return?
+
+-   Has the RCT experiment ensured the ceteris paribus?
+:::
+:::
