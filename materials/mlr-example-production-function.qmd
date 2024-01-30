@@ -1,0 +1,694 @@
+---
+editor: source
+format: 
+  revealjs:
+    preview-links: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+# source(here::here("materials", "00-setup.R"), local = TRUE)
+# knitr::opts_chunk$set(fig.width = 8)
+# knitr::opts_chunk$set(fig.height = 4.5)
+library(knitr)
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+library(ggbrace)
+library(ggpmisc)
+library(GGally)
+library(modelsummary)
+library(parameters)
+library(performance)
+library(effectsize)
+library(here)
+library(patchwork)
+library(equatiomatic)
+ggplot2::theme_set(ggplot2::theme_minimal())
+# source(here::here("materials", "00-setup.R"), local = TRUE)
+knitr::opts_chunk$set(fig.width = 8)
+knitr::opts_chunk$set(fig.height = 4.5)
+knitr::opts_chunk$set(fig.retina = 2)
+knitr::opts_chunk$set(out.width = "100%")
+
+
+get_sum_stat <- function(dta, var, group_var, dig = 2, sep = "|") {
+  
+  # var <- "TOTHHMEM"
+  # group_var <- "Group"
+  # dig <- 2
+  # sep <- "|"
+  
+  group_var2 <- sym(group_var)
+  dta %>% 
+    select(var, group_var) %>% 
+    pivot_longer(cols = var) %>% 
+    group_by(name, !!group_var2) %>% 
+    summarise(
+      across(value , 
+             list(n = ~ n(), 
+                  mean = ~ mean(., na.rm = TRUE) %>% round(dig), 
+                  sd = ~ sd(., na.rm = TRUE) %>% round(dig), 
+                  se = ~ (sd(., na.rm = TRUE)/sqrt(n())) %>% round(dig)),
+             .names = "{.fn}"
+      )
+    ) %>% 
+    mutate(`Mean (SD) [SE]` = str_c(mean, " (", sd, ") [", se, "]")) %>% 
+    select(-mean, -sd, -se) %>% 
+    ungroup() %>% 
+    pivot_wider(names_from = group_var, 
+                values_from = c(n, `Mean (SD) [SE]`), 
+                names_sep = sep)
+}
+
+
+parse_plot_ggtbl <- function(dta, parse = TRUE, drop_line = TRUE) {
+  dta <- 
+    dta %>%
+    mutate(
+      across(where(is.numeric), ~ scales::number(., accuracy = 0.01, big.mark = " "))
+      )
+  
+  if (drop_line) {
+    dta <- 
+      dta %>%
+      mutate(
+        across(everything(), ~ifelse(row_number() == nrow(dta) - 1, "\u2026", .))
+        )
+  }
+  
+  # thm <- gridExtra::ttheme_default(padding = unit(c(1, 1), "mm"), parse = T)
+  
+  ggplot() +
+    theme_void() +
+    # annotate("table_npc",
+    #          xmin = 0, xmax = 1,
+    #          ymin = 0, ymax = 1,
+    #          label = list(dta))+
+    ggpp::geom_table(aes(
+      x = 0,
+      y = 0,
+      label = list(dta)
+    ),
+    parse = parse#, 
+    # table.theme = thm
+    ) +
+    scale_x_continuous(expand = expansion(0, 0))+ 
+    scale_y_continuous(expand = expansion(0, 0))
+
+}
+
+
+kable_part <- function(x, rown_number = FALSE) {
+  
+  if (rown_number) {
+    x <- x %>% mutate(id = row_number()) %>% select(id, everything())
+  }
+  xx <- x %>% slice(1:7) %>% 
+    mutate(across(everything(), ~ as.character(.)))
+
+  xx[6, seq(1, ncol(xx))] <- "$\\cdots$"
+  xx %>% kable(row.names = FALSE, align = "c")
+}
+```
+
+## 1. Problem setting {.smaller}
+
+We would like to evaluate the causal effect of the BIMAS production intensification program on the rice output among rice-producing farmers in India.
+
+The outcome variable is:
+
+-   `goutput` - gross output of rice in kg per year produced on the farm.
+
+Independent variables are:
+
+::: incremental
+-   `bimas` **variable of interest** is an intensification program. Each farmer either participates in it (yes), partially participate (mixed), or does not participate (no).
+
+Control variables:
+
+-   `size` the total area cultivated with rice, measured in hectares;
+-   `urea` urea application in kilogram
+-   `phosphate` phosphate application in kilogram
+-   `hiredlabor` hired labor in hours
+-   `famlabor` family labor in hours
+:::
+
+```{r}
+data(RiceFarms, package = "plm")
+rice_dta_0 <- 
+  RiceFarms %>% 
+  as_tibble() %>% 
+  select(goutput, size, bimas, famlabor, hiredlabor, urea, phosphate) %>% 
+  filter(if_all(everything(), ~!is.na(.))) %>% 
+  filter(if_all(everything(), ~(.) !=0))
+
+fit_rice_0 <- lm(
+  goutput ~ size + bimas + famlabor + hiredlabor + urea + phosphate, 
+  rice_dta_0)
+
+fit_rice_1 <- lm(
+  log(goutput) ~ log(size) + bimas + log(famlabor) + log(hiredlabor) + 
+    log(urea) + log(phosphate), 
+  rice_dta_0)
+
+# modelsummary(
+#   list(`acrePrice` = fit_rice_0, 
+#        `log(acrePrice)` = fit_rice_1), 
+#   output = "kableExtra",
+#   estimate = "{estimate} ({std.error}){stars}",
+#   statistic = NULL, gof_omit = c("AIC|BIC|Log|F|RMSE"), 
+#   stars = TRUE)
+```
+
+## 2. Regression model {.smaller}
+
+The production function is used to estimate the relationship. We consider two main production functions [see @feng2012alternative]:
+
+::: fragment
+1.  Linear [production function](https://en.wikipedia.org/wiki/Production_function), when output is a linear combination of all inputs. (**Write it down**)
+:::
+
+::: fragment
+```{r}
+#| results: asis
+extract_eq(fit_rice_0, wrap = TRUE, terms_per_line = 3 , use_coefs = FALSE)
+```
+:::
+
+::: fragment
+2.  [Cobb-Douglas](https://en.wikipedia.org/wiki/Cobb%E2%80%93Douglas_production_function) production function, when the log of output is a linear combination of logged inputs. (**Write it down**)
+:::
+
+::: fragment
+```{r}
+#| results: asis
+extract_eq(fit_rice_1, wrap = TRUE, terms_per_line = 3 , use_coefs = FALSE)
+```
+:::
+
+## 2.1 Ex-ante hypothesis about the coefficients
+
+```{r}
+#| results: asis
+extract_eq(fit_rice_0, wrap = TRUE, terms_per_line = 3 , use_coefs = FALSE)
+```
+
+What are the ex-ante expectations about the coefficients?
+
+## 3.1 Exploratory data analysis (The data) {.smaller}
+
+```{r}
+library(knitr)
+set.seed(121123)
+rice_dta_0 %>% 
+  sample_n(15) %>%
+  kable()
+```
+
+## 3.2 Summary statistics
+
+```{r}
+f <- All(rice_dta_0) ~ N + Mean + SD + Min + Median + Max + Histogram
+datasummary(f, rice_dta_0)
+rice_dta_0 %>% 
+  modelsummary::datasummary_skim(type = "categorical")
+```
+
+## 3.3 What effect BIMAS program have? {.smaller}
+
+::: columns
+::: {.column width="75%"}
+```{r}
+#| fig-width: 8
+#| fig-height: 6
+rice_dta_0 %>% 
+  ggplot() + 
+  aes(y = goutput   , x = bimas , colour = bimas ) + 
+  geom_boxplot() + 
+  scale_y_log10(n.breaks = 10) +
+  annotation_logticks(sides = "l") + 
+  ylab("Rice production, kg")
+```
+:::
+
+::: {.column width="25%"}
+What kind of plot is this?
+
+What can we conclude about the differences in rice output by program participation?
+
+EQ: **Does the program participation cause rice output to be different?**
+:::
+:::
+
+## 3.4 Distributions
+
+::: columns
+::: {.column width="75%"}
+```{r}
+#| fig-width: 8
+#| fig-height: 6
+rice_dta_0 %>% 
+  # bind_rows(landprice_dta %>% mutate(region = "Entire state")) %>% 
+  ggplot() + 
+  aes(x = goutput , group = bimas, colour = bimas, fill = bimas) + 
+  geom_density(alpha = 0.4) +
+  # geom_boxplot() + 
+  scale_x_log10(n.breaks = 10) +
+  annotation_logticks(sides = "b") + 
+  xlab("Land price, USD/acre")
+```
+:::
+
+::: {.column width="25%"}
+-   What kind of plot is this?
+-   What does it show?
+-   What differences and similarities does it manifest?
+:::
+:::
+
+## 3.5 Scatter plots
+
+::: r-stack
+```{r}
+rice_dta_0 %>%
+  select(-bimas) %>%
+  ggpairs(lower = NULL, upper = NULL)
+```
+
+::: fragment
+```{r}
+rice_dta_0 %>%
+  select(-bimas) %>%
+  ggpairs(lower = NULL)
+```
+:::
+
+::: fragment
+```{r}
+rice_dta_0 %>%
+  select(-bimas) %>%
+  ggpairs(lower = list(continuous = wrap(
+    "smooth", alpha = 0.25, size = 0.75
+  )))
+```
+:::
+:::
+
+## 4. Estimating a regression
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "1-3,7-14,16-18"
+fit_rice_0 <- lm(
+  goutput ~ size + bimas + famlabor + hiredlabor + urea + phosphate, 
+  rice_dta_0)
+summary(fit_rice_0)
+# Coefficients:
+#               Estimate Std. Error t value Pr(>|t|)    
+# (Intercept) -107.91531   38.36178  -2.813 0.005017 ** 
+# size        1824.02155  138.40695  13.179  < 2e-16 ***
+# bimasyes     157.87341   83.12605   1.899 0.057866 .  
+# bimasmixed  -262.07581   68.13525  -3.846 0.000129 ***
+# famlabor       0.78902    0.18633   4.234 2.53e-05 ***
+# hiredlabor     1.03722    0.13132   7.898 8.47e-15 ***
+# urea          -0.03429    0.39242  -0.087 0.930381    
+# phosphate     11.08610    0.74446  14.891  < 2e-16 ***
+# 
+# Residual standard error: 706.6 on 875 degrees of freedom
+# Multiple R-squared:  0.8707,	Adjusted R-squared:  0.8696 
+# F-statistic: 841.5 on 7 and 875 DF,  p-value: < 2.2e-16
+```
+
+## 6. Interpretation (0) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| results: asis
+extract_eq(fit_rice_0, wrap = TRUE, terms_per_line = 3 , use_coefs = TRUE)
+```
+
+::: fragment
+This first regression is in `level-level` form (without any linear transformation). Thus, interpretations are straightforward: 1 unit change in $x$ causes $\hat \beta$ unit change in $y$
+:::
+:::
+
+::: {.column width="50%"}
+```{r}
+# parameters(fit_rice_0, summary = TRUE) %>% print_html( digits = 2)
+# modelsummary(list(fit_rice_0), output = "kableExtra",
+#              estimate = "{estimate} ({std.error}){stars}",
+#              statistic = NULL, gof_omit = c("AIC|BIC|Log|F|RMSE"))
+mod_rows <- tribble(
+  ~ term, ~`Linear prod. fun (level-level)`,
+  "Dep. var.", "Rice output, kg"
+)
+attr(mod_rows, 'position') <- c(1, 2)
+mod_notes <- c(
+  "Notes: p-values are '+' p < 0.1, '\\*' p < 0.05, '\\*\\*' p < 0.01, '\\*\\*\\*' p < 0.001. Standard errors are reported in parentheses")
+lin_prod <- 
+  modelsummary(
+  list(`Linear prod. fun (level-level)` = fit_rice_0#, 
+       # `Cobb-Douglas prod. fun (log-log)` = fit_rice_1
+       ), 
+  output = "markdown",
+  estimate = "{estimate} ({std.error}){stars}",
+  statistic = NULL, gof_omit = c("AIC|BIC|Log|F|RMSE"), 
+  add_rows = mod_rows,
+  notes = mod_notes,
+  coef_map = c(
+    "(Intercept)" = "(Intercept)",
+    "log(size)" = "Size, HA", "size" = "Size, HA",
+    "bimasyes" = "BIMAS [YES]",
+    "bimasmixed" = "BIMAS [MIXED]",
+    "famlabor" = "Family labor, h", "log(famlabor)" = "Family labor, h",
+    "hiredlabor" = "Hired labor, h", "log(hiredlabor)" = "Hired labor, h",
+    "urea" = "Urea, kg", "log(urea)" = "Urea, kg",
+    "phosphate" = "Phosphate, kg", "log(phosphate)" = "Phosphate, kg"
+    ),
+  stars = TRUE)
+lin_prod
+```
+:::
+:::
+
+## 6. Interpretation (1) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+`size` is the total area cultivated with rice, measured in hectares.
+
+-   An increase in the farm size by 1 hectare, causes on average the gross output of rice to increase by 1824 kg, holding all other factors constant.
+
+-   The effect of farm size is significant at the 0.1% level of significance ($H_0$ is rejected based on the p-value, which is p \< 0.001 given "\*\*\*") suggesting that a positive relationship between the farm size and output is likely to be present in the population.
+:::
+
+::: {.column width="50%"}
+```{r}
+lin_prod
+```
+:::
+:::
+
+## 6. Interpretation (2) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+::: {.callout-note appearance="simple"}
+`bimas` is an intensification program. Each farmer either:
+
+-   participate in it \[YES\], or partially participate \[MIXED\] or do not participate \[NO\].
+
+-   Because the dummy variable for \[NO\] is omitted, it is implied in the intercept.
+
+-   Variables \[YES\] and \[MIXED\] show the effect of different levels of participation **compared to NO (non-participation in BIMAS)**.
+:::
+
+-   Participating in the BIMAS on a MIXED basis reduces the gross output of rice by 262 kg compared to non-participation given that all other factors remain fixed. The effect is significant at the 5% level of significance.
+:::
+
+::: {.column width="50%"}
+```{r}
+lin_prod
+```
+:::
+:::
+
+## 6. Interpretation (3) {.smaller}
+
+::: columns
+::: {.column width="50%"}
+::: {.callout-note appearance="simple"}
+-   Fully participating in the BIMAS program \[YES\] yields an estimate of the coefficient of 157.8 implying on average a 158 kg increase in rice production; however, this result is insignificant at the 5% level.
+
+-   The present functional form fails to reject $H_0$ about the significant difference of this estimate from zero concluding that such an effect may result from the random variation in the sample, rather than exist in the population.
+
+-   To further investigate this effect, we might consider modifying the functional form or collecting more data.
+:::
+:::
+
+::: {.column width="50%"}
+```{r}
+lin_prod
+```
+:::
+:::
+
+## 6. Interpretation (4) DIY {.smaller}
+
+::: columns
+::: {.column width="50%"}
+::: {.callout-note appearance="simple"}
+-   `urea` or `phosphate` application in kilogram;
+-   `hiredlabor` or `famlabor` in hours;
+:::
+:::
+
+::: {.column width="50%"}
+```{r}
+lin_prod
+```
+:::
+:::
+
+## 5. Checking the linearity assumption (1)
+
+```{r}
+plot(fit_rice_0, which = 1)
+```
+
+-   Clear signs of non-linearity.
+
+## 4. Model re-specification {.smaller}
+
+Estimating the Cobb-Douglas production function:
+
+-   Please note, that $\log(\cdot)$ stands for a natural logarithm.
+
+```{r}
+#| results: asis
+extract_eq(fit_rice_1, wrap = TRUE, terms_per_line = 3 , use_coefs = TRUE, coef_digits = 2)
+```
+
+## 4.1 Comparing regressions {.smaller}
+
+::: columns
+::: {.column width="80%"}
+```{r}
+
+mod_rows2 <- tribble(
+  ~ term, ~`Linear (level-level)`, ~`Cobb-Douglas (log-log)`,
+  "Dep. var.", "Rice output, kg", "log(Rice output, kg)"
+)
+attr(mod_rows2, 'position') <- c(1, 2)
+
+both_prod <- 
+  modelsummary(
+  list(`Linear (level-level)` = fit_rice_0, 
+       `Cobb-Douglas(log-log)` = fit_rice_1), 
+  output = "markdown",
+  add_rows = mod_rows2,
+  notes = mod_notes,
+  estimate = "{estimate} ({std.error}){stars}",
+  statistic = NULL, gof_omit = c("AIC|BIC|Log|F|RMSE"), 
+  coef_map = c(
+    "bimasyes" = "BIMAS [YES]",
+    "bimasmixed" = "BIMAS [MIXED]",
+    "size" = "Size, HA",
+    "log(size)" = "log(Size, HA)", 
+    "famlabor" = "Family labor, h", "log(famlabor)" = "Family labor, h",
+    "hiredlabor" = "Hired labor, h", "log(hiredlabor)" = "Hired labor, h",
+    "urea" = "Urea, kg", "log(urea)" = "Urea, kg",
+    "phosphate" = "Phosphate, kg", "log(phosphate)" = "Phosphate, kg",
+    "(Intercept)" = "(Intercept)"
+    ),
+  stars = TRUE)
+
+both_prod
+
+
+mod_rows3 <- tribble(
+  ~ term,  ~`Cobb-Douglas (log-log)`,
+  "Dep. var.", "log(Rice output, kg)"
+)
+attr(mod_rows3, 'position') <- c(1, 2)
+
+cd_prod <- 
+  modelsummary(
+  list(#`Linear prod. fun (level-level)` = fit_rice_0, 
+       `Cobb-Douglas (log-log)` = fit_rice_1), 
+  output = "markdown",
+  add_rows = mod_rows3,
+  notes = mod_notes,
+  estimate = "{estimate} ({std.error}){stars}",
+  statistic = NULL, gof_omit = c("AIC|BIC|Log|F|RMSE"), 
+  coef_map = c(
+    "bimasyes" = "BIMAS [YES]",
+    "bimasmixed" = "BIMAS [MIXED]",
+    "size" = "Size, HA",
+    "log(size)" = "log(Size, HA)", 
+    "famlabor" = "Family labor, h", "log(famlabor)" = "Family labor, h",
+    "hiredlabor" = "Hired labor, h", "log(hiredlabor)" = "Hired labor, h",
+    "urea" = "Urea, kg", "log(urea)" = "Urea, kg",
+    "phosphate" = "Phosphate, kg", "log(phosphate)" = "Phosphate, kg",
+    "(Intercept)" = "(Intercept)"
+    ),
+  stars = TRUE)
+```
+:::
+
+::: {.column width="20%"}
+What has changed?
+
+Has any coefficient changed the sign?
+
+Has any coefficient become significant / insignificant?
+
+How have the goodness of fit measures (GOF) changed?
+:::
+:::
+
+## 5. (Again) Checking Linearity {.smaller}
+
+::: columns
+::: {.column width="50%"}
+**Linear production function**
+
+```{r}
+#| fig-width: 8
+#| fig-height: 7
+plot(fit_rice_0, which = 1)
+```
+:::
+
+::: {.column width="50%"}
+**Cobb-Douglas production function** 
+
+::: fragment
+```{r}
+#| fig-width: 8
+#| fig-height: 7
+plot(fit_rice_1, which = 1)
+```
+:::
+
+:::
+:::
+
+
+::: fragment
+Substantial improvement in linearity.
+:::
+
+## 6. Interpretation with log (0) {.smaller}
+
+::: columns
+::: {.column width="45%"}
+This regression is in the `log-log` transformation for all variables except for the dummy variables, which are in the `log-level`.
+
+`log-log` interpretation is straightforward:
+
+-   1 % percent increase in $x$ causes $\hat \beta$ % (percent) change in $y$.
+:::
+
+::: {.column width="55%"}
+```{r}
+cd_prod
+```
+:::
+:::
+
+## 6. Interpretation with log (1) {.smaller}
+
+::: columns
+::: {.column width="45%"}
+`log-level` interpretation of the dummy variables is more complex:
+
+-   For the purpose of the exam, please be able to explain weather the dummy variable has a positive or negative effect on $y$ and if this effect is significant.
+
+For your information and future, please be informed that:
+
+-   Change (increase) of a dummy variable $x$ from 0 to 1 causes $100 \cdot (e^{\hat\beta} - 1)$ % change in $y$.
+:::
+
+::: {.column width="55%"}
+```{r}
+cd_prod
+```
+:::
+:::
+
+## 6. Interpretation with log (2) {.smaller}
+
+::: columns
+::: {.column width="45%"}
+`log(size)` the total area cultivated with rice, measured in hectares;
+
+-   `log-log` transformation.
+
+-   Increase of the farm size by 1% is associated with the 0.56% increase in the rice output, given that all other factors remain fixed.
+
+-   These results are significant at the 5% significance level.
+:::
+
+::: {.column width="55%"}
+```{r}
+cd_prod
+```
+:::
+:::
+
+## 6. Interpretation with log (3) {.smaller}
+
+::: columns
+::: {.column width="45%"}
+-   Participating in the BIMAS on a MIXED basis reduces the gross output of rice by $100 \cdot e^{-0.142}-1 = - 100 \cdot 0.132 = -13.2$ % (reduces by 13.2%) compared to non-participation given that all other factors remain fixed. The effect is significant at the 5% level of significance.
+
+-   Participating in the BIMAS on a full basis (yes) basis increases the gross output of rice by: $100 \cdot e^{0.118}-1 = 100 \cdot 0.125 = 12.5$ % (increases by 12.2%) compared to non-participation given that all other factors remain fixed. The effect is significant at the 5% level of significance.
+:::
+
+::: {.column width="55%"}
+```{r}
+cd_prod
+```
+:::
+:::
+
+## 6. Interpretation with log (4) DIY {.smaller}
+
+::: columns
+::: {.column width="45%"}
+-   `urea` or `phosphate` application in kilogram;
+-   `hiredlabor` or `famlabor` in hours
+:::
+
+::: {.column width="55%"}
+```{r}
+cd_prod
+```
+:::
+:::
+
+## 8. Conclusions {.smaller}
+
+::: columns
+::: {.column width="25%"}
+What is the causal effect of BIMAS program on the gross output of rice?
+
+What is the goodness of fit of the model?
+
+EQ: **Which model explains the relationship between inputs and outputs more accurately (with less bias)?**
+
+EQ: **Which model has a higher explanatory power?**
+:::
+
+::: {.column width="75%"}
+```{r}
+both_prod
+```
+:::
+:::
