@@ -11,10 +11,14 @@ author:
         department: "Institute of Agricultural Policy and Market Research"
         url: "https://www.uni-giessen.de/faculties/f09/institutes/agri/policy"
 
-subtitle: "Part 2: Statistics and Econometrics. MK68-2023/24"
-course: "MK-068-EN (TM) WS2023/24. Empirical Research Methods"
+subtitle: "Part 1: Statistics and Econometrics. MK68-2024/25"
+
+course: "MK-068-EN (TM) WS2024/25. Empirical Research Methods"
+
 institute: "Institute of Agricultural Policy and Market Research"
-footer: "MK-068-EN (TM) WS2023/24. (c) Eduard Bukin"
+
+footer: "MK-068-EN (TM) WS2024/25. (c) Eduard Bukin"
+
 logo: "./img/jlu-logo.png"
 
 editor: source
