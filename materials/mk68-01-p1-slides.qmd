@@ -28,30 +28,25 @@ source(here::here("materials", "00-setup.R"), local = TRUE)
 
 -   specific to our **research question** and **the research design**
 
--   defines the scope of out study.
-
--   has quantifiable characteristics: true levels.
+-   defines the scope of out study, **its external validity.**
 
 ::: fragment
 It is generally impossible to have data for the entire population
 :::
 
-::: footer
 Source: [@Dowdy2004].
-:::
 
-## Examples of a population by research questions 
+## Examples of a population by research questions
 
 Discuss what are the (1) populations; (2) variables of interest; (3) true population value of the parameter based on the exemplary research questions below:
 
 1.  What is the average poverty headcount rate in the world?
 2.  What is the average wheat yield in 100 kg per ha?
 
-## Examples of a population by research questions 
+## Examples of a population by research questions
 
-::: {.smaller}
-::: {.nonincremental}
-
+:::: smaller
+::: nonincremental
 At home, consider following research questions:
 
 -   How does access to education impact income inequality?
@@ -59,7 +54,7 @@ At home, consider following research questions:
 -   How does access to clean water and sanitation facilities impact child mortality rates?
 -   What are the barriers to accessing healthcare services among marginalized communities?
 :::
-:::
+::::
 
 . . .
 
@@ -77,9 +72,9 @@ At home, consider following research questions:
 5.  Children under the age of five in areas with varying levels of access to clean water and sanitation.
 :::
 
-# The Sampling 
+# The Sampling
 
-::: {.nonincremental}
+::: nonincremental
 -   See also book "Sampling" by [@Thompson2012]
 
 -   The World Bank. Development Research in Practice (DIME) <https://dimewiki.worldbank.org/Sampling>
@@ -89,9 +84,7 @@ At home, consider following research questions:
 
 ![](img/sample-simple/pop-to-sample.png){fig-align="center"}
 
-::: footer
 Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/openintro-statistics), [@Diez2022]
-:::
 
 ## The Simple Random Sample (2) {.smaller}
 
@@ -139,20 +132,19 @@ bmi_gg_2$layers <- c(geom_boxplot(), bmi_gg_2$layers)
 bmi_gg_2$layers <- c(geom_boxplot(data = bmi_samples), bmi_gg_2$layers)
 ```
 
-::: columns
+:::::::: columns
 ::: {.column width="50%"}
 -   **Simple sample** is a **random subset** of observations from a population.
 
-    -   **Random** means
-    -   that every observation from the population has an **equal probability of being sampled**.
+    -   **Random** means that every observation from the population has an **equal probability of being sampled**.
 
 -   Recall: What is the average wheat yield in 100 kg per ha?
 
 -   How different our samples are going to be?
 :::
 
-::: {.column width="50%"}
-::: r-stack
+:::::: {.column width="50%"}
+::::: r-stack
 ```{r}
 #| fig-width: 6
 set.seed(13152)
@@ -174,13 +166,13 @@ set.seed(13152)
 bmi_gg_2
 ```
 :::
-:::
-:::
-:::
+:::::
+::::::
+::::::::
 
 ## The Simple Random Sample (3) {.smaller}
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Each sample results with a different estimate of the yields:
 
@@ -207,21 +199,21 @@ set.seed(13152)
 bmi_gg_2
 ```
 :::
-:::
+:::::
 
 ## The power of a random sample
 
-If every sample is unique, why random sample is so important?
+If every sample is unique, why [**random sample**]{.underline} is so important?
 
 . . .
 
-A sample can approximate the population
+A random sample can approximate the population
 
--   **when its size (**$N$) increases to infinity!
+-   **when its size** ($N$) increases to infinity!
 
 . . .
 
-This is the **Law of Large Numbers** (LLN)!
+This is the **Law of Large Numbers** (LLN)
 
 . . .
 
@@ -229,12 +221,12 @@ LLN makes random samples a powerful tool for understanding the population.
 
 ## Law of Large Numbers: action {.smaller}
 
-::: columns
-::: {.column width="50%"}
+::::::::::: columns
+:::::: {.column width="50%"}
 ::: {.fragment fragment-index="1"}
 Let us gradually increase the sample size!
 
-What will be difference between samples?
+-   What are the differences between samples?
 :::
 
 ::: {.fragment fragment-index="4"}
@@ -255,13 +247,12 @@ bind_rows(bmi_samples2) %>%
 :::
 
 ::: {.fragment fragment-index="5"}
-With increasing size, the sample becomes more alike the population!
+With the increasing size, the sample becomes more similar to the population!
 :::
+::::::
 
-:::
-
-::: {.column width="50%"}
-::: r-stack
+:::::: {.column width="50%"}
+::::: r-stack
 ```{r}
 #| fig-width: 6
 set.seed(13152)
@@ -273,7 +264,7 @@ bmi_gg_2
 #| fig-width: 6
 # bmi_gg_3 <- bmi_gg_1
 bmi_gg_3 <- bmi_gg_0 + 
-  geom_jitter(data = bmi_samples2, alpha = 0.2) +
+  geom_jitter(data = bmi_samples2, alpha = 0.05) +
   facet_wrap(Type2 ~ ., ncol = 1)
 bmi_gg_4 <- bmi_gg_3
 bmi_gg_4$layers <- c(geom_boxplot(), bmi_gg_4$layers)
@@ -291,9 +282,9 @@ set.seed(13152)
 bmi_gg_4
 ```
 :::
-:::
-:::
-:::
+:::::
+::::::
+:::::::::::
 
 ## Law of Large Numbers: limitation
 
@@ -307,52 +298,47 @@ Each sample is still a random draw!
 
 -   If a population has minorities, how accurately can a random sample represent them?
 
-::: fragment
-::: callout-tip
+::::: fragment
+:::: callout-tip
 ### Solutions:
 
-::: {.nonincremental}
--   Apply appropriate sampling techniques!
+::: nonincremental
+-   Apply [**appropriate sampling techniques:**]{.underline} stratified and clustered sampling.
 
 -   Embrace uncertainty and use inferential statistics.
 :::
-:::
-:::
+::::
+:::::
 
-## Simple sample limitations (1)
+## Simple random sample limitations (1)
 
 #### Desired sample
 
 ![](img/sample-simple/pop-to-sample-desired.png){fig-align="left"}
 
-::: footer
 Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/openintro-statistics) [@Diez2022]
-:::
 
-## Simple sample limitations (2)
+## Simple random sample limitations (2)
 
 #### Actual sample
 
 ![](img/sample-simple/pop-to-sample-bias.png){fig-align="right"}
 
-::: footer
 Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/openintro-statistics) [@Diez2022]
-:::
 
-## Simple sample limitations (3)
+## Simple random sample limitations (3)
 
 Key problems:
 
--   The population may contain underlining structures: **strata** / **clusters**.
+-   Underlining structures in the populaiton: **strata** / **clusters**.
 
--   Non-response may occur;
+-   No-response
 
--   Convenience-sample may take place:
+-   Convenience-sample
 
     -   where individuals who are easily accessible are more likely to be included in the sample.
 
--   Any such limitation causes our sample to be not **representative** or to contain **measurement errors**.
-
+-   Under such limitations our sample is not **representative** or contains **measurement errors**.
 
 ## Solutions:
 
@@ -360,15 +346,12 @@ Key problems:
 
 Those exist to balance between data quality and data collection costs.
 
-::: {.nonincremental}
--   Simple;
--   Stratified;
--   Cluster;
--   Multistage sampling;
--   Population-weighted sampling and statistics;
+::: nonincremental
+-   Simple, Stratified, Cluster, and Multistage sampling;
+-   Population-weighted sampling;
 :::
 
-To read more, see for example the book: Sampling by [@Thompson2012]
+To learn more, see Sampling by [@Thompson2012]
 
 ## Stratified sampling
 
@@ -380,9 +363,7 @@ The population is divided into groups **strata**.
 
 -   within-strata: simple random sampling
 
-::: footer
 Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/openintro-statistics) [@Diez2022]
-:::
 
 ::: notes
 -   Malaria rate example in jungles. 30 villages. What is the strata here? - no strata.
@@ -396,9 +377,7 @@ Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/op
 
 -   We randomly select several clusters and sample them completely.
 
-::: footer
 Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/openintro-statistics) [@Diez2022]
-:::
 
 ## Multistage sampling
 
@@ -408,18 +387,15 @@ Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/op
 
 -   Cluster + simple sampling
 
-::: footer
 Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/openintro-statistics) [@Diez2022]
-:::
 
-# Populaiton and samples by research question
+# Population and samples by research question
 
 1.  What is the average poverty headcount rate in the world/a country?
 
     -   Population: people or households;
-    -   Sample examples: household surveys. 
-    -   Data source: The Living Standards Measurement Study (LSMS) <https://www.worldbank.org/en/programs/lsms>
-. . .
+    -   Sample examples: household surveys.
+    -   Data source: The Living Standards Measurement Study (LSMS) <https://www.worldbank.org/en/programs/lsms> . . .
 
 **At home:** discuss the same for other research questions mentioned earlier.
 
@@ -442,7 +418,7 @@ Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/op
 -   There are:
 
     -   Descriptive statistics
-    
+
     -   Inferential statistics
 
 ## Descriptive statistics
@@ -459,23 +435,17 @@ Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/op
 
 -   Answers questions **about the population** using:
 
-    -   the **sample**, and
-    
-    -   **probability theory**
-
--   The science of using probability to make decisions [@Dowdy2004]
+    -   random **samples**, and the **probability theory**
 
 -   Does so by:
 
     -   Establishing **statistical hypothesis;**
 
-    -   Using statistical methods and probability theory to **reject** of **accept** such hypothesis;
+    -   Using **statistical methods** and **probability theory** to [**reject** of **accept**]{.underline} it.
 
 ## The process of statistical inference
 
-::: footer
 Source: [@Dowdy2004]
-:::
 
 ![](img/stat-inference.png)
 
@@ -483,77 +453,69 @@ Source: [@Dowdy2004]
 
 Statistical inference is based on **statistical hypothesis testing** (HT).
 
-
 ## Statistical hypothesis: basics (1)
 
-As we rely on a samples,
+As we rely on a samples, we call any measure (mean, median, variance) computed based on such samples as:
 
--   we call any computed measure (such as mean, median, variance):
+-   **the estimates of** {$\text{mean}$, $\text{median}$, $\text{variance}$}. We denote estimates with a "hat" "$\widehat{\; \; \; \;}"$, for example: {$\widehat{\text{mean}}$, $\widehat{\text{median}}$, $\widehat{\text{variance}}$}
 
-    -   **the estimate of** {$\text{mean}$, $\text{median}$, $\text{variance}$}.
-    -   we denote estimates with a "hat" "$\widehat{\; \; \; \;}"$
-    -   for example: {$\widehat{\text{mean}}$, $\widehat{\text{median}}$, $\widehat{\text{variance}}$}
-    -   Based on any sample we can **estimate** sample $\widehat{\text{mean}}$, $\widehat{\text{median}}$, $\widehat{\text{variance}}$
-    
+Based on a sample we can **only calculate an estimate** of a $\widehat{\text{mean}}$, $\widehat{\text{median}}$, $\widehat{\text{variance}}$
 
 ## Statistical hypothesis: basics (2)
 
-To infer that {$\text{mean}$, $\text{median}$, $\text{variance}$} in the population is similar to **the estimate of** {$\widehat{\text{mean}}$, $\widehat{\text{median}}$, $\widehat{\text{variance}}$}, we:
+To infer that **the true {**$\text{mean}$**,** $\text{median}$**,** $\text{variance}$**} in the population** is not different from **the estimate of** {$\widehat{\text{mean}}$, $\widehat{\text{median}}$, $\widehat{\text{variance}}$}, we:
 
 ::: incremental
-2.  **formulate two statistical hypothesis**:
+1.  **formulate two statistical hypothesis**:
 
     -   **H0** (the null hypothesis):
 
-        -   "**The estimate of {... ... ...} is equal to ZERO in the population**".
+        -   "**The estimate of {...} is equal to ZERO in the population**".
 
     -   **H1** (the alternative hypothesis):
 
-        -   "**The estimate of {... ... ...} is NOT equal to zero in the population**".
+        -   "**The estimate of {...} is NOT equal to zero in the population**".
 :::
 
 ## Statistical hypothesis: basics (3)
 
 ::: incremental
-3.  use statistical tests and the probability theory to reject **H0** (or fail to reject H0) and conclude:
+2.  use **statistical tests** and the **probability theory** to reject **H0** (or fail to reject H0) and conclude either:
 
-    -   We reject **H0** concluding **H1**:
+    -   We reject **H0** in favour of **H1**:
 
         -   with the probability $P$ (p-value) that we've made a mistake by rejecting H0 (Type I error).
 
-    -   We accept **H0**
+    -   We accept **H0** (fail to reject H0)
 
         -   because available data is insufficient to reject it;
         -   without implying that H0 is the right hypothesis (Type II error);
 :::
 
-## Goals of the Part 2: Quantitative Research Methods
+## Goals of the Part 1: Quantitative Research Methods
 
 ::: incremental
 -   Grasp the difference between description and inference.
 
 -   Learn how to:
 
-    -   apply basic methods of descriptive statistics, and
+    -   apply basic methods of descriptive statistics;
 
-    -   perform statistical inference.
+    -   perform statistical inference;
 
-    -   concludes based on their results.
+    -   make conclusions based on the results of statistical inference;
 
-    -   communicate consistent stories
+    -   communicate our story using statistical tools;
 :::
 
-# At home: Example of statistical inference in a research
+# Homework: Example of statistical inference in a research
 
-Scan through the example.
+Read through the examples
 
 ::: incremental
 1.  Research question
-
 2.  Research design
-
 3.  Data collection
-
 4.  Data analysis
 :::
 
@@ -594,8 +556,8 @@ Two stage sampling:
 
 ## Data Collection: Two waves
 
-::: columns
-::: {.column width="50%"}
+::::::::: columns
+::::: {.column width="50%"}
 ::: fragment
 ### Wave 1: pre-intervention
 :::
@@ -607,9 +569,9 @@ Two stage sampling:
 
     -   To ensure that **on average, treatment and control groups are similar**.
 :::
-:::
+:::::
 
-::: {.column width="50%"}
+::::: {.column width="50%"}
 ::: fragment
 ### Wave 2: post-intervention
 :::
@@ -619,14 +581,14 @@ Two stage sampling:
 
 -   Collects data on the variables of interest.
 :::
-:::
-:::
+:::::
+:::::::::
 
 ## Data analysis
 
 1 year after the treatment, we repeat data collection and measure rice yields:
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 ### [Treatment group]{.fragment fragment-index="2"}
 
@@ -642,7 +604,7 @@ Two stage sampling:
 
 [Rice yields: 5.8 tone per ha]{.fragment fragment-index="4"}
 :::
-:::
+:::::
 
 ::: {.fragment fragment-index="5"}
 ### Can we conclude extension services have a positive effect on the rice yields in Vietnam?
@@ -654,12 +616,11 @@ Let us see what rice yields looks like in the world: <https://ourworldindata.org
 
 . . .
 
-To conclude about the effect of intervention, we need to 
+To conclude about the effect of intervention, we need to
 
 -   "embrace" the uncertainty!
--   perform statistical inference, 
+-   perform statistical inference,
 -   consider **Variance** not only point-estimates.
-
 
 # Takeaways checklist
 
@@ -672,7 +633,7 @@ Study all prerequisites on your own: see Ilias.
 -   Familiarize with the World Bank DIME initiative <https://www.worldbank.org/en/research/dime>
 
     -   And Dime knowledge base: <https://www.worldbank.org/en/research/dime>
-    
+
     -   Find one project on their website and try to understand what type of data collection was used there and how it was implemented.
 
 ## Key concepts covered in the lecture

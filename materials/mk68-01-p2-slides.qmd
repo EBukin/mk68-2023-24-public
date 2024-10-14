@@ -5,6 +5,7 @@ editor: source
 format:
   revealjs:
     scrollable: false
+    incremental: false
 editor_options: 
   chunk_output_type: console
 ---
@@ -18,14 +19,13 @@ source(here::here("materials", "00-setup.R"), local = TRUE)
 
 -   Data that consists of a **single variable**.
 
--   **Univariate data analysis**:
+-   **Univariate data analysis**: descriptive analysis of a single variable.
 
-    -   descriptive analysis of a single variable.
+-   What statistical measurements are used to describe a variable?
 
--   What measures are used to describe a variable?
-
-    -   Central Tendency
-    -   Variance
+    -   [**Central Tendency**]{.underline}
+    -   [**Variance**]{.underline}
+    -   [**Symmetry**]{.underline}
 
 # The Central Tendency
 
@@ -33,15 +33,12 @@ source(here::here("materials", "00-setup.R"), local = TRUE)
 
 -   Most commonly measures are:
 
-    -   Median;
-    -   Mode;
-    -   Arithmetic Mean;
-    -   Weighted Mean;
+    -   Median; Mode; Arithmetic Mean; Weighted Mean;
     -   [Other measures](https://en.wikipedia.org/wiki/Central_tendency) of the center;
 
 ## Individuals' consumption of nutrients in the DR Congo {.smaller}
 
--   We use the survey of 395 individuals from the Democratic Republic of Congo;
+-   We use the survey of 395 individuals from the Democratic Republic of Congo.
 -   It covers daily consumption of key nutrients and energy intake by population:
 -   Key variables are
     -   `ENERGY_kcal` - energy consumption in kilo calories per day;
@@ -69,7 +66,44 @@ congo_food <-
     )
 ```
 
-## Distributions
+## Desribe a distribution
+
+::::: columns
+::: {.column width="70%"}
+```{r}
+congo_food_dta <- 
+  congo_food %>% 
+  mutate(SEX = ifelse(SEX == "Female", 1, 0)) %>%
+  pivot_longer(
+    c(ENERGY_kcal, PROTEIN_g, FAT_g, CARBOH_g),
+    names_to = "Variable",
+    values_to = "val"
+  ) |> 
+  select(Variable, val)
+
+congo_food_dta |> filter(Variable == "ENERGY_kcal") |> 
+  ggplot() + 
+  aes(x = val, fill = Variable ) + 
+  geom_histogram(colour = "black") +
+  facet_wrap(. ~ Variable, scales = "free") + 
+  ylab("Frequency") + xlab("Daily consumption") +
+  labs(title = "The DR Congo. Individuals' daily energy consumption") + 
+  guides(fill = "none")
+```
+:::
+
+::: {.column width="30%"}
+What are the:
+
+-   Central tendency
+
+-   Variance
+
+-   Symmetry of the distribution
+:::
+:::::
+
+## At home: describe the rest of distributions
 
 ```{r}
 congo_food_dta <- 
@@ -100,7 +134,7 @@ drc_plot
 How can we describe there four distributions? What are the central tendencies there?
 :::
 
-## The Median
+## Central Tendency: the Median
 
 ```{r}
 congo_food_dta_summ <- 
@@ -130,7 +164,7 @@ dcr_mean <-
   ) 
 ```
 
-::: columns
+:::::: columns
 ::: {.column width="70%"}
 ```{r}
 #| fig-width: 8 
@@ -138,18 +172,20 @@ dcr_median
 ```
 :::
 
-::: {.column width="30%"}
+:::: {.column width="30%"}
 ::: incremental
--   Median is the value of the observation in the center.
+-   Median is the value of the observation in the center
+
+    -   after 50% of observations and before the remaining 50%.
 
 -   Less susceptible to the extreme and influential observations.
 :::
-:::
-:::
+::::
+::::::
 
 ## The Arithmetic Mean (The Mean)
 
-::: callout-important
+:::: callout-important
 $$
 \bar{x} = \frac{\sum_{i=1}^N {x}_i}{N},
 $$
@@ -161,7 +197,7 @@ where,
 
 -   $N$ is the total number of observations.
 :::
-:::
+::::
 
 -   The Arithmetic Mean is affected by the outliers and may be misleading if the distribution is skewed.
 
@@ -169,7 +205,7 @@ where,
 
 ### The Mean (1) {.smaller}
 
-::: r-stack
+::::: r-stack
 ::: fragment
 ```{r}
 dcr_median
@@ -181,13 +217,13 @@ dcr_median
 dcr_mean
 ```
 :::
-:::
+:::::
 
 ------------------------------------------------------------------------
 
 ### The Mean (2) {.smaller}
 
-::: columns
+:::::: columns
 ::: {.column width="50%"}
 ```{r}
 congo_food %>% 
@@ -203,28 +239,26 @@ congo_food %>%
 ```
 :::
 
-::: {.column width="50%"}
+:::: {.column width="50%"}
 ::: incremental
--   How to interpret the means of variables `ENERGY_kcal`, `PROTEIN_g`, `FAT_g`, `CARBOH_g`?
+-   How to interpret the means?
+
+-   How to interpret the medians?
 
 -   Why means are different from medians?
 
--   How to interpret the median?
+-   What does the **average of SEX** variable means?
 
--   What about `SEX` variable?
-
-    -   What does the mean of this variable stands for?
-
-    -   Why median is equal to 1?
+-   Why **median of SEX** variable is equal to 1?
 :::
-:::
-:::
+::::
+::::::
 
 ## Extreme/influential observations/outlier {.smaller}
 
-::: columns
-::: {.column width="70%"}
-::: r-stack
+::::::: columns
+::::: {.column width="70%"}
+:::: r-stack
 ```{r}
 #| fig-width: 8
 condo_food_mean <-
@@ -237,10 +271,11 @@ condo_food_mean_sum <-
   summarise(ENERGY_kcal = mean(ENERGY_kcal)) %>%
   mutate(`Mean of` = SEX)
 congo_skew_1 <- 
-  condo_food_mean %>%
+  condo_food_mean |># filter(SEX == "Male") |> 
   ggplot() +
   aes(x = ENERGY_kcal, fill = SEX ) +
-  geom_histogram(colour = "black") +
+  geom_histogram(colour = "black", position = "stack", alpha = .5) +
+  facet_wrap(. ~ SEX, nrow = 2, scales = "free_y") +
   ylab("Frequency") +
   xlab("Energy consumption in kcal/person/day") +
   labs(title = "DRC nutrients consumption")
@@ -259,37 +294,41 @@ congo_skew_1 +
   )
 ```
 :::
-:::
-:::
+::::
+:::::
 
 ::: {.column width="30%"}
-Arithmetic mean is very sensitive to the extreme or outlining observations and skewed distributions.
+Arithmetic mean is very sensitive to the extreme observations, outliers, and non-symmetric distribution.
 
-Population may contain extreme values of $x$, however, when such appear in the sample, the may substantially bias our estimates.
+Population may contain extreme values, however, such outliers appearing in a small sample, may [**substantially bias our estimates**]{.underline}.
 :::
-:::
+:::::::
 
 ## Dealing with extreme observations
 
 ::: incremental
-1.  Document:
+1.  Document them:
 
-    -   Why?
-    -   Describe why such extreme observation occurred.
+    -   Describe, where, why and how many extreme observations were found.
+    -   Describe why such extreme observation could occur.
 
-2.  Analyze:
+2.  Analyze reasons behind extreme observations:
 
     -   Measurement error? Is this the true incidence in the population or an entry error? Is this a systematic entry error?
     -   Sampling error? Is this observation prevalent in the population or is this a random sampling error? Is it systematic?
 
 3.  Keep, adjust statistical method, and generalization level:
 
-4.  Remove only in exceptional cases
+    -   Use "robust" measures (median/IQR) to describe data
+
+    -   Consider data "[winsorizing](https://en.wikipedia.org/wiki/Winsorizing)"
+
+4.  Remove some [**only in the exceptional cases!**]{.underline}
 :::
 
 ## The Weighted Average (The Weighted Mean)
 
-::: callout-important
+:::: callout-important
 $$
 \bar{x} = \frac{\sum_{i=1}^N {x}_i w_i}{\sum_{i=1}^N w_i},
 $$
@@ -301,7 +340,7 @@ where,
 -   $N$ is the total number of observations.
 -   $x$ is the weight that each observation has in the data.
 :::
-:::
+::::
 
 ::: incremental
 -   the arithmetic average is essentially a weighted average, where the weight of each observations is equal to 1.
@@ -333,9 +372,8 @@ Let us measure the level of extreme poverty in the World.
 
 </iframe>
 
-::: footer
 Source: [Global Extreme Poverty](https://ourworldindata.org/extreme-poverty). See also: [Poverty and inequality platform](https://pip.worldbank.org/home). </br> [Understanding poverty](https://www.worldbank.org/en/topic/poverty/overview) and [Macro Poverty Outlook](https://www.worldbank.org/en/publication/macro-poverty-outlook).
-:::
+
 
 ::: notes
 Speaker's notes:
@@ -360,23 +398,19 @@ pov_pop_summary <-
             `Median` = median(`Extreme poverty`, na.rm = TRUE))
 ```
 
-::: columns
+::::::: columns
 ::: {.column width="50%"}
 ```{r}
 set.seed(12231)
 pov_pop_dta %>% 
-  sample_n(12) %>% 
+  filter(!is.na(`Extreme poverty`)) |> sample_n(12) %>% 
   kable(caption = "First 12 observations of the country-specific data")
 ```
 :::
 
-::: {.column width="50%"}
-::: fragment
-What is the meaning of "NA" in the data?
-:::
-
-::: fragment
-**Arithmetic mean of the country-specific poverty rates**
+::::: {.column width="50%"}
+:::: fragment
+**How to measure the extreme poverty in the world?**
 
 ```{r}
 kable(pov_pop_summary)
@@ -391,68 +425,67 @@ kable(pov_pop_summary)
     Neither of those is correct because every country has a different size.
     :::
 :::
-:::
-:::
-:::
+::::
+:::::
+:::::::
 
 ## Average extreme poverty in the world (2)
 
-::: columns
-::: {.column width="50%"}
+::::::: columns
+:::: {.column width="50%"}
 ::: fragment
 1% extreme poverty rate in China (1.4B people):
 
 -   implies 14 million people living in poverty.
 :::
-:::
+::::
 
-::: {.column width="50%"}
+:::: {.column width="50%"}
 ::: fragment
 49% poverty in Turkmenistan (6.1 M people):
 
 -   is 3 million people living in poverty.
 :::
-:::
-:::
+::::
+:::::::
 
 ::: incremental
 -   The arithmetic mean of these two is:
 
     -   (1 % + 49 %) / 2 = 25 %;
-    -   but, 25% of their total population is 0.25 \* 1.406B = 351.5 M...
+    -   but, 25% of their total population is 0.25 \* 1.406B = 352M ..
 
--   Arithmetic mean implies that there is 351.5 M people living in poverty, but the sum of the number of poor people is 14M + 3 = 17.05M people.
+-   Arithmetic mean implies that there is 351.5 M people living in poverty, but the sum of the number of poor people is 14M + 3M = 17M people.
 :::
 
 ## Average extreme poverty in the world (3)
 
--   Arithmetic means, **without accounting for the size/weight** of the country measures of the central tendency of poverty inappropriately.
+-   Arithmetic means, **without accounting for the size/weight** is an inappropriate measure of average poverty.
 
 ::: incremental
 -   We must weight country-specific poverty level by the country's population.
 
--   Other examples, where weighting is essential:
+    -   ( 1% \* 1.4B + 49% \* 6.1 M ) / (1.4B + 6.1 M ) = 1.2 %
 
-    -   Analysis of the representative Individuals/Household surveys with the population weights.
+-   Weighting are essential in:
+
+    -   Analysis of the representative Individuals/Household surveys.
 
     -   Macro-level data aggregation.
 :::
 
-## Country sizes matters
+## At home: Country sizes matters
 
-::: r-stack
-::: fragment
-![](img/world-map-population.png)
-:::
-
-::: fragment
-![](img/asia-map-population.png)
-:::
-:::
-
-::: footer
 Source: [The map we need if we want to think about how global living conditions are changing](https://ourworldindata.org/world-population-cartogram)
-:::
+
+## At home: Country sizes matters
+
+![](img/world-map-population.png)
+
+
+## At home: Country sizes matters
+
+![](img/asia-map-population.png)
 
 ::: notes
 Arithmetic mean implies that every country has equal size, but this is not true!
@@ -460,7 +493,7 @@ Arithmetic mean implies that every country has equal size, but this is not true!
 
 ------------------------------------------------------------------------
 
-## Exam problems on the central tendency (DIY) {.smaller}
+## At home: Exam problems on the central tendency {.smaller}
 
 -   When the mean may not be the best measure of the central tendency in our data?
 
@@ -490,7 +523,7 @@ A representative household survey was collected from the population of all house
 
 ### At home: Calculate question
 
-::: columns
+:::::: columns
 ::: {.column width="50%"}
 ```{r}
 set.seed(121311)
@@ -504,7 +537,7 @@ pov_pop_dta_2 %>% kable()
 ```
 :::
 
-::: {.column width="50%"}
+:::: {.column width="50%"}
 Calculate:
 
 -   arithmetic average of `Extreme poverty` and
@@ -519,12 +552,12 @@ pov_pop_dta_2 %>%
   kable()
 ```
 :::
-:::
-:::
+::::
+::::::
 
 # The Box Plot
 
--   Summaries the numeric variables in one chart
+-   Summaries one numeric variables on a single plot
 
 ::: incremental
 -   Presents key statistics about the distribution and central tendency:
@@ -534,22 +567,21 @@ pov_pop_dta_2 %>%
     -   IQR - [interquartile range](https://en.wikipedia.org/wiki/Interquartile_range), where 50% of observations are;
     -   Whiskers and outliers
 
--   [THE BOXPLOT AND ITS PITFALLS](https://www.data-to-viz.com/caveat/boxplot.html)
+-   At home, check: [THE BOXPLOT AND ITS PITFALLS](https://www.data-to-viz.com/caveat/boxplot.html)
 
--   [Wiki: the box plot](https://en.wikipedia.org/wiki/Box_plot)
+-   At home, check: [Wiki: the box plot](https://en.wikipedia.org/wiki/Box_plot)
 :::
 
 ## The Box Plot
 
 ![](img/boxplot-anatomy.png)
 
-::: footer
 [Image source](https://www.leansigmacorporation.com/box-plot-with-minitab/)
-:::
+
 
 ## Single variable description with a Box Plot
 
-::: columns
+:::::: columns
 ::: {.column width="70%"}
 ```{r}
 #| fig-width: 8
@@ -564,7 +596,7 @@ condo_food_mean %>%
 ```
 :::
 
-::: {.column width="30%"}
+:::: {.column width="30%"}
 ::: incremental
 -   The central tendency;
 -   Where are the 50% of all observations?
@@ -572,12 +604,12 @@ condo_food_mean %>%
 -   Min/Max;
 -   (Suspected) outliers;
 :::
-:::
-:::
+::::
+::::::
 
 ## Comparing distributions with Box Plots (2)
 
-::: columns
+:::::: columns
 ::: {.column width="70%"}
 ```{r}
 #| fig-width: 8
@@ -592,14 +624,12 @@ condo_food_mean %>%
 ```
 :::
 
-::: {.column width="30%"}
+:::: {.column width="30%"}
 ::: incremental
--   Variance;
--   Central tendency;
--   (Suspected) outliers;
+-   Variance; Central tendency; (Suspected) outliers; Min/Max.
 :::
-:::
-:::
+::::
+::::::
 
 # Global income distribution
 
@@ -613,13 +643,12 @@ The Data individual's **income** across the world.
 
 -   The population: **all people in the World**
 
--   The variable: **income per person per year** in constant 2005 US\$ adjusted to the PPP ([Purchasing Power Parity](https://data.oecd.org/conversion/purchasing-power-parities-ppp.htm))..
+-   The variable: **income per person per year** in constant 2005 US\$ adjusted to the PPP ([Purchasing Power Parity](https://data.oecd.org/conversion/purchasing-power-parities-ppp.htm)).
 
--   Data sources: [@lakner2015global] at [elibrary.worldbank.org](http://elibrary.worldbank.org/doi/abs/10.1596/1813-9450-6719), [@roser2013global] at [OurWorldInData.org](https://ourworldindata.org/global-economic-inequality) :::
+-   Data sources: [@lakner2015global] at [elibrary.worldbank.org](http://elibrary.worldbank.org/doi/abs/10.1596/1813-9450-6719), [@roser2013global] at [OurWorldInData.org](https://ourworldindata.org/global-economic-inequality)
 
-::: footer
 See also: [@wilke2019fundamentals] [Ch. 8.2 Highly skewed distributions](https://clauswilke.com/dataviz/ecdf-qq.html#skewed-distributions)
-:::
+
 
 ## Income distribution
 
@@ -721,8 +750,11 @@ inc_dist_2c <-
   inc_dist_2 + 
   scale_x_continuous(
     limits = c(50, 100000),
-    breaks = 10 ^ c(2:5) %>% c(., 10^ log10(50)) %>% sort(), trans = "log10",
-    labels = label_math(10^.x)(c(1.699, 2:5)))
+    breaks = 10 ^ c(2:5) %>% c(., 10^ log10(50)) %>% sort(), 
+    trans = "log10",
+    labels = label_math(10^.x)(c(1.69, 2:5)))
+
+
 inc_dta_agg <- 
   inc_dta %>% 
   summarise(
@@ -768,10 +800,12 @@ inc_dist_2b <-
   guides(colour = "none", fill = "none")
 ```
 
-::: columns
+::::: columns
 ::: {.column width="75%"}
 ```{r}
 #| echo: false
+#| fig-width: 5.5
+#| fig-height: 4.25
 inc_dist_1a
 ```
 :::
@@ -783,17 +817,18 @@ inc_dist_1a
 
 -   How can we improve the histogram?
 :::
-:::
+:::::
 
 ## Band width: Logarithm transformation
 
-::: smaller
-::: columns
-::: {.column width="50%"}
-::: r-stack
+:::::::::: smaller
+::::::::: columns
+:::::: {.column width="65%"}
+::::: r-stack
 ```{r}
 #| echo: false
 #| fig-width: 5
+#| fig-height: 4.25
 inc_dist_1a
 ```
 
@@ -801,6 +836,7 @@ inc_dist_1a
 ```{r}
 #| echo: false
 #| fig-width: 5
+#| fig-height: 4.25
 inc_dist_2c
 ```
 :::
@@ -809,17 +845,17 @@ inc_dist_2c
 ```{r}
 #| echo: false
 #| fig-width: 5
+#| fig-height: 4.25
 inc_dist_2
 ```
 :::
-:::
-:::
+:::::
+::::::
 
-::: {.column width="50%"}
-Can we distinguish mode, median and mean here?
+:::: {.column width="35%"}
 
-::: {.fragment fragment-index="3"}
-Should we try a logarithm transformation?
+::: {.fragment fragment-index="3" .non-incremental}
+The logarithm transformation?
 
 -   $\log_{10}$
 -   $\log_{10}{1} = 0$
@@ -829,15 +865,15 @@ Should we try a logarithm transformation?
 -   $\log_{10}{10000} = 4$
 -   $\log_{10}{100000} = 5$
 :::
-:::
-:::
-:::
+::::
+:::::::::
+::::::::::
 
 ## New insights (1) {auto-animate="true"}
 
-::: columns
-::: {.column width="50%"}
-::: r-stack
+::::::::::::: columns
+:::::: {.column width="50%"}
+::::: r-stack
 ```{r}
 #| echo: false
 #| fig-width: 5
@@ -859,10 +895,10 @@ inc_dist_2a
 inc_dist_2b
 ```
 :::
-:::
-:::
+:::::
+::::::
 
-::: {.column width="50%"}
+:::::::: {.column width="50%"}
 What can we see now?
 
 ::: {.fragment fragment-index="0"}
@@ -888,12 +924,12 @@ What can we see now?
 ::: {.fragment fragment-index="4"}
 Why are there two modes?
 :::
-:::
-:::
+::::::::
+:::::::::::::
 
 ## New insights (2): data complexity {auto-animate="true"}
 
-::: columns
+:::::: columns
 ::: {.column width="50%"}
 ```{r}
 #| echo: false
@@ -902,7 +938,7 @@ inc_dist_2
 ```
 :::
 
-::: {.column width="50%"}
+:::: {.column width="50%"}
 ::: fragment
 ```{r}
 #| echo: false
@@ -917,12 +953,12 @@ inc_dist_3 <-
 inc_dist_3
 ```
 :::
-:::
-:::
+::::
+::::::
 
 ## New insights (3): change over time {auto-animate="true"}
 
-::: columns
+:::::: columns
 ::: {.column width="50%"}
 ```{r}
 #| echo: false
@@ -931,7 +967,7 @@ inc_dist_3
 ```
 :::
 
-::: {.column width="50%"}
+:::: {.column width="50%"}
 ::: fragment
 ```{r}
 #| echo: false
@@ -941,8 +977,8 @@ inc_dist_3 %+%
   labs(title = "Global income distribution in 2011")
 ```
 :::
-:::
-:::
+::::
+::::::
 
 ::: notes
 How does this relate to the global income change?
@@ -970,9 +1006,9 @@ inc_dist_4 <-
   guides(colour = "none")
 ```
 
-::: columns
-::: {.column width="70%"}
-::: r-stack
+::::::: columns
+::::: {.column width="70%"}
+:::: r-stack
 ```{r}
 #| fig-width: 8
 inc_dist_3
@@ -984,8 +1020,8 @@ inc_dist_3
 inc_dist_4
 ```
 :::
-:::
-:::
+::::
+:::::
 
 ::: {.column width="30%"}
 We can use histograms, but is it informative?
@@ -994,7 +1030,7 @@ We can use histograms, but is it informative?
 
 -   Density curves?
 :::
-:::
+:::::::
 
 ## Box plots for comparing distributions
 
@@ -1048,9 +1084,9 @@ inc_boxes
 
 ## Density curves
 
-::: columns
-::: {.column width="70%"}
-::: r-stack
+::::::::: columns
+::::: {.column width="70%"}
+:::: r-stack
 ```{r}
 #| fig-width: 8
 inc_dist_4
@@ -1078,10 +1114,10 @@ inc_dist_5 <-
 inc_dist_5
 ```
 :::
-:::
-:::
+::::
+:::::
 
-::: {.column width="30%"}
+::::: {.column width="30%"}
 ::: fragment
 -   This is a density curve.
 
@@ -1097,12 +1133,11 @@ What do we learn from this plot?
 
 -   Distribution kurtosis.
 :::
-:::
-:::
+:::::
+:::::::::
 
-::: footer
 Data source: [@roser2013global]. Published online at [OurWorldInData.org](https://ourworldindata.org/global-economic-inequality)
-:::
+
 
 ## At home: Explore all the aspects of income inequality at [OurWorldInData.org](https://www.maxroser.com/roser/graphs/WorldIncomeDistribution_LaknerAndMilanovic/WorldIncomeDistribution_LaknerAndMilanovic1988_100.html)
 
@@ -1113,9 +1148,8 @@ knitr::include_url(
 )
 ```
 
-::: footer
 [OurWorldInData.org](https://www.maxroser.com/roser/graphs/WorldIncomeDistribution_LaknerAndMilanovic/WorldIncomeDistribution_LaknerAndMilanovic1988_100.html){preview-link="true"}.["Max Roser (2013) Global Economic Inequality"](https://ourworldindata.org/global-economic-inequality).
-:::
+
 
 ## At home: Exam problems on Density (Examples)
 
@@ -1123,13 +1157,13 @@ knitr::include_url(
 
 ### Crop yields and technology
 
-::: columns
+::::::: columns
 ::: {.column width="70%"}
 ![](img/torado-fig-9.6.png)
 :::
 
-::: {.column width="30%"}
-::: smaller
+::::: {.column width="30%"}
+:::: smaller
 ::: incremental
 -   What does this plot show?
 
@@ -1139,20 +1173,19 @@ knitr::include_url(
 
     -   Centers and variances;
 :::
-:::
-:::
-:::
+::::
+:::::
+:::::::
 
-::: footer
 Source: [@Todaro2014]
-:::
+
 
 ------------------------------------------------------------------------
 
 ### Income distribution change
 
-::: smaller
-::: columns
+::::::: smaller
+:::::: columns
 ::: {.column width="70%"}
 ```{r}
 #| fig-width: 7
@@ -1166,7 +1199,7 @@ inc_dist_5 %+%
 ```
 :::
 
-::: {.column width="30%"}
+:::: {.column width="30%"}
 ::: incremental
 What do we learn from this plot?
 
@@ -1174,25 +1207,24 @@ What do we learn from this plot?
 
 -   Emergence of the richer groups of population.
 :::
-:::
-:::
-:::
+::::
+::::::
+:::::::
 
-::: footer
 Data source: [@roser2013global]. Published online at [OurWorldInData.org](https://ourworldindata.org/global-economic-inequality)
-:::
+
 
 ------------------------------------------------------------------------
 
 ### Population distribution by age
 
-::: smaller
-::: columns
+::::::: smaller
+:::::: columns
 ::: {.column width="70%"}
 ![](img/Population-Pyramid-1950-to-2100%20(1).jpg)
 :::
 
-::: {.column width="30%"}
+:::: {.column width="30%"}
 ::: incremental
 What do we learn from this plot?
 
@@ -1200,13 +1232,12 @@ What do we learn from this plot?
 
 -   What age groups will drive global population in 2050 compared to 2018.
 :::
-:::
-:::
-:::
+::::
+::::::
+:::::::
 
-::: footer
 Source: [World Population Growth](https://ourworldindata.org/world-population-growth)
-:::
+
 
 ------------------------------------------------------------------------
 
