@@ -12,9 +12,6 @@ editor_options:
 source(here::here("materials", "00-setup.R"), local = TRUE)
 ```
 
-# Prerequisites overview
-
--   Go to [Ilias MK68](https://ilias.uni-giessen.de/goto.php?target=crs_321994&client_id=JLUG).
 
 # The Population
 
@@ -36,41 +33,6 @@ It is generally impossible to have data for the entire population
 
 Source: [@Dowdy2004].
 
-## Examples of a population by research questions
-
-Discuss what are the (1) populations; (2) variables of interest; (3) true population value of the parameter based on the exemplary research questions below:
-
-1.  What is the average poverty headcount rate in the world?
-2.  What is the average wheat yield in 100 kg per ha?
-
-## Examples of a population by research questions
-
-:::: smaller
-::: nonincremental
-At home, consider following research questions:
-
--   How does access to education impact income inequality?
--   What are the factors influencing malnutrition rates among children in a specific region?
--   How does access to clean water and sanitation facilities impact child mortality rates?
--   What are the barriers to accessing healthcare services among marginalized communities?
-:::
-::::
-
-. . .
-
-**How to actually answer such research questions?**
-
-::: notes
-1.  all people/households.
-
-2.  wheat-producing farmers in the EU.
-
-3.  individuals from different income groups in a specific region or country.
-
-4.  Children under the age of five in the targeted region.
-
-5.  Children under the age of five in areas with varying levels of access to clean water and sanitation.
-:::
 
 # The Sampling
 
@@ -389,15 +351,6 @@ Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/op
 
 Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/openintro-statistics) [@Diez2022]
 
-# Population and samples by research question
-
-1.  What is the average poverty headcount rate in the world/a country?
-
-    -   Population: people or households;
-    -   Sample examples: household surveys.
-    -   Data source: The Living Standards Measurement Study (LSMS) <https://www.worldbank.org/en/programs/lsms> . . .
-
-**At home:** discuss the same for other research questions mentioned earlier.
 
 # Population and sampling: summary
 
@@ -409,7 +362,41 @@ Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/op
 
     -   Thus, descriptive statistics based on each sample is not identical to one based on the population.
 
-. . .
+
+## Population and samples by research question {.smaller}
+
+Discuss what are the (1) populations; (2) variables of interest; (3) data source; (4) sample based on the exemplary research questions below:
+
+
+::: incremental
+1.  What is the average poverty headcount rate in the world/a country?
+
+    -   Population: people or households;
+    -   Sample examples: household surveys.
+    -   Data source: The Living Standards Measurement Study (LSMS) <https://www.worldbank.org/en/programs/lsms> 
+    
+:::
+
+**At home:** discuss the same for other research questions mentioned earlier.
+
+-   What is the average wheat yield in Hessen?
+-   How does access to education impact income inequality?
+-   What are the factors influencing malnutrition rates among children in a specific region?
+-   How does access to clean water and sanitation facilities impact child mortality rates?
+-   What are the barriers to accessing healthcare services among marginalized communities?
+
+
+::: notes
+1.  all people/households.
+
+2.  wheat-producing farmers in the EU.
+
+3.  individuals from different income groups in a specific region or country.
+
+4.  Children under the age of five in the targeted region.
+
+5.  Children under the age of five in areas with varying levels of access to clean water and sanitation.
+:::
 
 # How to conclude about population using random samples and statics?
 
@@ -417,9 +404,11 @@ Source: [OpenIntroStat/openintro-statistics](https://github.com/OpenIntroStat/op
 
 -   There are:
 
+::: incremental
     -   Descriptive statistics
 
     -   Inferential statistics
+:::
 
 ## Descriptive statistics
 

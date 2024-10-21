@@ -1,6 +1,14 @@
 project:
-  title: "mk68-2023-24-public"
+  title: "mk68-2024-25-public"
   output-dir: _output
+  render:
+    - materials/mk68-01-p1-slides.qmd
+    - materials/mk68-01-p2-slides.qmd
+    - materials/mk68-02-slides.qmd
+    - materials/mk68-02-slides-distributions.qmd
+    - materials/mk68-02-slides-variance.qmd
+    - materials/mk68-02-slides-quantiles.qmd
+    - materials/mk68-02-slides-example-1.qmd
 
 author:
   - name: "Eduard Bukin"
@@ -33,7 +41,7 @@ format:
     show-slide-number: all
     preview-links: auto
     scrollable: true
-    incremental: true 
+    incremental: false 
     overview: true
     menu: true
     chalkboard: true

@@ -12,7 +12,7 @@ editor_options:
 source(here::here("materials", "00-setup.R"), local = TRUE)
 ```
 
-### Example: Deciles (1) of Income Distribution
+### Deciles (1) of Income Distribution
 
 ```{r}
 inc_dta <- 
@@ -112,7 +112,8 @@ inc_deciles <-
   ) %>% 
   mutate(
     x = row_number(),
-    group = str_c(x, " decile\n(", scales::label_number(1)(min), " - \n", scales::label_number(1)(max), ")"),
+    group = str_c(x, " decile\n(", scales::label_number(1, big.mark = "")(min), "-", 
+                  scales::label_number(1, big.mark = "")(max), ")"),
     inc_share = income_wsum / sum(income_wsum)
   )
 
@@ -163,7 +164,7 @@ decile_gg_0 <-
     labels = label_percent(.01)
     ) +
   theme(legend.position = "none") +
-  xlab("Decile of market income") +
+  xlab("Decile of income") +
   ylab("% of global income earned by each decile") +
   labs(title = "Global income distribution in 1998") 
 
@@ -259,12 +260,12 @@ inc_dist_2
 
 ------------------------------------------------------------------------
 
-### Example: Deciles (2) of Income Distribution
+### Deciles (2) of Income Distribution
 
 ::: columns
 ::: {.column width="30%"}
 ::: fragment
-Is the histograms with `bins by deciles` useful? 
+Is the histogram with frequency of observations **by deciles** useful? 
 :::
 
 ::: fragment
@@ -297,7 +298,7 @@ decile_gg_0b
 
 ------------------------------------------------------------------------
 
-### Example: Deciles (3). New insights
+### Deciles (3). New insights
 
 ::: columns
 ::: {.column width="50%"}
@@ -335,7 +336,7 @@ decile_gg_1
 
 ------------------------------------------------------------------------
 
-### Example: Deciles (4). New insights
+### Deciles (4). New insights
 
 ::: columns
 ::: {.column width="70%"}
@@ -359,7 +360,7 @@ Where is the global income generated and distributed?
 
 ------------------------------------------------------------------------
 
-### Example: Deciles (5). Change over time
+### Deciles (5). Change over time
 
 ::: fragment
 ```{r}
@@ -375,7 +376,7 @@ What had changed between 1998 and 2011?
 
 ------------------------------------------------------------------------
 
-### Example: Deciles (6). By country
+### Deciles (6). By country
 
 ::: columns
 ::: {.column width="50%"}
@@ -409,7 +410,7 @@ decile_gg_2
 
 ------------------------------------------------------------------------
 
-### Example: Deciles (7). By country
+### Deciles (7). By country
 
 ```{r}
 #| fig-width: 9
