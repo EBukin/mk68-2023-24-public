@@ -112,7 +112,7 @@ inc_deciles <-
   ) %>% 
   mutate(
     x = row_number(),
-    group = str_c(x, " decile\n(", scales::label_number(1, big.mark = "")(min), "-", 
+    group = str_c(x, " dec.\n(", scales::label_number(1, big.mark = "")(min), "-\n", 
                   scales::label_number(1, big.mark = "")(max), ")"),
     inc_share = income_wsum / sum(income_wsum)
   )
@@ -243,6 +243,7 @@ inc_dist_3 <-
 ```{r}
 #| fig-width: 5
 #| fig-height: 5
+#| fig-dpi: 300
 inc_dist_1
 ```
 :::
@@ -252,6 +253,7 @@ inc_dist_1
 ```{r}
 #| fig-width: 5
 #| fig-height: 5
+#| fig-dpi: 300
 inc_dist_2
 ```
 :::
@@ -265,13 +267,13 @@ inc_dist_2
 ::: columns
 ::: {.column width="30%"}
 ::: fragment
-Is the histogram with frequency of observations **by deciles** useful? 
+Let us draw a histogram with **frequency by deciles**! 
+
+-   Note: the total population in 1998 was 6 billion
 :::
 
 ::: fragment
--   Let us draw it...
-
--   the total population in 1998 was 6 billion
+-   Is it useful?
 :::
 :::
 
@@ -281,6 +283,7 @@ Is the histogram with frequency of observations **by deciles** useful?
 ```{r}
 #| fig-width: 6
 #| fig-height: 5
+#| fig-dpi: 300
 decile_gg_0a
 ```
 :::
@@ -289,6 +292,7 @@ decile_gg_0a
 ```{r}
 #| fig-width: 6
 #| fig-height: 5
+#| fig-dpi: 300
 decile_gg_0b
 ```
 :::
@@ -305,28 +309,27 @@ decile_gg_0b
 ```{r}
 #| fig-width: 6
 #| fig-height: 5
+#| fig-dpi: 300
 decile_gg_0b
 ```
 
-::: fragment
 Let us plot % share of total income on Y axis.
-:::
 :::
 
 ::: {.column width="50%"}
 ::: r-stack
-::: fragment
 ```{r}
 #| fig-width: 5
 #| fig-height: 6
+#| fig-dpi: 300
 decile_gg_0
 ```
-:::
 
 ::: fragment
 ```{r}
 #| fig-width: 5
 #| fig-height: 6
+#| fig-dpi: 300
 decile_gg_1
 ```
 :::
@@ -343,6 +346,7 @@ decile_gg_1
 ```{r}
 #| fig-width: 6
 #| fig-height: 5
+#| fig-dpi: 300
 decile_gg_1
 ```
 :::
@@ -366,6 +370,7 @@ Where is the global income generated and distributed?
 ```{r}
 #| fig-width: 8
 #| fig-height: 4
+#| fig-dpi: 300
 decile_gg_1a
 ```
 :::
@@ -384,6 +389,7 @@ What had changed between 1998 and 2011?
 ```{r}
 #| fig-width: 5
 #| fig-height: 6
+#| fig-dpi: 300
 decile_gg_1a
 ```
 
@@ -391,6 +397,7 @@ decile_gg_1a
 ```{r}
 #| fig-width: 5
 #| fig-height: 6
+#| fig-dpi: 300
 inc_dist_3
 ```
 :::
@@ -402,6 +409,7 @@ inc_dist_3
 ```{r}
 #| fig-width: 5
 #| fig-height: 6
+#| fig-dpi: 300
 decile_gg_2
 ```
 :::
@@ -415,6 +423,7 @@ decile_gg_2
 ```{r}
 #| fig-width: 9
 #| fig-height: 5
+#| fig-dpi: 300
 decile_gg_3
 ```
 

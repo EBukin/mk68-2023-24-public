@@ -548,7 +548,7 @@ equal2a + coord_flip()
 :::
 :::
 
-## Exam problems example: Lorenz curve {.smaller}
+## Example: Lorenz curve {.smaller}
 
 ::: columns
 ::: {.column width="80%"}
@@ -570,6 +570,8 @@ equal2  +
 -   How has income distribution changed between 1988 and 2011?
 
 -   What statistical concept underlies the computation of the Lorenz curve?
+
+-   See also: <https://ourworldindata.org/the-history-of-global-economic-inequality>
 :::
 :::
 

@@ -32,7 +32,6 @@ knitr::opts_chunk$set(fig.height = 4.5)
 
 ## Example: Measuring stunting
 
-### How to measure if a child is stunted?
 
 ::: {.fragment fragment-index="1"}
 ::: callout-important
@@ -313,20 +312,22 @@ dist_gg_0
 
 ## The stanard summary
 
-Practically, WHO's data collected on the healthy population helped defining
+WHO's data on the healthy population defined
 
--   probability distribution of **heights** for age and gender of children.
+-   probability distributions of **heights** for age and gender of children
+
+by:
 
 ::: fragment
--   Mean/Median height
--   Standard deviation of height
--   The distribution is normal
+-   Calculating **mean**, height at age and its **standard deviation**
+
+-   Assuming that **the distribution is normal**
 :::
 
 ::: fragment
 Stunting was defined as:
 
--   Having actual height 2 standard deviation lower than the central tendency in the healthy population.
+-   actual height **2 standard deviation below the mean** of a healthy population.
 :::
 
 ## Application: let us follow a boy's development:
@@ -339,12 +340,20 @@ bb <-
     )
 ```
 
+::: r-stack
+::: fragment
+```{r}
+boys_gg
+```
+:::
+
 ::: fragment
 ```{r}
 boys_gg + 
   geom_path(data = bb, aes(x = x, y = y), inherit.aes = FALSE) + 
   geom_point(data = bb, aes(x = x, y = y), inherit.aes = FALSE)
 ```
+:::
 :::
 
 
@@ -363,7 +372,7 @@ Is the symmetric, bell-shaped normal distribution, whit:
 :::
 
 ::: {.fragment fragment-index="4"}
--   X axis contains z-scores.
+-   X axis corresponds to the **z-scores.**
 :::
 :::
 
@@ -410,10 +419,10 @@ st_norm_2
 
 ## Z-score
 
-The Z-score of an observation $x$ is the `number of standard deviations` $s$ that it ($x$) falls above or below the mean $\bar x$.
+The Z-score of an observation $x_i$ is the `number of standard deviations` $s$ that it ($x_i$) falls above or below the mean $\bar x$.
 
 ::: fragment
-We can compute a z-score of every observation $x$ in our sample. For that we need:
+We can compute a z-score of every observation $x_i$ in our sample. For that we need:
 
 -   sample mean $\bar x$, and
 -   sample standard deviation, $s$.
@@ -421,7 +430,7 @@ We can compute a z-score of every observation $x$ in our sample. For that we nee
 
 ::: fragment
 $$
-Z = \frac{x-\bar x}{s}
+Z_i = \frac{x_i-\bar x}{s}
 $$
 :::
 
@@ -437,7 +446,9 @@ Source: [@Diez2022].
 
 ::: columns
 ::: {.column width="25%"}
-Often, we need to compare distributions or locate individual observations on distributions.
+-   to compare distributions, or
+-   locate an individual observations $i$ on / relative to a distribution.
+-   to determine % of population below and above such an observation $i$
 :::
 
 ::: {.column width="75%"}
@@ -447,23 +458,19 @@ Often, we need to compare distributions or locate individual observations on dis
 :::
 :::
 
-::: fragment
-This is difficult, when values are expressed in the absolute terms.
-:::
-
 ::: footer
 Image source: [@Diez2022].
 :::
 
 ## Standardization
 
-The process of converting any value of any distribution to the standard normal distribution.
+The process of converting any value $i$ of **any distribution** to a standard normal distribution.
 
 ::: columns
 ::: {.column width="50%"}
 ::: fragment
 $$
-Z = \frac{x-\bar x}{s}
+Z_i = \frac{x_i - \bar x}{s}
 $$
 :::
 :::
@@ -474,22 +481,21 @@ where:
 
 -   $\bar x$ is the mean, and
 -   $s$ is the SD, and
--   $x$ is the observation.
+-   $x_i$ is the observation $i$.
 :::
 :::
 :::
 
 ## Example (exam): det. stunting status (1)
 
-Stunting is defined **as having heights** `2 standard deviations lower` **then the average height of a healthy child** of the same gender and age.
+Stunting is defined **as having height** `2 standard deviations lower` **then the average height of a healthy child** of the same gender and age.
 
 ::: columns
 ::: {.column width="50%"}
 ::: fragment
 We've measured that:
 
--   a 5 years old girl
--   has heights of 97 cm.
+-   a 5 years old girl is 97 cm tall
 
 **Can we consider her suffering from stunting?**
 :::
@@ -506,7 +512,7 @@ According to the [Child Growth Standards](https://www.who.int/publications/i/ite
 :::
 :::
 
-## Example (exam): det. stunting status (2)
+## Example: determine stunting status (2)
 
 Computing the z-score of the observation:
 
@@ -524,42 +530,6 @@ Conclusion:
 -   Thus she might be suffering from stunting if other causes of growth deprevation (e.g. genetic) are eliminated.
 :::
 
-# Homework examples
-
-## Compute z-score
-
-1.  The boy's height is 76 cm. He is 1.5 Years old.
-
-    -   Is this boy stunted given that the expected height in the corresponding population of that age is 80.3 and the SD is 2.6?
-    -   Calculate corresponding statistics and write a brief conclusion.
-
-2.  The girl's weight is 13.8 kg. She is 5 years old.
-
-    -   Does this girl suffer from waisting?
-    -   Expected weight in the corresponding population of that age is 18.3 and the SD is 2.05?
-    -   Calculate corresponding statistics and write a brief conclusion.
-
-## Exam questions on variance
-
--   What is variance and how is it different from the standard deviation.
-
--   When the mean and the standard deviation are not the best measures of respectively the central tendency and the variance?
-
-    -   What are the alternative methods?
-
--   Assume that the distribution is normal. What share of observations falls withing two SD of mean?
-
--   How the quantiles are constructed?
-
--   Is median one of the quantiles or this is the central tendency?
-
--   What robust measures of variance do you know?
-
-## Exam questions on the Normal distribution
-
--   What is the difference between a normal distribution of age and a standard normal distribution?
-
--   What is the z-score?
 
 # When univariate data analysis is not enough?
 
@@ -646,6 +616,49 @@ saur_dta %>%
 
 
 
+# Read before week 4!
+
+-   Chapter 1 Randomized Trials. In Mastering ’metrics : the path from cause to effect / Joshua D. Angrist and Jörn-Steffen Pischk. Princeton University Press, 2015. <https://justfind.hds.hebis.de/Record/HEB35797798X>
+
+-   Available online / library
+
+# Homework examples
+
+## Compute z-score
+
+1.  The boy's height is 76 cm. He is 1.5 Years old.
+
+    -   Is this boy stunted given that the expected height in the corresponding population of that age is 80.3 and the SD is 2.6?
+    -   Calculate corresponding statistics and write a brief conclusion.
+
+2.  The girl's weight is 13.8 kg. She is 5 years old.
+
+    -   Does this girl suffer from waisting?
+    -   Expected weight in the corresponding population of that age is 18.3 and the SD is 2.05?
+    -   Calculate corresponding statistics and write a brief conclusion.
+
+## Exam questions on variance
+
+-   What is variance and how is it different from the standard deviation.
+
+-   When the mean and the standard deviation are not the best measures of respectively the central tendency and the variance?
+
+    -   What are the alternative methods?
+
+-   Assume that the distribution is normal. What share of observations falls withing two SD of mean?
+
+-   How the quantiles are constructed?
+
+-   Is median one of the quantiles or this is the central tendency?
+
+-   What robust measures of variance do you know?
+
+## Exam questions on the Normal distribution
+
+-   What is the difference between a normal distribution of age and a standard normal distribution?
+
+-   What is the z-score?
+
 
 
 # Takeaways checklist
@@ -668,13 +681,6 @@ saur_dta %>%
 
 -   [How has income inequality within countries evolved over the past century?](https://ourworldindata.org/how-has-income-inequality-within-countries-evolved-over-the-past-century)
 
-## Read also: 
-
-Read the paper below **before week 4**: [@Kuchenbecker2017]
-
--   Kuchenbecker, J., Reinbott, A., Mtimuni, B., Krawinkel, M. B., & Jordan, I. (2017). Nutrition education improves dietary diversity of children 6-23 months at community-level: Results from a cluster randomized controlled trial in Malawi. PLOS ONE, 12, e0175216.
-
--   Available on Ilias.
 
 ## Key concepts covered in the lecture {.smaller}
 

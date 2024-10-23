@@ -242,7 +242,7 @@ qdist("gamma",
 See more on the [Gamma distribution](https://en.wikipedia.org/wiki/Gamma_distribution)
 :::
 
-## Example (1): income deciles and robust-vs-non summary
+## Example (1): income deciles
 
 ------------------------------------------------------------------------
 
@@ -250,10 +250,10 @@ See more on the [Gamma distribution](https://en.wikipedia.org/wiki/Gamma_distrib
 
 ## Example (2): inequality, taxes and subsidies (1)
 
-Fiscal policy has a redistribution effect.
+Fiscal policy can redistribute income
 
-::: incremental
--   Taxes can 'collect' wealth from the 'rich':
+::: fragment
+-   Taxes could be 'collected' from the 'rich':
 
     -   Direct taxed: income tax
     -   Indirect taxed: VAT, and excises
@@ -262,6 +262,8 @@ Fiscal policy has a redistribution effect.
 
     -   Direct subsidies: unemployment benefits, child support
     -   In-kind subsidies: health and education
+    
+-   See: <https://commitmentoequity.org/>
 :::
 
 ::: footer
@@ -274,10 +276,12 @@ See [Fiscal Incidence in Armenia](https://commitmentoequity.org/wp-content/uploa
 
 Data below is produced based on the representative HH surveys.
 
-::: incremental
--   For each individual income by sources and expenditure by directions was calculated.
+::: fragment
+-   For each individual income by sources and expenditure by cause are calculated.
 
--   Then individuals were aggregated into the deciles of income.
+-   Then individuals are aggregated into the deciles of income.
+
+-   Each individual earns *market income*, while taxes and subsidies subtract or add to it.
 :::
 
 ------------------------------------------------------------------------
@@ -294,12 +298,14 @@ Data below is produced based on the representative HH surveys.
 
 # Home work
 
-## At home: Robust vs non robust variance {.smaller}
+## Robust vs non robust variance {.smaller}
 
 ![](img/patrons-1.png){fig-align="center"}
 
 -   Would the mean or the median best represent the central tendency?
+
 -   What does this say about the robustness of the two measures?
+
 -   Would the standard deviation or the IQR best represent the amount of variability in the incomes?
 
 ::: footer
