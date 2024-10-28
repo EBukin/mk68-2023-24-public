@@ -15,16 +15,6 @@ editor_options:
 source(here::here("materials", "00-setup.R"), local = TRUE)
 ```
 
-# Homework for the Christmas break
-
-Watch these videos in exact order:
-
-1.  [Econometrics: The Path from Cause to Effect](https://youtu.be/WwW8y5dZs80)
-2.  [Ceteris Paribus: Public vs. Private University](https://youtu.be/iPBV3BlV7jk)
-3.  [Selection Bias: Will You Make More Going to a Private University?](https://youtu.be/6YrIDhaUQOE)
-4.  [Randomized Trials: The Ideal Weapon](https://youtu.be/eGRd8jBdNYg)
-
-More homework in the end of slides.
 
 # Bi-variate data
 
@@ -236,6 +226,7 @@ ugd_gg_3
 :::
 :::
 
+
 # Trend line
 
 Is the line that best outlines a linear trend in the relationship between $x$ and $y$.
@@ -244,23 +235,75 @@ More information:
 
 -   Khan Academy. [Unit: Exploring bivariate numerical data](https://www.khanacademy.org/math/statistics-probability/describing-relationships-quantitative-data). [Introduction to trend lines](https://www.khanacademy.org/math/statistics-probability/describing-relationships-quantitative-data#:~:text=Start%20quiz-,Introduction%20to%20trend%20lines,-Learn)
 
+## Trend line {.smaller}
+
+::: columns
+::: {.column width="30%"}
+Trend line is also a 
+
+-   Simple linear regression line
+:::
+
+::: {.column width="70%"}
+::: r-stack
+```{r}
+#| fig-width: 7
+#| fig-height: 5.5
+ugd_gg_1
+```
+
+::: {.fragment}
+```{r}
+#| fig-width: 7
+#| fig-height: 5.5
+ugd_gg_1  +
+  geom_smooth(method = "lm", se = FALSE)
+```
+:::
+
+::: {.fragment}
+```{r}
+#| fig-width: 7
+#| fig-height: 5.5
+ugd_gg_2  +
+  geom_smooth(method = "lm", se = FALSE)
+```
+:::
+
+::: {.fragment}
+```{r}
+#| fig-width: 7
+#| fig-height: 5.5
+ugd_gg_3  +
+  geom_smooth(method = "lm", se = FALSE)
+```
+:::
+:::
+:::
+:::
+
 ## Trend line examples
 
 ![](img/trend-line-1.png){fig-align="center" width="100%"}
 
-## Examples: describe the scatter plots (1)
+# Examples
 
-What are the associations between X and Y? Are those positive/negative, linear/nonlinear? How but is the variance of Y given X?
+## Describe the scatter plots (1)
+
+What are the associations between X and Y? (positive/negative, linear/nonlinear)
 
 ![](img/scatter-plot-1.png)
 
-## Examples: describe the scatter plots (2)
+## Describe the scatter plots (2)
 
-What are the associations between X and Y? Are those positive/negative, linear/nonlinear? How but is the variance of Y given X?
+
+What are the associations between X and Y? (positive/negative, linear/nonlinear)
 
 ![](img/corr-quis-2.png)
 
-## At home: More examples (1) {.smaller}
+# Homework
+
+## More examples (1) {.smaller}
 
 ::: columns
 ::: {.column width="70%"}
@@ -295,9 +338,9 @@ murders |>
 ::: {.column width="30%"}
 -   Describe the scatter plot.
 
-    1.  What is display. What is the plot type.
-    2.  What is on X and Y axis. Are those transformed?
-    3.  What points show. What shape/color stands for?
+    1.  What is displayed? What is the plot type?
+    2.  What is on X and Y axis? Are those transformed, how?
+    3.  What points show. What shape/color/size stands for?
 
 -   Summaries the relationship between Y ans X.
 
@@ -306,7 +349,7 @@ murders |>
 :::
 :::
 
-## At home: More examples (2) {.smaller}
+## More examples (2) {.smaller}
 
 ::: columns
 ::: {.column width="70%"}
@@ -345,9 +388,9 @@ temp_carbon |>
 ::: {.column width="30%"}
 -   Describe the scatter plot.
 
-    1.  What is display. What is the plot type.
-    2.  What is on X and Y axis. Are those transformed?
-    3.  What points show. What shape/color stands for?
+    1.  What is displayed? What is the plot type?
+    2.  What is on X and Y axis? Are those transformed, how?
+    3.  What points show. What shape/color/size stands for?
 
 -   Summaries the relationship between Y ans X.
 
@@ -356,23 +399,27 @@ temp_carbon |>
 :::
 :::
 
-## Example (exam): draw a linear trend line between x and y
+## Draw a linear trend line between x and y
 
 ![](img/corr-quis-1.png)
 
-# Correlation
+# Correlation (coefficient)
 
-> is any statistical relationship, whether causal or not, between two random variables or bivariate data.
+> is a measure of a statistical relationship (not necessarily causal) between two variables.
 
-See more explanations:
+-   Tells us how strongly/weakly two variables co-relate with each other.
+
+See:
 
 -   Josh Starmer: [Pearson's Correlation, Clearly Explained!](https://youtu.be/xZ_z8KWkhXE)
+
+-   [Interpretation of the strength of correlation](https://easystats.github.io/effectsize/articles/interpret.html).
 
 -   Khan Academy. [Unit: Exploring bivariate numerical data](https://www.khanacademy.org/math/statistics-probability/describing-relationships-quantitative-data). [Correlation coefficients](https://www.khanacademy.org/math/statistics-probability/describing-relationships-quantitative-data#scatterplots-and-correlation:~:text=Practice-,Correlation%20coefficients,-Learn)
 
 ## Methodology {.smaller}
 
-There are many [methods of correlation](https://easystats.github.io/correlation/articles/types.html#different-methods-for-correlations) estimation, for example:
+There are many [methods of calculating a correlation coefficient](https://easystats.github.io/correlation/articles/types.html#different-methods-for-correlations):
 
 ::: fragment
 ### Pearson's correlation coefficient
@@ -417,22 +464,25 @@ where:
 :::
 :::
 
-## Interpretation
+## Interpretation {.smaller}
 
-Correlation coefficient captures **ONLY LINEAR** relationship.
+Correlation coefficient represents [**ONLY LINEAR**]{style="color: red;"} relationship between two variables
 
-::: fragment
-Usually, it is interpreted arbitrary. [J. Cohen (1988)](https://easystats.github.io/effectsize/articles/interpret.html#cohen1988statistical) defined it as:
-:::
+It describe the strength of a relationship and its direction
 
 ::: columns
 ::: {.column width="40%"}
 ::: fragment
 ::: incremental
--   $r < 0.1$ Very small
+Strength of a relationship by [J. Cohen (1988)](https://easystats.github.io/effectsize/articles/interpret.html#cohen1988statistical)
+
+-   $r < 0.1$ Very small / weak
+
 -   $0.1 <= r < 0.3$ Small
+
 -   $0.3 <= r < 0.5$ Moderate
--   $r >= 0.5$ Large
+
+-   $r >= 0.5$ Large / strong
 :::
 :::
 :::
@@ -442,7 +492,7 @@ Usually, it is interpreted arbitrary. [J. Cohen (1988)](https://easystats.github
 Positive correlation: $r > 0$
 
 -   $x$ and $y$ relate proportionally.
--   An increase in $x$ ($y$) is associated with an increase in $y$ ($x$).
+-   An **increase** in $x$ ($y$) is associated with an **increase** in $y$ ($x$).
 :::
 
 ::: fragment
@@ -452,10 +502,6 @@ Negative correlation: $r < 0$
 -   An **increase** in $x$ ($y$) is associated with a **decrease** in $y$ ($x$).
 :::
 :::
-:::
-
-::: footer
-See more on [interpretation of the strength of correlation](https://easystats.github.io/effectsize/articles/interpret.html).
 :::
 
 ## Correlation examples (1)
@@ -470,9 +516,9 @@ Source: [@Diez2022].
 
 ![](img/cor-examples-0.png)
 
-## Correlation pitfalls: Non linearity
+## Correlation pitfalls: Non-linearity
 
-Correlation cannot be used with non-linear data.
+Correlation cannot be used with the non-linear data.
 
 ::: fragment
 -   Non linear data yields a correlation coefficient, but such coefficient does not imply any linear relationship.
@@ -546,14 +592,46 @@ peng_cor_gg2
 
 ## Correlation matrix (1): Penguins
 
+
+::: columns
+::: {.column width="50%"}
+```{r}
+library(flextable)
+library(correlation)
+penguins %>% 
+  select(bill_length_mm:body_mass_g) %>% 
+  correlation() |> 
+  as_tibble() |> select(1:3) |> 
+  flextable()
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
 ```{r}
 penguins %>% 
   select(bill_length_mm:body_mass_g) %>% 
-  cor(use = "complete.obs") %>% 
-  round(3) 
+  correlation() |> summary() |> 
+  mutate(across(where(is.character), ~ str_replace_all(., "\\*", ""))) |> 
+  as_tibble() |> flextable()
 ```
+:::
+:::
+:::
 
-## Examples (exam) on correlation
+::: fragment
+```{r}
+#| fig-height: 2.5
+#| fig-width: 8
+penguins %>% 
+  select(bill_length_mm:body_mass_g) %>% 
+  correlation() |> summary() |> plot()
+```
+:::
+
+# Homework
+
+## Correlation
 
 ::: fragment
 ### Match a correlation coefficient and a plot
@@ -601,7 +679,7 @@ If $x$ correlates with $y$, does is mean that $x$ causes $y$?
 -   Correlation does not imply causation!
 :::
 
-## Do we live longer because of the birth rate? {.smaller}
+## Do we live longer because of the low birth rate? {.smaller}
 
 ```{r}
 un_dta <- alr4::UN11 %>% as_tibble()
@@ -624,18 +702,18 @@ un_corr <- cor(un_dta$lifeExpF, un_dta$fertility) %>% round(3)
 ```
 
 ::: columns
-::: {.column width="70%"}
+::: {.column width="60%"}
 ::: r-stack
 ```{r}
 #| fig-width: 7
-#| fig-height: 5
+#| fig-height: 6
 un_gg_0
 ```
 
 ::: {.fragment fragment-index="3"}
 ```{r}
 #| fig-width: 7
-#| fig-height: 5
+#| fig-height: 6
 un_gg_1
 ```
 :::
@@ -643,14 +721,14 @@ un_gg_1
 ::: {.fragment fragment-index="4"}
 ```{r}
 #| fig-width: 7
-#| fig-height: 5
+#| fig-height: 6
 un_gg_2
 ```
 :::
 :::
 :::
 
-::: {.column width="30%"}
+::: {.column width="40%"}
 ::: {.fragment fragment-index="1"}
 The correlation between Fertility and life expectancy is `r un_corr`.
 
@@ -670,7 +748,7 @@ The correlation between Fertility and life expectancy is `r un_corr`.
 :::
 
 ::: {.fragment fragment-index="5"}
-No... Non of it implies causality.
+[No... None of it implies causality.]{style="color: red;"}
 :::
 :::
 :::
@@ -678,9 +756,9 @@ No... Non of it implies causality.
 ## To establish a causal relationship
 
 ::: incremental
--   We need to create a "Ceteris Paribus"!
+-   We need to establish a [**"Ceteris Paribus"**!]{style="color: green;"}
 
--   We need to make sure that "Other things" are equal between the countries.
+-   We need to make sure that [**"other things are equal"**]{style="color: red;"} between the countries.
 
 -   For example:
 
@@ -689,12 +767,80 @@ No... Non of it implies causality.
     -   The only difference is in their fertility rate and (perhaps) life expectancy.
 :::
 
-# Exploratory analysis example: rice yields and fertilizers application
+# Homework
 
-How does the urea application affect the yields of rice?
+To better understand how data can be used to communicate a complex story, check out the following videos and exercises.
 
-::: increasing
--   Sample of 171 Rice farms in Indonesia is followed over 5 years.
+## New insights on the HIV pandemic
+
+The purpose of the following short video is to stimulate debate on the **covariates, and causes** of the HIV pandemic worldwide.
+
+::: fragment
+After watching it, discuss:
+
+-   Facts of the HIV/AIDS pandemic;
+-   Country-specific peculiarities that correlate with the pandemic.
+-   What causes the pandemic to spread at so different rates across the countries?
+:::
+
+Video source: [Insights on HIV, in stunning data visuals](https://www.ted.com/talks/hans_rosling_insights_on_hiv_in_stunning_data_visuals?language=en)
+
+## Insights on HIV, in stunning data visuals
+
+::: {style="max-width:100%"}
+::: {style="position:relative;height:0;padding-bottom:56.25%"}
+<iframe src="https://embed.ted.com/talks/lang/en/hans_rosling_insights_on_hiv_in_stunning_data_visuals" width="854" height="480" style="position:absolute;left:0;top:0;width:100%;height:100%" frameborder="0" scrolling="no" allowfullscreen>
+
+</iframe>
+:::
+:::
+
+::: footer
+Source: [Insights on HIV, in stunning data visuals](https://www.ted.com/talks/hans_rosling_insights_on_hiv_in_stunning_data_visuals)
+:::
+
+## . {background-image="img/gapminder_hiv_chart_feb09_a-1.png" background-size="contain"}
+
+## Key Messages:
+
+-   No simple answer to the complex question.
+
+-   There are no two types of countries one with and another without the HIV pandemic.
+
+-   To see more, visit:
+
+    -   [gapminder.org](https://www.gapminder.org/)
+    -   [Ted talks of Hans Rosling](https://www.ted.com/speakers/hans_rosling)
+
+# Homeworks readings
+
+-   Chapter 1 Randomized Trials. In Mastering ’metrics : the path from cause to effect / Joshua D. Angrist and Jörn-Steffen Pischk. Princeton University Press, 2015. <https://justfind.hds.hebis.de/Record/HEB35797798X>
+
+**Optional:**
+
+-   Chapter 1 in "The Book of Why: The New Science of Cause and Effect" by Judea Pearl and Dana Mackenzie <https://justfind.hds.hebis.de/Record/HEB446798185>
+
+## At home: Explore the best use of a scatter plots with [Gapminder](https://www.gapminder.org/)
+
+Play with data using gap minder:
+
+-   <https://www.gapminder.org/tools/>
+
+Watch some Hans Rosling's Ted Talks:
+
+-   <https://www.youtube.com/playlist?list=PLSrgd_ElrrXegdtDHPmUzrzLpwZ2dSYKg>
+
+Explore the gap-minder foundation channel
+
+-   <https://www.youtube.com/channel/UCMbmqUMqzerMSM48pGYMYsg>
+
+# Example: Rice yields and fertilizers application {.smaller .nonincremental}
+
+Research question: 
+
+-   How does the urea application affect the yields of rice?
+
+The sample of 171 rice farms in Indonesia is followed over 5 years.
 
 -   Each observation represents an individual farm that produced rice over one year.
 
@@ -702,7 +848,8 @@ How does the urea application affect the yields of rice?
 
     -   Rice yields in kg / ha
     -   Urea ($CO{({NH}_2)}_2$) application in kg / ha
-:::
+
+## Exploratory analysis
 
 ```{r}
 data(RiceFarms, package = "plm")
@@ -796,22 +943,6 @@ rice_dta_0 %>%
         caption = "Descriptive statistics for the full sample")
 ```
 
-::: fragment
--   What about the influential observations/outliers?
-:::
-
-::: fragment
-```{r}
-rice_dta_0a %>%
-  filter(!Outlier) %>% 
-  select(-id, -Outlier) %>% 
-  report_table(digits = 1) %>% 
-  select(1, 3:5, 7, 8) %>% 
-  kable(digits = 1, align = "c", row.names = F, 
-        caption = "Descriptive statistics after excluding suspected outliers")
-```
-:::
-
 ## Scatter plot
 
 ```{r}
@@ -846,7 +977,7 @@ urea_01b <-
                      seq(10000, 30000, 10000))
   )
 
-urea_01a <- urea_01b + aes(color = Outlier)
+urea_01a <- urea_01b #+ aes(color = Outlier)
 
 urea_02 <-
   urea_01a + 
@@ -856,21 +987,18 @@ urea_02 <-
     aes(linetype = "Full sample (Corr. coef. = 0.57)"),
     colour = "blue"
     ) + 
-  geom_smooth(
-    method = "lm",
-    se = FALSE,
-    aes(linetype = "No outliers (Corr. coef. = 0.39)"),
-    data = filter(rice_dta_0a, !Outlier),
-    colour = "red"
-    )  + 
+  # geom_smooth(
+  #   method = "lm",
+  #   se = FALSE,
+  #   aes(linetype = "No outliers (Corr. coef. = 0.39)"),
+  #   data = filter(rice_dta_0a, !Outlier),
+  #   colour = "red"
+  #   )  + 
   labs(linetype = NULL)
 
 urea_02_tbl <- 
   rice_dta_0a %>%
-  filter(!Outlier) %>%
-  mutate(Outlier = "No outliers") %>%
-  bind_rows(rice_dta_0a %>%
-              mutate(Outlier = "With outliers")) %>%
+  mutate(Outlier = "Full sample") %>%
   pivot_longer(c(yield, urea)) %>%
   group_by(Outlier, name) %>%
   summarise(across(c(value), list(
@@ -878,9 +1006,10 @@ urea_02_tbl <-
   ), .names = "{.fn}")) %>%
   ungroup() %>% 
   pivot_longer(c(mean, SD, median), names_to = "name2") %>% 
-  pivot_wider(names_from = Outlier, values_from = "value") %>% 
-  arrange(desc(name)) %>% 
-  rename(` ` = 1, `  ` = 2)
+  pivot_wider(names_from = name  , values_from = "value") %>% 
+  select(-Outlier) |> 
+  arrange(desc(name2)) %>% 
+  rename(` ` = 1)
 
 urea_03 <- 
   urea_02 +          
@@ -928,7 +1057,7 @@ urea_02
 :::
 :::
 
-## Correlation (exam questions examples) {.smaller}
+## Correlation (exam questions) {.smaller}
 
 ::: columns
 ::: {.column width="25%"}
@@ -944,10 +1073,10 @@ What can we conclude about the relationship?
 
 ::: fragment
 ::: {.fragment .highlight-red}
-**Does the correlation suggests that urea increases the rice yield in Indonesia?**
+**Does the correlation suggests that urea application causes rice yields increases?**
 :::
 
--   Explain why!
+-   Explain why
 :::
 :::
 
@@ -962,15 +1091,17 @@ urea_03
 
 ## Causality conclusion {.smaller}
 
-[**Does the correlation suggest that urea application increases the yield of rice in Indonesia?**]{style="color: red;"}
+[**Does the correlation suggests that urea application causes rice yields increases?**]{style="color: red;"}
 
 ::: incremental
--   In theory, fertilizers should increase yields. But:
+-   (Theory) Common knowledge says: fertilizers should increase yields. But:
 
-    -   Increase in N without other fertilizers (P and K) may not increase yield because of the [Liebig's law of the minimum](https://en.wikipedia.org/wiki/Liebig%27s_law_of_the_minimum).
-    -   Water availability, technology and other production factors may affect the yields.
-    -   Climate: El Niño and La Niña
-    -   Soil and seeds, ...
+    -   Increase in N without other fertilizers (P and K) may not increase yield because of the
+    
+        -   [Liebig's law of the minimum](https://en.wikipedia.org/wiki/Liebig%27s_law_of_the_minimum).
+        
+    -   Water availability, climate (El Niño and La Niña), technology,  and other production factors may affect the yields.
+    -   Soil, seeds, Farmer's skills, motivation, ...
 
 -   As data contains different farmers over different years, these factors are likely to be different!
 :::
@@ -983,18 +1114,19 @@ In the current setting, we [**CANNOT**]{style="color: red;"} conclude that an in
 ::: incremental
 -   [**other factors are not constant**]{style="color: red;"} between different farms/observations/periods. See those factors above.
 
--   or [there is no Ceteris Paribus]{style="color: red;"}
+-   In other words, [there is no Ceteris Paribus]{style="color: red;"}
 :::
 :::
 
-# Cause, Effect, Potential Outcome and Ceteris Paribus
+# Cause, Effect, Potential Outcome, and the Ceteris Paribus
 
 ::: fragment
 The econometrician's goal is to :
 
 ::: incremental
 -   [infer that one variable (such as fertilizers)]{style="color: red;"}
--   [has a causal effect on another variable (such as yields).]{style="color: red;"}
+
+-   [has a causal effect on another variable (such as yields).]{style="color: green;"}
 :::
 :::
 
@@ -1016,7 +1148,7 @@ Association between two or more variables might be suggestive, but not causal [@
 ### 2. Outcome or [Factual]{style="color: green;"}
 
 -   rice yields in **2015**
--   $\text{Yield}_{A}(Rice| \text{Urea} = 100)$
+-   $\text{Yield}_{A}(Rice | \text{Urea} = 100)$
 :::
 
 ::: {.fragment fragment-index="3"}
@@ -1031,7 +1163,7 @@ Association between two or more variables might be suggestive, but not causal [@
 ### 2.a Potential Outcome, or [Counterfactual]{style="color: red;"}
 
 ::: {.fragment fragment-index="6"}
--   in 2014, farm A **did not increases urea use**;
+-   **IF** in 2014, farm A **did not apply urea**;
 -   potential rice yields in **2015**
 -   $\text{Yield}_{A}(Rice| \text{Urea} = 0)$
 :::
@@ -1061,11 +1193,11 @@ $$
 
 ::: {.fragment fragment-index="9"}
 ::: callout-note
-### Once the farm A decide to apply Urea, can we possible learn the Potential Outcome?
+### Once the farm A applied 100 kg of Urea, can we possibly observe the Potential Outcome?
 :::
 :::
 
-## What we usually measure:
+## Normaly, we observe only factual outcomes:
 
 ::: columns
 ::: {.column width="50%"}
@@ -1090,7 +1222,7 @@ $$
 :::
 
 ::: fragment
-### We usually observe just a difference between two factuals:
+### Normaly, we measure [a difference between two factual outcomes]{style="color: red;"}:
 
 $$
 \text{Yield difference} = \text{Yield}_A(\text{Rice}|\text{Urea} = 100) - \\ \text{Yield}_B(\text{Rice}|\text{Urea} = 0)
@@ -1098,90 +1230,59 @@ $$
 :::
 
 ::: fragment
-[This is not the same as the causal effect because **the other things are not equal** between farms A and B.]{style="color: red;"}
+This is [not the same as the causal effect]{style="color: blue;"}, because **the other things are not equal** between farms A and B.
 :::
 
-## Cause or Treatment
+## Cause = Treatment
 
--   Variable or input that we change and which effect we want to understand.
+-   Variable / input that 
+    -   we change 
+    -   which effect we want to measure
 
 ::: fragment
 ### Outcome
 
--   Measured characteristics that result from a treatment.
+-   Measured characteristics that (theoretically) result from a treatment.
 :::
 
 ::: fragment
 ### Causal Effect
 
--   Difference between **factual and counterfactual** (potential outcome).
+-   Difference between [**factual**]{style="color: blue;"} and [**counterfactual**]{style="color: red;"} 
+-   Difference between factual and potential outcomes.
 :::
 
-## Potential Outcome or Counterfactual
+## Potential Outcome / Counterfactual
 
-**An outcome that [could have been observed]{style="color: red;"} if we had not applied the treatment.**
+**is an [outcome that would have occurred]{style="color: red;"} if NO treatment had been applied.**
 
 ::: incremental
--   we only observe factual outcomes.
+-   [we **cannot** observe a counterfactual]{style="color: blue;"} because
 
--   we cannot observe counterfactual
+    -   once a treatment is applied, subject cannot be observed without the treatment.
 
-    -   because once the treatment is applied, subject cannot be observed without the treatment.
+-   In counterfactual, all other factors must be equal, except for the treatment: 
 
--   counterfactual is the potential outcome of the treatment, where all other things except for the treatment are equal / **given ceteris paribus**.
+    -   **Ceteris paribus**.
 :::
 
 ## Cause, Effect and the Ceteris Paribus
 
-::: columns
-::: {.column width="40%"}
-```{r}
-# mermaid
-# %%| label: fig-mermaid-1
-# %%| fig-width: 6
-# %%| fig-height: 7
-# %%| fig-cap: |
-# %%|   Cause and Effect
-# graph TD
-#     A[Treatment] --> |Apply| B(Factual)
-#     A --> |Do not apply| C(Counterfactual)
-#     B --> E[Factual minus Counterfactual]
-#     C --> E
-#     E ==> d[Causal Effect]
-#     subgraph equal[Ceteris paribus]
-#         A
-#         B 
-#         C 
-#         E
-#     end
-```
+**To measure the causal effect of a treatment, we need to ensure other things equal (ceteris paribus)**
 
-![](img/w3-causal-diagram.svg)
-
-:::
-
-::: {.column width="60%"}
-::: fragment
-**To reveal the effect caused by a treatment, we need to ensure the ceteris paribus.**
-:::
-
-::: fragment
 ::: incremental
 The "other things" are:
 
--   **measurable features** (age, height, costs, ...);
+-   [**measurable factors**]{style="color: blue;"} (age, height, costs, ...);
 
--   **factors that are measured but not included in our data**;
+-   [**measurable but not included in our data**]{style="color: green;"};
 
--   **unmeasurable factors** (ability, effort, connections, ...)
-:::
-:::
-:::
+-   [**unmeasurable factors**]{style="color: red;"} (ability, effort, connections, ...)
 :::
 
 ## How to establish the ceteris paribus?
 
-There are 5 key statistical tools that help us doing so.
+There are 5 key econometric methods:
 
 ::: incremental
 1.  [**RCT - Randomized Control Trials**]{style="color: green;"}
@@ -1195,70 +1296,19 @@ There are 5 key statistical tools that help us doing so.
 5.  RDD - Regression Discontinuity Design
 :::
 
-# At home: New insights on the HIV pandemic
+# Ceteris Paribus: Public vs. Private University
 
-The purpose of the following short video is to stimulate debate on what are **covariates, and causes** of the HIV pandemic in the world.
+Watch and discuss now: 
 
-::: fragment
-After watching it, discuss:
+< https://www.youtube.com/watch?v=iPBV3BlV7jk > 
 
--   Facts of the HIV/AIDS pandemic;
--   Country-specific peculiarities that correlate with the pandemic.
--   What causes the pandemic to spread at so different rates across the countries?
-:::
+OR the same [Ceteris Paribus: Public vs. Private University](https://www.youtube.com/watch?v=iPBV3BlV7jk)
 
-Video source: [Insights on HIV, in stunning data visuals](https://www.ted.com/talks/hans_rosling_insights_on_hiv_in_stunning_data_visuals?language=en)
+# Homework
 
-## Insights on HIV, in stunning data visuals
+## The essence of econometrics (Video)
 
-::: {style="max-width:100%"}
-::: {style="position:relative;height:0;padding-bottom:56.25%"}
-<iframe src="https://embed.ted.com/talks/lang/en/hans_rosling_insights_on_hiv_in_stunning_data_visuals" width="854" height="480" style="position:absolute;left:0;top:0;width:100%;height:100%" frameborder="0" scrolling="no" allowfullscreen>
-
-</iframe>
-:::
-:::
-
-::: footer
-Source: [Insights on HIV, in stunning data visuals](https://www.ted.com/talks/hans_rosling_insights_on_hiv_in_stunning_data_visuals)
-:::
-
-## . {background-image="img/gapminder_hiv_chart_feb09_a-1.png" background-size="contain"}
-
-## Key Messages:
-
--   No simple answer to the complex question.
-
--   There are no two types of countries one with and another without the HIV pandemic.
-
--   To see more, visit:
-
-    -   [gapminder.org](https://www.gapminder.org/)
-    -   [Ted talks of Hans Rosling](https://www.ted.com/speakers/hans_rosling)
-
-# Other homework
-
-## At home: Do exercises from the lecture
-
-## At home: Readings
-
--   [@Kuchenbecker2017] **before the week 4**;
-
--   Chapter 1 in "The Book of Why: The New Science of Cause and Effect" by Judea Pearl and Dana Mackenzie
-
-## At home: Explore the best use of a scatter plots with [Gapminder](https://www.gapminder.org/)
-
-Play with data using gap minder:
-
--   <https://www.gapminder.org/tools/>
-
-Watch some Hans Rosling's Ted Talks:
-
--   <https://www.youtube.com/playlist?list=PLSrgd_ElrrXegdtDHPmUzrzLpwZ2dSYKg>
-
-Explore the gap-minder foundation channel
-
--   <https://www.youtube.com/channel/UCMbmqUMqzerMSM48pGYMYsg>
+[Econometrics: The Path from Cause to Effect](https://youtu.be/WwW8y5dZs80)
 
 ## Key concepts covered in the lecture {.smaller}
 
