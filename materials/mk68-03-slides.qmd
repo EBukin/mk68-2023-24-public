@@ -812,7 +812,7 @@ Source: [Insights on HIV, in stunning data visuals](https://www.ted.com/talks/ha
     -   [gapminder.org](https://www.gapminder.org/)
     -   [Ted talks of Hans Rosling](https://www.ted.com/speakers/hans_rosling)
 
-# Homeworks readings
+# Homework readings
 
 -   Chapter 1 Randomized Trials. In Mastering ’metrics : the path from cause to effect / Joshua D. Angrist and Jörn-Steffen Pischk. Princeton University Press, 2015. <https://justfind.hds.hebis.de/Record/HEB35797798X>
 

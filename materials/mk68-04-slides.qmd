@@ -24,6 +24,16 @@ knitr::opts_chunk$set(fig.height = 4.5)
 
 {{< include deworming.qmd >}}
 
+
+# Homework
+
+1.  [Econometrics: The Path from Cause to Effect](https://youtu.be/WwW8y5dZs80)
+2.  [Ceteris Paribus: Public vs. Private University](https://youtu.be/iPBV3BlV7jk)
+3.  [Selection Bias: Will You Make More Going to a Private University?](https://youtu.be/6YrIDhaUQOE)
+4.  [Randomized Trials: The Ideal Weapon](https://youtu.be/eGRd8jBdNYg)
+
+
+
 # Takeaways checklist
 
 ## Homework

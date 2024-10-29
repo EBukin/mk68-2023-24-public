@@ -9,6 +9,8 @@ project:
     - materials/mk68-02-slides-variance.qmd
     - materials/mk68-02-slides-quantiles.qmd
     - materials/mk68-02-slides-example-1.qmd
+    - materials/mk68-03-slides.qmd
+    - materials/mk68-04-slides.qmd
 
 author:
   - name: "Eduard Bukin"

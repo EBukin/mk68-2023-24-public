@@ -9,42 +9,49 @@ editor_options:
   chunk_output_type: consoles
 ---
 
-# Ceteris paribus
+# Randomized Control Trials - RCT
 
--   Watch again: [Ceteris Paribus: Public vs. Private University](https://youtu.be/iPBV3BlV7jk)
+RCT can ensure the Ceteris Paribus!
 
-## Ceteris paribus I: RCT (1) {.smaller}
+- When the treatment is assigned randomly in a controlled environment, all other things remain fixed.
 
-RCT - Randomized Control Trial (watch [Randomized Trials: The Ideal Weapon](https://youtu.be/eGRd8jBdNYg)!!!)
+Watch now:
 
-::: {.fragment fragment-index="1"}
--   The treatment is assigned randomly in a controlled environment where all other things remain fixed.
-:::
+-   [Randomized Trials: The Ideal Weapon](https://youtu.be/eGRd8jBdNYg)
+-   or <https://youtu.be/eGRd8jBdNYg>
+
+## Randomized Control Trials {.smaller}
 
 ::: columns
 ::: {.column width="50%"}
-::: {.fragment fragment-index="2"}
+::: {.fragment fragment-index="1"}
 ### Treatment group
 
--   **a random sample** from a population, where **a treatment** is assigned.
+-   **a random sample** 
+-   from the population, 
+-   where **a treatment** is assigned.
 :::
 :::
 
 ::: {.column width="50%"}
-::: {.fragment fragment-index="3"}
+::: {.fragment fragment-index="2"}
 ### Control group
 
--   **random sample** from a population, **without any treatment**.
+-   **random sample** 
+-   from the population, 
+-   where **NO treatment** is assigned.
 :::
 :::
 :::
 
-::: {.fragment fragment-index="4"}
-### The Law of large numbers says:
+::: {.fragment fragment-index="3"}
+### RCT ensures the Ceteris ParibusThe throug th Law of Large Numbers (LLN):
 
--   Both, the treatment and control groups are on average the same as they are sampled from the same population.
+-   The treatment and the control groups are **on average the same**, 
 
--   The only difference between the two samples is the fact of treatment.
+-   when they are **randomly sampled** from **the same population** with the **large sample size**.
+
+-   The only difference between treatment and control **is the fact of treatment**.
 :::
 
 ::: {.fragment fragment-index="5"}
@@ -62,11 +69,11 @@ Think, about how to make experiments to estimate the effects of:
 
 -   additional child on mother's employment?
 
--   army service on the job perspective?
+-   serving in the army on the job perspective?
 
 -   electronics (phones/laptops) in class on students performance?
 
--   health insurance on health
+-   health insurance on health?
 :::
 
 ## Ceteris paribus II: Regression
@@ -123,69 +130,54 @@ When experiments are not possible, **econometric methods** come to our rescue.
 [\@Rooners72flickr: Stormtrooper Handbook: Rule #2 - Never Issue Lightsabers](https://www.flickr.com/photos/rooners/7012643339)
 :::
 
-## Econometrics measures the effect of a cause
+## Econometrics measures the effect of a cause (treatment)
 
-Read more:
+To learn more:
 
-1.  Cause and Effect, a teaser:
+1.  The world of potential outcomes: Ch 1 in [@Angrist2014].
 
-    -   Ch 1.4 in [@wooldridge2020introductory].
+2.  It is all about the research design: [@Angrist2010].
 
-2.  The world of potential outcomes:
+3.  The RCT is not the ultimate solution in development economics: [@Deaton2009].
 
-    -   Ch 1 in [@Angrist2014].
-
-3.  It is all about the research design:
-
-    -   [@Angrist2010].
-
-4.  The RCT is not the ultimate solution in development economics:
-
-    -   [@Deaton2009].
-
-::: notes
-More on the RCT in economics: [@Heckman1995], [@Burtless1995].
-:::
+4.  More on the RCT in economics: [@Heckman1995], [@Burtless1995].
 
 
-## Example (exam): think of an experiment (1)
+# Example of an RCT (base on @Kuchenbecker2017)
 
-### Can training and education of parents about nutrition reduce children's stunting?
+Research question: **Can we reduce children's stunting by training parents about nutrition?**
 
 ::: fragment
 ::: callout-warning
-### What RCT experiment can help us answer this question?
+What RCT experiment can help us answer this question? discuss:
 :::
-
-Let us think of and discuss:
-
 -   An outcome;
+
 -   A treatment;
+
 -   The population;
+
 -   A sample;
+
 -   How to measure the impact of the treatment?
 :::
 
-::: footer
-Based on [@Kuchenbecker2017].
-:::
-
-## Example (exam): think of an experiment (2)
+## Example of an experiment
 
 ::: columns
 ::: {.column width="50%"}
 ::: incremental
-1.  Outcome variable:
+1.  An outcome:
 
     -   Stunting score of a child.
 
-2.  Treatment variable:
+2.  A treatment:
 
     -   Parents' special training in nutrition.
 
-3.  Targeted population
+3.  The population
 
-4.  Samples:
+4.  A sample:
 
     -   Randomly select eligible subjects.
 :::
@@ -193,15 +185,17 @@ Based on [@Kuchenbecker2017].
 
 ::: {.column width="50%"}
 ::: incremental
-5.  Randomly assign treatment (communities with training) and control (community without it) groups
+5.  How to measure the impact of the treatment?
 
-6.  Collect the pre-intervention data;
+    -   Randomly assign two grous: treatment (communities with training) and control (community without it)
 
-7.  Apply the treatment
+    -   Collect the pre-intervention data (baseline)
 
-8.  Collect the post-intervention data;
-
-9.  Measure the effect
+    -   Apply the treatment
+    
+    -   collect the post-intervention data
+    
+    -   Measure the effect
 :::
 :::
 :::
@@ -214,6 +208,8 @@ library(haven)
 library(dplyr)
 library(tidyr)
 library(knitr)
+library(scales)
+library(stringr)
 uganda_dta <-
   read_sav(here(
     "data-raw",
@@ -244,13 +240,13 @@ uganda_dta <-
 ug_tbl_dta <- 
   uganda_dta %>%
   mutate(
-     Line = ifelse(NUTREneu_E == 0, "Control", "Treatment") %>% as.factor()
+     Line2 = ifelse(NUTREneu_E == 0, "Control", "Treatment") %>% as.factor()
   ) %>% 
-  filter(!is.na(Line))
+  filter(!is.na(Line2))
 
 ug_tbl_out <- 
   ug_tbl_dta %>% 
-  group_by(Line) %>%
+  group_by(Line, Line2) %>%
   summarise(across(
     HAZ,
     list(
@@ -262,9 +258,10 @@ ug_tbl_out <-
     ),
     .names = "{.fn}"
   )) %>%
-  tidyr::pivot_longer(-1) %>%
-  tidyr::pivot_wider(names_from = 1, values_from = value) %>%
-  rename(Statistics = name) %>% 
+  # tidyr::pivot_longer(-1) %>%
+  mutate(value = str_c(number(mean, 0.001), " [", number(sd, 0.001), "]")) |> 
+  select(-mean, -sd) |> 
+  tidyr::pivot_wider(names_from = Line2, values_from = value) %>%
   kable(row.names = F,
         digits = 2,
         caption = "Stunting score")
@@ -275,91 +272,80 @@ ug_tbl_out <-
 #   geom_boxplot()
 ```
 
-
 ::: fragment
 Does the **research design** imply that (if found) education has a causal impact on stunting?
 
 ::: incremental
 -   Answer:
+
     -   **Yes!**
-    -   All other things are equal because the research design is based on the RCT.
+    
+    -   All other things **could be equal** because the research design is based on the RCT.
+    
     -   **Training** is the only change between the treatment and control.
 :::
 :::
 
 ## Question 2.
 
-::: fragment
 ```{r}
-# ug_tbl_out
+ug_tbl_out
 ```
+
+- The table reports mean and [sd] of stunting by the sample and period.
 
 **Is the stunting on average less in the treatment compared to the control?**
 
 ::: incremental
--   Answer:
-    -   The absolute number, yes. **BUT!**
-    -   Treatment and control are two different samples from the population.
-    -   Means vary naturally for random samples.
-    -   We **must apply statistical inference** about the population based on the estimates.
-    -   Conclusion: **We do not have sufficient information!**
-:::
+Answer:
+
+-   The absolute number, yes. **BUT!**
+-   Treatment and control are two different samples from the population.
+-   Means vary naturally **in random samples**.
 :::
 
 ## Question 3.
-
-::: fragment
-```{r}
-# ug_tbl_out
-```
-
-**Can we recommend education as one of the ways to reduce stunting?**
-
-::: incremental
--   Answer:
-    -   If any effect is found, yes! But...
-    -   Results are only applicable to the population under investigation.
-:::
-:::
-
-
-## Conclusion
 
 ```{r}
 ug_tbl_out
 ```
 
+- The table reports mean and [sd] of stunting by the sample and period.
+
+**Can we recommend education as one of the ways to reduce stunting?**
+
+::: incremental
+Answer:
+
+-   Not yet! 
+-   We **must apply statistical inference** about the population based on the estimates.
+-   If inference confirms the effect, yes!
+:::
+
+
+## Conclusion
+
 ::: fragment
-To conclude that
-
--   two means estimated from different samples
-
-are different (same),
-
--   we need to perform **statistical inference**!
+To conclude that two means estimated on different samples are also different for the population, we need to use **statistical inference**!
 :::
 
 ::: fragment
 -   **Without statistical inference, we cannot know what are the chances (odds) that the difference in means is caused by a random variation in samples.**
 :::
 
-## Exam questions examples {.smaller}
+# Homework 
 
--   What is the difference between counterfactual and potential outcomes?
+## Potential exam questions {.smaller}
+
+-   What are the differences between counterfactual and potential outcome?
 
 -   What is the counterfactual? How is it different from the factual?
 
--   What do we usually observe in the data, factual or counterfactual?
+-   What can we observe in the data, factual or counterfactual?
 
 -   What are the factual and counterfactual in the Urea fertilizers and Rice yields example?
 
     -   How to generate a counterfactual?
-
--   What kind of experiment can help answer the questions below? Think about such an experiment and discuss it.
-
-    -   Does the health insurance make people more healthy?
-    -   What is the causal effect of fertilizers on yields?
-    -   Does going to a private school improv earning?
 
 -   What makes randomized control trials such a powerful tool for revealing the causal effects?
 
