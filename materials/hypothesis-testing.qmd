@@ -54,11 +54,11 @@ Source: [the wiki](https://en.wikipedia.org/wiki/Statistical_hypothesis_testing)
 ## Neyman-Pearson's approach
 
 ::: incremental
--   assumes that we can perform an infinite number of repeated sampling based on population;
+-   Assumes that an **infinite number of repeated samples** can be drawn from the same population.
 
--   aims to **minimize errors of making a false conclusion about the relationship**
+-   Aims to **minimize the risk of making false conclusions** about the relationship.
 
--   controls the probability of making an error, when we say "**we reject**" the **Null** hypothesis;
+-   Controls the probability of error when stating, "**we reject** the **null hypothesis**."
 :::
 
 ## Hypothesis Testing: Steps
@@ -80,6 +80,8 @@ Source: [the wiki](https://en.wikipedia.org/wiki/Statistical_hypothesis_testing)
     -   $s = \widehat{\text{SD}}$
 
 4.  **Compute the test statistics**;
+
+    -   usually $t$ statistics
 :::
 :::
 
@@ -166,54 +168,81 @@ Thus, [**we reject** $H_0$ **only and only if** $\text{p-value} < \alpha$]{style
 
 -   Maximum probability of a Type I error in hypothesis testing.
 
--   In social sciences, the level of significance should not be higher than 5% ($\alpha = 0.05$).
+-   In social sciences, the level of significance 
 
-## Example (exam): HT about stunting (1)
+    -   should not be higher than 5% ($\alpha = 0.05$).
+    
+    -   $\alpha = 0.01$, $\alpha = 0.001$ are allowed.
 
-Can training and education of parents about nutrition reduce children's stunting?
+
+# HT Examples
+
+## Example (1): Stunting and education
+
+Can educating and training parents about nutrition reduce stunting in children?
 
 ::: fragment
-Our data measures change in stunting levels between pre- and post-training for 500 individuals.
+Our data measures the change in stunting levels before and after training for 500 individuals.
 :::
 
 ::: fragment
-Answer the following questions:
+-   Formulate the hypotheses: $H_0$ and $H_1$.
 
--   Formulate H0 and H1.
-
--   Provide examples of the Type I and Type II errors in the context of your hypothesis.
+-   Provide examples of Type I and Type II errors in the context of your hypothesis.
 :::
 
-## Solutions
+## Hypotheses examples
 
-::: columns
-::: {.column width="30%"}
+Null hypothesis: 
+
 ::: fragment
-Null hypothesis: - $H_0:{\Delta}_{\text{stunting}} = 0$
-
-Alternative hypothesis: - $H_1:{\Delta}_{\text{stunting}} \ne 0$ - $H_1:{\Delta}_{\text{stunting}} > 0$ - $H_1:{\Delta}_{\text{stunting}} < 0$
-:::
+-   $H_0:{\Delta}_{\text{stunting}} = 0$
 :::
 
-::: {.column width="70%"}
+
+Alternative hypothesis: 
+
 ::: fragment
--   Type I error:
 
-    -   We conclude **to reject** $H_0$: ${\Delta}_{\text{stunting}}\ne 0$,
+-   $H_1:{\Delta}_{\text{stunting}} \ne 0$ 
 
-    -   But this observation is caused **by a random variation in the sample**.
-
-    -   In the population, training had nothing to do with stunting.
-
-    -   Repeated sampling will probably fail to show a difference.
-
--   Type II error:
-
-    -   We conclude **to accept** $H_0$: stunting rate did not change after training.
-
-    -   Training helped but, e.g., the food shortage deepened the malnutrition problem in the survey year.
 :::
+
+::: fragment
+-   $H_1:{\Delta}_{\text{stunting}} > 0$
 :::
+
+::: fragment
+-   $H_1:{\Delta}_{\text{stunting}} < 0$
+:::
+
+## Errors examples
+
+Type I error:
+
+
+::: fragment
+1/4   We conclude **to reject** $H_0$: ${\Delta}_{\text{stunting}}\ne 0$,
+2/4   But this conclusion is driven **by a random variation in the sample**.
+:::
+
+::: fragment
+3/4   In the population, training had nothing to do with stunting.
+:::
+
+::: fragment
+4/4   Repeated sampling will probably fail to show a difference.
+:::
+
+
+Type II error:
+
+::: fragment
+1/2   We conclude **to accept** $H_0$: stunting rate did not change after training.
+:::
+
+::: fragment
+2/2   Training helped but, e.g., the food shortage deepened the malnutrition problem in the survey year.
 :::
 
 ## Example (2): HT about ravens' color
@@ -291,25 +320,32 @@ Did we make any errors? If yes, which one?
 
 ::: columns
 ::: {.column width="50%"}
-For the research questions below:
+Be prepared to answer the following questions in response to a hypothetical research question prompt during an exam.
 
-1.  Describe how would you measure the outcome variable.
-2.  Formulate H0 and H1.
-3.  Discuss Type I and Type II errors in the context of your hypothesis.
-4.  Provide examples of the factors, which could cause these errors to appear.
-5.  Think of an RCT experiment that could help answer these questions.
+1.    Describe how you would measure the outcome variable.
 
-Research questions:
+2.    Formulate $H_0$ and $H_1$.
 
--   What is the difference between the demographic characteristics of individuals in the control and treatment groups?
+3.    Discuss Type I and Type II errors in the context of your hypothesis.
 
-    -   The characteristics are:age, weight, height, income, number of children, household size...
+4.    Provide examples of factors that could lead to these errors.
+
+5.    Propose an RCT experiment that could help answer these questions.
+
+6.    Explain what makes an RCT a good/bad solution to the research question.    
 :::
 
 ::: {.column width="50%"}
--   How students' performance in a class is different between years?
 
--   Are the wheat yields higher in the farms that use precision agriculture?
+Research questions:
+
+-   How does students' performance in a class vary across different years of enrollment?
+
+-   Are wheat yields higher on farms that use precision agriculture?
+
+-   How effective are cash disbursements in alleviating poverty?
+
+-   What is the poverty-reducing effect of schooling?
 :::
 :::
 
@@ -329,63 +365,75 @@ Research questions:
 
 # Examples of Hypothesis Testing
 
-The paper [@Kuchenbecker2017] aimed to assess the potential of community-based nutrition education to improve height-for-age z-scores in children 6--23 months of age.
+The paper [@Kuchenbecker2017] aimed to assess the potential of community-based nutrition education to improve height-for-age z-scores in children aged 6 to 23 months.
 
--   The authors performed the RCT experiment in Malawi over 5 years.
+-   The authors conducted a randomized controlled trial (RCT) in Malawi over 5 years.
 
--   Data was collected for the control and treatment groups in the baseline and the end-line.
+-   Data were collected for both the control and treatment groups at baseline and at the end line.
+
+
+Kuchenbecker, Judith, ... and Irmgard Jordan. 2017. “Nutrition Education Improves Dietary Diversity of Children 6-23 Months at Community-Level: Results from a Cluster Randomized Controlled Trial in Malawi.” Edited by Jacobus P. van Wouwe. PLOS ONE 12 (4): e0175216. <https://doi.org/10.1371/journal.pone.0175216>
+
+## @Kuchenbecker2017: Research design
+
+<https://journals.plos.org/plosone/article/figure/image?size=large&id=10.1371/journal.pone.0175216.g003>
 
 ## @Kuchenbecker2017
 
 ::: incremental
--   If the paper finds a difference between nutrition statuses in the control and treatment groups, does it mean that education has a causal effect on nutrition?
+-   If the paper finds a difference in nutrition statuses between the control and treatment groups, does it mean that education has a causal effect on nutrition?
 
-    -   Yes, if treatment and control groups are the same on average in other factors.
+    -   Yes! But...
+    
+    -   Only if the treatment and control groups are similar on average in (all) other factors.
 
-    -   Such factors are Income, Education level, HH size, Farming abilities, ...
+    -   Such factors include income, education, household characteristics, skills, agricultural abilities, and so on...
 :::
 
 ## Checks and balances
 
+To identify that factors (age, education, ...) are **NOT DIFFERENT** between two groups, we need to:
+
 ::: incremental
--   How to identify if the factors are NOT DIFFERENT between the two groups?
+-   Perform statistical hypothesis testing.
 
-    -   Perform statistical hypothesis testing.
+-   Formulate the hypotheses:
 
-    -   Formulate the hypothesis:
+    -   $H_0$: Factor A in the treatment group is equal to that in the control group.
+    -   $H_1$: Factor A in the treatment group is NOT equal to that in the control group.
 
-        -   H0: a factor is the same across the two groups.
-        -   H1: a factor changes between two groups.
+-   Conclude:
 
-    -   Fail to reject H0, when there is no difference
+    -   We fail to reject $H_0$.
+    -   *This means there is no difference between the control and treatment groups.*
 :::
 
-## Checks and balances table
+## Checks and balances: the table
 
-This is an essential table that evaluates if the treatment and control groups of the RCT are the same on average.
+This table is essential for evaluating whether the treatment and control groups of the RCT are similar on average.
 
 ::: incremental
-The table shows:
+The table usually shows:
 
--   estimated mean and SD in the control and treatment groups;
+-   The estimated mean and standard deviation (SD) in the control and treatment groups.
 
--   statistical test about the difference in means;
+-   The statistical test for the difference in means.
 
--   probability value of the type I error;
+-   The probability value of the Type I error (p-value).
 :::
 
 ## @Kuchenbecker2017 Table 2
 
 ![](img/Kuchenbecker2017-t1-2.png){fig-align="center"}
 
-Also available [here](https://storage.googleapis.com/plos-corpus-prod/10.1371/journal.pone.0175216/1/pone.0175216.t002.PNG_L?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=wombat-sa%40plos-prod.iam.gserviceaccount.com%2F20240109%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20240109T230545Z&X-Goog-Expires=86400&X-Goog-SignedHeaders=host&X-Goog-Signature=0080675c7765f662bea418223f546952dfe135d588d75305449f1d650fbafaa158c53c8e6921b070a204f6faf383d026ff500b306d93d92a60ebd33233d973f2b5a0b2330a550b6d53aadfd7bbb786d5165bd8fc835c12f9b41d8b56655c18c3e005c459a2cf81d5e0da833c785e6418f5116a95f5f91f569e8b1d28e6f465cf376e9b95801f9c31457105b9b6b5f2d329f3f613db1b1168eca2c6184dd4bcd531121880ce37d8f89179b3310b237fa79656a4f9f9e52a91ccddce4cbbcfcae97e3a090a13014508e8ff1f98e38c2f5316a904fec41f9062c7e211895a5fb9ca8cf99482e541096dae7031c6e0f56bb73f9db73298571ffc717db6d39c758032).
+Full [table 2](https://journals.plos.org/plosone/article/figure/image?size=large&id=10.1371/journal.pone.0175216.t002) and [table 3](https://journals.plos.org/plosone/article/figure/image?size=large&id=10.1371/journal.pone.0175216.t003)
 
 ::: fragment
--   Formulate H0 and H1 about each variable.
+-   Formulate H0 and H1 about **each variable** in the table.
 
--   Perform statistical HT about the mean difference.
+-   Perform statistical HT about the mean difference between treatment and control groups..
 
--   Conclude if this variable is the same between the treatment and control groups.
+-   Conclude if each variable **is the same** (**is different**) between the treatment and control groups.
 :::
 
 ## Balance of the HH size
@@ -403,16 +451,24 @@ Also available [here](https://storage.googleapis.com/plos-corpus-prod/10.1371/jo
 
 -   Probability of the type I error: 0.49 (p-value)
 
--   Fail to reject $H_0$.
+-   Fail to reject $H_0$. Because:
 
 -   The difference between C and I is insignificant at the 5% level of significance.
 :::
 
 ## Remember
 
-The checks and balances table must indicate that treatment and control groups are similar on average.
+The checks and balances table must indicate that **treatment and control groups are similar (=)** on average.
 
--   If they are not, simple means comparison will not reveal the causal effect of a treatment.
+::: incremental
+-   What if the treatment and control groups are not similar on average?
+
+    -   Our outcome variable may also not be similar.
+    
+    -   However, this difference may be caused by factors other than the treatment.
+    
+    -   The true effect of the treatment could still be zero!
+:::
 
 ## How to identify if the intervention helped?
 
@@ -421,23 +477,33 @@ Because @Kuchenbecker2017 is an RCT, we can:
 ::: incremental
 -   Compare means of the outcome variable between two groups, by
 
--   Performing statistical hypothesis testing (same as in checks and balances),
+-   Performing a statistical hypothesis testing (same as in checks and balances),
 
--   But instead of looking for failing to reject the $H_0$, look for a significant difference.
+-   But now **we want to reject** (find a difference) the $H_0$ at the significance level $\alpha$
 :::
 
-## Intervention outcomes table
+## @Kuchenbecker2017 table 4: Intervention outcomes
 
 ![](img/Kuchenbecker2017-t4.png){fig-align="center"}
 
-## Homework
+##  Watch now:
 
--   Watch: [**How to Read Economics Research Papers: Randomized Controlled Trials (RCTs)**](https://youtu.be/s-_3s3OMeqs)
+[**How to Read Economics Research Papers: Randomized Controlled Trials (RCTs)**](https://youtu.be/s-_3s3OMeqs)
 
-    -   See [@Carter2017] that underpins the video.
+<https://youtu.be/s-_3s3OMeqs>
 
--   Practice:
+See [@Carter2017] that underpins the video.
 
-    -   Perform statistical hypothesis testing about the mean difference in Table 4 [@Kuchenbecker2017].
+## At home:
 
-    -   Perform statistical hypothesis testing about the mean difference in Table 1 in [@Gertler2004].
+Practice:
+
+-   Formulate H0 and H1.
+
+-   Perform statistical hypothesis testing about the mean difference between treatment and control.
+
+-   For each variable in
+
+    -   Table 4 in  @Kuchenbecker2017.
+    
+    -   Table 1 in @Gertler2004

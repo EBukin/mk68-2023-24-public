@@ -479,10 +479,13 @@ Measures deviation (error) **of the** $\hat{\mu}$ estimate, from the population 
     -   but the sample variance does not!
 :::
 
+## CLT summary (from <en.wikipedia.org/wiki/Central_limit_theorem>)
+
+![](img/1920px-IllustrationCentralTheorem.png)
+
 ## CLT in practice
 
 See the following online tools:
 
--   [Sampling distributions](https://www.statcrunch.com/applets/type3&samplingdist)
+-   [CLT in practics](https://www.statcrunch.com/applets/type3&samplingdist)
 
--   [CLT tool](https://ianmadd.shinyapps.io/CentralLimitTheorem/)

@@ -85,13 +85,10 @@ The population mean is not zero $\mu_{0}$
 
 ## Step 2. Calculating test statistic
 
-::: columns
-::: {.column width="60%"}
-::: fragment
 ### t-statistics:
 
 $$t = (\hat\mu - \mu_0) / \text{se} =  \frac{\sqrt{n} ( \hat\mu - \mu_0)}{s}\,,$$
-:::
+
 
 ::: fragment
 where:
@@ -100,23 +97,11 @@ where:
 
 -   $\hat\mu$ - estimated mean and $\mu_0$ is an arbitrary number;
 
--   $n$ - number of observation and $s$ - sample standard deviation;
-:::
-:::
+-   $n$ - number of observation 
 
-::: {.column width="40%"}
-::: fragment
-Sometimes, t-statistics is defined as:
-
-$$t = (\hat\mu -  \mu_0) / se(\hat\mu) \, ,$$
-
-where:
-
--   $se(\hat\mu)$ is the standard error of the estimated coefficient $\hat\mu$
+-   $s$ - sample standard deviation;
 
 -   $se(\hat\mu) = s / \sqrt{n}$;
-:::
-:::
 :::
 
 ## Step 2. Example
@@ -153,50 +138,59 @@ Sample SD: $s = 3.3$
 
 ## Step 3. Setting a decision rule (1)
 
-To reject $H_0$, we compare $t$ to a **critical value** $c_{df, \text{CL}}$, where:
+To reject $H_0$, 
 
--   $\text{CL}$ is the confidence level (opposite to the significance level: $1-\alpha$)
+-   we compare $t$ to a **critical value** $c_{df, \text{CL}}$, with
+
+-   $\text{CL}$ - the confidence level 
+    
+    -   opposite to the significance level: $\text{CL} = 1-\alpha$
 
 -   $df$ - degrees of freedom
 
 ## Step 3. Setting a decision rule (2)
 
-**Critical value**, is the **minimum values of the t-statistics** at which we **can reject** $H_0$ at the given **level of significance**.
+**Critical value**, 
 
--   Critical value depends on the alternative hypothesis:
+-   is the **minimum values of the t-statistics** when we **can reject** $H_0$ 
 
--   when $H_1: \mu \ne \mu_{0}$ (two-sided t-test),
+    -   at the given **level of significance**, and
+    
+    -   with the given **number of degrees of freedom**.
 
-    -   $\text{CL} = 1 - \alpha / 2$ then $c_{df,\, 1 - \alpha / 2}$;
+FYI: Significance level depends on the alternative hypothesis:
 
--   $H_1: \mu < \mu_{0}$ or $H_1: \mu > \mu_{0}$ (one-sided t-test),
+-   when $H_1: \mu \ne \mu_{0}$ we use a **two-sided** t-test, thus
 
-    -   $\text{CL} = 1 - \alpha$ then $c_{df,\, 1 - \alpha}$; :::
+    -   $\text{CL} = 1 - \alpha / 2$
+
+-   when $H_1: \mu < \mu_{0}$ or $H_1: \mu > \mu_{0}$ we use a **one-sided** t-test,
+
+    -   $\text{CL} = 1 - \alpha$
 
 ## Step 3. Setting a decision rule (3)
 
 ::: incremental
-Critical value also depends on:
+the number of degrees of freedom $df = n - k$:
 
--   the number of degrees of freedom $df = n - k$:
+-   $n$ is the number of observation in the sample and
 
-    -   $n$ is the number of observation in the sample and
+-   $k$ is the number of parameters
+    
+    -   $k=1$ for the one-sample t-test $k=2$ for the two-sample t-test
 
-    -   $k$ is the number of parameters
+level of significance $\alpha$;
 
-        -   $k=1$ for one-sample t-test
-
-        -   $k=2$ for two-sample t-test
-
--   level of significance $\alpha$;
-
-    -   Conventionally $\alpha = 0.05$
+    -   $\alpha = 0.05$
 :::
 
 ## Step 3. Setting a decision rule (4)
 
-::: incremental
 We reject $H_0: \mu = \mu_0$ in favor of $H_1: \mu \neq \mu_{0}$ **only if**:
+
+-   the absolute value of the t-statistics is striclty greater then the critical value.
+
+::: incremental
 
 -   $|t| > c_{df, 1 - \alpha / 2}$ for two-sided t-test $H_1: \mu \ne \mu_{0}$
 
@@ -207,10 +201,12 @@ We reject $H_0: \mu = \mu_0$ in favor of $H_1: \mu \neq \mu_{0}$ **only if**:
 
 ::: columns
 ::: {.column width="30%"}
-Finding the critical value is possible from the quantiles of the t-distribution.
+To find the critical value we use the quantiles of the t-distribution.
 
 -   $df = n - k$;
+
 -   $\text{CL} = 1 - \alpha / 2$ for $H_1: \mu \ne \mu_{0}$
+
 -   $\text{CL} = 1 - \alpha$ for $H_1: \mu > \mu_{0}$ or $H_1: \mu > \mu_{0}$
 :::
 
@@ -359,7 +355,7 @@ Is the population mean different from zero ($\mu_0 = 0$) at 5% level of signific
 ## Step 4. Example (2)
 
 ::: fragment
-Is the population mean different from -5.5 ($\mu_0 = -5.5$) at the 1% level of significance?
+Is the population mean different from -5.5 at the 1% level of significance?
 
 ::: incremental
 -   $\mu_0 = -5.5$?

@@ -1,5 +1,5 @@
 ---
-title: "Week 04. Cause and Effect in the RCT. Hypothesis testing. T-tests. Exmples"
+title: "Week 04. Cause and Effect in the RCT. Hypothesis testing. T-tests. Exmples. Central Limit Theorem."
 editor: source
 format: 
   revealjs:
@@ -16,7 +16,6 @@ knitr::opts_chunk$set(fig.width = 8)
 knitr::opts_chunk$set(fig.height = 4.5)
 ```
 
-{{< include ceteris-paribus.qmd >}}
 
 {{< include hypothesis-testing.qmd >}}
 
@@ -24,31 +23,17 @@ knitr::opts_chunk$set(fig.height = 4.5)
 
 {{< include deworming.qmd >}}
 
+{{< include cct-2-simple.qmd >}}
+
+{{< include pop-dist-clt.qmd >}}
 
 # Homework
-
-1.  [Econometrics: The Path from Cause to Effect](https://youtu.be/WwW8y5dZs80)
-2.  [Ceteris Paribus: Public vs. Private University](https://youtu.be/iPBV3BlV7jk)
-3.  [Selection Bias: Will You Make More Going to a Private University?](https://youtu.be/6YrIDhaUQOE)
-4.  [Randomized Trials: The Ideal Weapon](https://youtu.be/eGRd8jBdNYg)
-
-
-
-# Takeaways checklist
-
-## Homework
 
 Make the topic-specific homework.
 
 Answer sample exam questions.
 
-Same readings:
-
--   [@Kuchenbecker2017] **before the week 4**;
--   [@Gertler2004] another example of the statistics application;
--   [@Miguel2004] Deworming effect on children health;
--   [@Hamory2021] Long-term economic effect of de-worming;
--   [@Carter2017] Effect of electronics on students performance.
+Same readings.
 
 ## Key concepts covered in the lecture {.smaller}
 
@@ -59,9 +44,8 @@ RCT:
 -   Causal meaning of the averages;
 -   Random sample variation;
 -   Need of the statistical hypothesis testing;
-:::
 
-::: {.column width="50%"}
+
 Hypothesis testing:
 
 -   Type I and Type II errors;
@@ -76,6 +60,22 @@ T-test:
 -   Critical values of the t-distributions
 -   t statistics
 -   Mechanics of the test statistics calculaiton.
+
+:::
+
+::: {.column width="50%"}
+
+
+The Central Limit Theorem:
+
+-   Conditions and implications;
+-   Distribution of the sample estimates of mean
+
+Standard Errors:
+
+-   Definition and importance.
+-   SE of the sample estimates of mean.
+-   Difference from the sample variance.
 :::
 :::
 

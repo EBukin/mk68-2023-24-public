@@ -9,16 +9,6 @@ editor_options:
   chunk_output_type: consoles
 ---
 
-# Randomized Control Trials - RCT
-
-RCT can ensure the Ceteris Paribus!
-
-- When the treatment is assigned randomly in a controlled environment, all other things remain fixed.
-
-Watch now:
-
--   [Randomized Trials: The Ideal Weapon](https://youtu.be/eGRd8jBdNYg)
--   or <https://youtu.be/eGRd8jBdNYg>
 
 ## Randomized Control Trials {.smaller}
 
@@ -130,9 +120,9 @@ When experiments are not possible, **econometric methods** come to our rescue.
 [\@Rooners72flickr: Stormtrooper Handbook: Rule #2 - Never Issue Lightsabers](https://www.flickr.com/photos/rooners/7012643339)
 :::
 
-## Econometrics measures the effect of a cause (treatment)
+## Econometrics 
 
-To learn more:
+Is the science of measuring the effect of a treatment/cause. To learn more:
 
 1.  The world of potential outcomes: Ch 1 in [@Angrist2014].
 
@@ -187,7 +177,10 @@ What RCT experiment can help us answer this question? discuss:
 ::: incremental
 5.  How to measure the impact of the treatment?
 
-    -   Randomly assign two grous: treatment (communities with training) and control (community without it)
+    -   Randomly assign two grous: 
+    
+        -   treatment (communities with trainings), and 
+        -   control (community without it)
 
     -   Collect the pre-intervention data (baseline)
 
@@ -266,10 +259,6 @@ ug_tbl_out <-
         digits = 2,
         caption = "Stunting score")
 
-# ug_tbl_dta %>% 
-#   ggplot() + 
-#   aes(x = HAZ, y = Line, color = Line) + 
-#   geom_boxplot()
 ```
 
 ::: fragment
@@ -280,57 +269,85 @@ Does the **research design** imply that (if found) education has a causal impact
 
     -   **Yes!**
     
-    -   All other things **could be equal** because the research design is based on the RCT.
+    -   All other things **may be equal** because the research design is based on the RCT.
     
     -   **Training** is the only change between the treatment and control.
 :::
 :::
 
-## Question 2.
+## Stunting before-after / treatment-control (1)
+
+::: columns
+::: {.column width="70%"}
+```{r}
+#| fig-width: 6
+#| fig-height: 5
+library(ggplot2)
+ug_tbl_dta %>%
+  ggplot() +
+  aes(x = HAZ, y = Line, color = Line2) +
+  geom_boxplot() + 
+  scale_x_continuous("Stunting rate", n.breaks = 10) + 
+  scale_y_discrete(NULL) + 
+  theme_bw()
+```
+:::
+
+::: {.column width="30%"}
+**Is the average stunting lower in the treatment group compared to the control group?**
+
+::: incremental
+Answer:
+
+-   Hard to say!
+:::
+:::
+:::
+
+## Stunting before-after / treatment-control (2)
 
 ```{r}
 ug_tbl_out
 ```
 
-- The table reports mean and [sd] of stunting by the sample and period.
+> The table reports the mean and [SD] of stunting by sample and period.
 
-**Is the stunting on average less in the treatment compared to the control?**
+**Is the average stunting lower in the treatment group compared to the control group?**
 
 ::: incremental
 Answer:
 
--   The absolute number, yes. **BUT!**
--   Treatment and control are two different samples from the population.
--   Means vary naturally **in random samples**.
+-   The absolute number, yes. BUT!
+-   The treatment and control groups are two different samples from the population.
+-   Means naturally vary in random samples.
 :::
 
-## Question 3.
+## Recommendations
 
 ```{r}
 ug_tbl_out
 ```
 
-- The table reports mean and [sd] of stunting by the sample and period.
+> The table reports the mean and [SD] of stunting by sample and period.
 
-**Can we recommend education as one of the ways to reduce stunting?**
+**Can we recommend education as a way to reduce stunting?**
 
 ::: incremental
 Answer:
 
--   Not yet! 
--   We **must apply statistical inference** about the population based on the estimates.
--   If inference confirms the effect, yes!
+-   Not yet!
+-   We must apply statistical inference to draw conclusions about the population based on the estimates.
+-   If inference confirms the effect, then yes!
 :::
-
 
 ## Conclusion
 
 ::: fragment
-To conclude that two means estimated on different samples are also different for the population, we need to use **statistical inference**!
+To conclude that two means estimated from different samples are also different in the population, we need to use statistical inference!
 :::
 
 ::: fragment
--   **Without statistical inference, we cannot know what are the chances (odds) that the difference in means is caused by a random variation in samples.**
+-   **Without statistical inference, we cannot know the likelihood (odds) that the difference in means is due to random variation in the samples.**
 :::
 
 # Homework 

@@ -641,7 +641,7 @@ penguins %>%
 
 ------------------------------------------------------------------------
 
-### At home: Match a correlation coefficient and a plot
+### Match a correlation coefficient and a plot
 
 ::: fragment
 ![](img/corr-quis-4.png)
@@ -653,13 +653,13 @@ penguins %>%
 
 ------------------------------------------------------------------------
 
-### At home: Identify the relationship and its strength (1)
+### Identify the relationship and its strength (1)
 
 ![](img/corr-quis-2.png)
 
 ------------------------------------------------------------------------
 
-### At home: Identify the relationship and its strength (2)
+### Identify the relationship and its strength (2)
 
 ![](img/corr-quis-1.png)
 
@@ -762,9 +762,9 @@ The correlation between Fertility and life expectancy is `r un_corr`.
 
 -   For example:
 
-    -   All countries consist of identical people, with identical sociology-economic characteristics.
-
-    -   The only difference is in their fertility rate and (perhaps) life expectancy.
+    -   All countries consist of identical people with identical socioeconomic characteristics.
+    
+    -   The only differences are in their fertility rates and (perhaps) life expectancy.
 :::
 
 # Homework
@@ -807,18 +807,11 @@ Source: [Insights on HIV, in stunning data visuals](https://www.ted.com/talks/ha
 
 -   There are no two types of countries one with and another without the HIV pandemic.
 
--   To see more, visit:
+To see more, visit:
 
-    -   [gapminder.org](https://www.gapminder.org/)
-    -   [Ted talks of Hans Rosling](https://www.ted.com/speakers/hans_rosling)
+-   [gapminder.org](https://www.gapminder.org/)
 
-# Homework readings
-
--   Chapter 1 Randomized Trials. In Mastering ’metrics : the path from cause to effect / Joshua D. Angrist and Jörn-Steffen Pischk. Princeton University Press, 2015. <https://justfind.hds.hebis.de/Record/HEB35797798X>
-
-**Optional:**
-
--   Chapter 1 in "The Book of Why: The New Science of Cause and Effect" by Judea Pearl and Dana Mackenzie <https://justfind.hds.hebis.de/Record/HEB446798185>
+-   [Ted talks of Hans Rosling](https://www.ted.com/speakers/hans_rosling)
 
 ## At home: Explore the best use of a scatter plots with [Gapminder](https://www.gapminder.org/)
 
@@ -1304,7 +1297,31 @@ Watch and discuss now:
 
 OR the same [Ceteris Paribus: Public vs. Private University](https://www.youtube.com/watch?v=iPBV3BlV7jk)
 
-# Homework
+
+
+# Randomized Control Trials - RCT
+
+RCT can ensure the Ceteris Paribus!
+
+- When the treatment is assigned randomly in a controlled environment, all other things remain fixed.
+
+Watch now:
+
+-   [Randomized Trials: The Ideal Weapon](https://youtu.be/eGRd8jBdNYg)
+-   or <https://youtu.be/eGRd8jBdNYg>
+
+
+{{< include ceteris-paribus.qmd >}}
+
+
+## Readings
+
+-   Chapter 1 Randomized Trials. In Mastering ’metrics : the path from cause to effect / Joshua D. Angrist and Jörn-Steffen Pischk. Princeton University Press, 2015. <https://justfind.hds.hebis.de/Record/HEB35797798X>
+
+**Optional:**
+
+-   Chapter 1 in "The Book of Why: The New Science of Cause and Effect" by Judea Pearl and Dana Mackenzie <https://justfind.hds.hebis.de/Record/HEB446798185>
+
 
 ## The essence of econometrics (Video)
 

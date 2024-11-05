@@ -8,9 +8,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-{{< include cct.qmd >}}
-
-{{< include pop-dist-clt.qmd >}}
 
 {{< include ci-t-dist.qmd >}}
 
@@ -281,16 +278,6 @@ This homework generally outlines examples of the exam questions.
 
 ::: columns
 ::: {.column width="50%"}
-The Central Limit Theorem:
-
--   Conditions and implications;
--   Distribution of the sample estimates of mean
-
-Standard Errors:
-
--   Definition and importance.
--   SE of the sample estimates of mean.
--   Difference from the sample variance.
 
 T-distribution:
 
