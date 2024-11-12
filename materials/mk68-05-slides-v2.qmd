@@ -4,6 +4,7 @@ editor: source
 format: 
   revealjs:
     preview-links: true
+    incremental: false
 editor_options: 
   chunk_output_type: console
 ---

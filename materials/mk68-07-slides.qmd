@@ -28,44 +28,24 @@ editor_options:
 Violation of the Ceteris Paribus causes Bias.
 :::
 
-## Assumptions {.smaller}
+## Regression assumptions
 
-> ensure that the linear regression estimates are **unbiased** and **efficient**
+> They ensure that linear regression estimates obtained using the OLS method are **unbiased** and **efficient**.
 
-> They essentially ensure the ceteris paribus.
+-   [**OLS is unbiased: Assumptions 1 to 4 are satisfied**]{style="color: red;"}
 
-::: columns
-::: {.column width="50%"}
-::: fragment
-::: {.callout-important appearance="minimal"}
-### OLS is unbiased. Assumptions 1 to 4 are satisfied:
+    (1) Linearity
+    (2) Random Sampling
+    (3) No Collinearity
+    (4) No Endogeneity
+    
+-   [**OLS is unbiased and efficient or Best Linear Unbiased Estimator (BLUE)**]{style="color: blue;"}
 
-1.  Linearity
-2.  Random Sampling
-3.  No Collinearity
-4.  No Endogeneity
-:::
-:::
-:::
+    (5) Homoscedasticity (No Autocorrelation)
+    
+-   [**OLS is a Classical linear model (CLM). Assumptions 1 to 6 are satisfied**]{style="color: green;"}
 
-::: {.column width="50%"}
-::: fragment
-::: {.callout-warning appearance="minimal"}
-### OLS is unbiased and efficient or Best Linear Unbiased Estimator (BLUE)
-
-5.  Homoscedasticity (No Autocorrelation)
-:::
-:::
-:::
-:::
-
-::: fragment
-::: {.callout-caution appearance="minimal"}
-### OLS is a Classical linear model (CLM). Assumptions 1 to 6 are satisfied
-
-6.  Error Terms Normality
-:::
-:::
+    (6) Error Terms Normality
 
 # Example 1. Hedonic Land prices model
 
