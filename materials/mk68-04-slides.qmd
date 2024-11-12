@@ -19,13 +19,10 @@ knitr::opts_chunk$set(fig.height = 4.5)
 
 {{< include hypothesis-testing.qmd >}}
 
-{{< include t-test.qmd >}}
-
 {{< include deworming.qmd >}}
 
 {{< include cct-2-simple.qmd >}}
 
-{{< include pop-dist-clt.qmd >}}
 
 # Homework
 
@@ -33,7 +30,11 @@ Make the topic-specific homework.
 
 Answer sample exam questions.
 
-Same readings.
+## Readings
+
+-   Chapter 1 Randomized Trials. In Mastering ’metrics : the path from cause to effect / Joshua D. Angrist and Jörn-Steffen Pischk. Princeton University Press, 2015. <https://justfind.hds.hebis.de/Record/HEB35797798X>
+
+-   Chapter 2 Regression. In Mastering ’metrics : the path from cause to effect / Joshua D. Angrist and Jörn-Steffen Pischk. Princeton University Press, 2015. <https://justfind.hds.hebis.de/Record/HEB35797798X>
 
 ## Key concepts covered in the lecture {.smaller}
 
@@ -54,22 +55,9 @@ Hypothesis testing:
 -   What is the probability value (p-value)?
 -   What do false-negative/false-positive mean?
 
-T-test:
-
--   One-sided/Two-sided.
--   Critical values of the t-distributions
--   t statistics
--   Mechanics of the test statistics calculaiton.
-
 :::
 
 ::: {.column width="50%"}
-
-
-The Central Limit Theorem:
-
--   Conditions and implications;
--   Distribution of the sample estimates of mean
 
 Standard Errors:
 

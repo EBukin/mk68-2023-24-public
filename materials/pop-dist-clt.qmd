@@ -270,6 +270,7 @@ gg_sd6
 ::: {.column width="50%"}
 ::: {.fragment fragment-index="1"}
 Travel time distribution is normal with mean $\mu$ and SD $\sigma$:
+
 -   Within 2 $\sigma$, there are 95.45% of all observations.
 :::
 
@@ -279,17 +280,20 @@ Within what number of $\sigma$, exactly 95% of all observations are? Any ideas?
 
 ::: {.fragment fragment-index="8"}
 95% of HH are located within $\pm `r -z_95` \sigma$.
+
 -   $\,`r -z_95` \,$ is the z-score, where:
 :::
 
 ::: {.fragment fragment-index="9"}
 (A) probability to observe travel time below $\mu - `r -z_95` \sigma$
-    -   $P(x < \mu - `r -z_95` \sigma) = 0.025$
+
+-   $P(x < \mu - `r -z_95` \sigma) = 0.025$
 :::
 
 ::: {.fragment fragment-index="10"}
 (B) probability to pick a HH with a travel time below $\mu + `r -z_95` \sigma$
-    -   $P(x < \mu + `r -z_95` \sigma) = 0.975$
+
+-   $P(x < \mu + `r -z_95` \sigma) = 0.975$
 :::
 :::
 :::
@@ -306,9 +310,9 @@ Within what number of $\sigma$, exactly 95% of all observations are? Any ideas?
 
 ::: fragment
 ::: callout-warning
-This definition is provided in the context of a population and it is different from the one relevant to hypothesis testing.
+This definition only applies to the **population mean**.  
 
-Although the idea behind an interval of confidence is the same.
+Although the idea behind a confidence interval remains the same.
 :::
 :::
 
@@ -316,10 +320,10 @@ Although the idea behind an interval of confidence is the same.
 
 ::: columns
 ::: {.column width="25%"}
-Would a 90% confidence interval be wider or slimmer than the corresponding 95% confidence interval?
+Is 90% confidence interval wider/slimmer than the 95% one?
 
 ::: {.fragment fragment-index="3"}
-Would a 99% confidence interval be wider or slimmer than the corresponding 95% confidence interval?
+99% vs 95%?
 :::
 :::
 
@@ -400,8 +404,10 @@ The CLT is the bridge that makes the transition from the population to a sample.
 
 As the sample is used to **estimate** the population mean, the CLT says that:
 
--   **almost any sample average \[estimate of a population mean\]**
+-   **almost any sample average**
+
 -   is approximately normally distributed,
+
 -   with the accuracy of the approximation increasing as the sample size increases [@Angrist2014, p.39]
 
 ## The Central Limit Theorem (2)
@@ -416,7 +422,7 @@ The estimate of the mean $\hat{\mu}$ in the sample of the size $n$
 
     1.  **Independence**. The sample is random.
     
-    2.  **Normality**. The population is normally distributed. (only relevant for small samples $n < 30$, when $n > 30$ normality is satisfied by default).
+    2.  Only for sample size below 30 obs ($n < 30$) **Normality**. The population is normally distributed.
 
 
 -   See: [@Diez2022]
@@ -465,7 +471,7 @@ Measures deviation (error) **of the** $\hat{\mu}$ estimate, from the population 
 
 ## Standard Error (2)
 
-**"Error"** implies that **the estimate** contains a **random deviation/error**, compared to the population parameter.
+**"Error"** implies that **the estimate** contains a **random error**, compared to the population parameter.
 
 ::: incremental
 -   Not to be confused with the **Sample Variance**

@@ -292,12 +292,6 @@ make_two_dist_compare(25, 0.950, suffix = "SE")[[2]]
 :::
 :::
 
-## t-distribution app
-
-See the online tool here:
-
-<https://rpsychologist.com/d3/tdist/>
-
 # Application of the t-distribution
 
 ## Recall the travel time example

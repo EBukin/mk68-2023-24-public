@@ -13,9 +13,7 @@ editor_options:
 
 Most commonly used statistical test for hypothesis testing about the estimated parameter (e.g., $\widehat{\text{mean}}$, but also other estimates).
 
-**The purpose:**
-
-Infer:
+**Its purpose is to infer:**
 
 ::: incremental
 -   whether or not the population parameter $\mu$ (mean, or else)
@@ -24,9 +22,7 @@ Infer:
 
 -   based on our sample estimates of
 
-    -   the parameter ($\widehat{\text{mean}}$),
-    -   the variance ($\text{se}$ or $s$), and
-    -   sample size $n$.
+    -   the parameter ($\widehat{\text{mean}}$), its variance ($s$), and the sample size $n$.
 :::
 
 ## t-tests
@@ -34,16 +30,12 @@ Infer:
 In principal, there are:
 
 ::: incremental
--   one-sample t-test: compares mean to a number
+-   one-sample t-test: compares **one mean to a number**
 
--   two-sample t-test: compares means of two independent samples
-
-    -   for equal and unequal variances between samples
+-   two-sample t-test: compares **means of two independent samples**
 :::
 
-## one-sample t-test: comparing mean to a number
-
-### The algorithm
+## One-sample t-test: comparing mean to a number
 
 1.  **Step 1.** Hypothesis formulation;
 
@@ -64,6 +56,7 @@ The population mean equals to zero $\mu_{0}$
 
 -   $H_0 : \mu = \mu_{0}$
 :::
+
 :::
 
 ::: {.column width="50%"}
@@ -87,7 +80,7 @@ The population mean is not zero $\mu_{0}$
 
 ### t-statistics:
 
-$$t = (\hat\mu - \mu_0) / \text{se} =  \frac{\sqrt{n} ( \hat\mu - \mu_0)}{s}\,,$$
+$$t =  \frac{\hat\mu - \mu_0}{\text{se}} =  \frac{\sqrt{n} ( \hat\mu - \mu_0)}{s}\,,$$
 
 
 ::: fragment
@@ -97,36 +90,38 @@ where:
 
 -   $\hat\mu$ - estimated mean and $\mu_0$ is an arbitrary number;
 
--   $n$ - number of observation 
+-   $se = s / \sqrt{n}$ - standard error of the estimated mean;
 
--   $s$ - sample standard deviation;
+-   $s$ - sample standard deviation; 
 
--   $se(\hat\mu) = s / \sqrt{n}$;
+-   $n$ - number of observation;
 :::
 
 ## Step 2. Example
 
 ::: columns
 ::: {.column width="60%"}
-::: incremental
 Sample size: $n = 25$
 
 Estimates mean: $\hat \mu = -2.2$
 
 Sample SD: $s = 3.3$
 
--   Compute the t-statistics for the mean difference from zero.
+::: fragment
+::: incremental
+Compute the t-statistics for the mean difference from zero.
 
 -   $\mu_0 = 0$?
 
 -   $t = \frac{\sqrt{25} ( -2.2 - 0)}{3.3} \\ = 5 \cdot (-1/3) \\= -1.667$
 :::
 :::
+:::
 
 ::: {.column width="40%"}
 ::: fragment
 ::: incremental
--   Compute the t-statistics for the mean difference from -5.5.
+Compute the t-statistics for the mean difference from -5.5.
 
 -   $\mu_0 = -5.5$?
 
@@ -138,39 +133,51 @@ Sample SD: $s = 3.3$
 
 ## Step 3. Setting a decision rule (1)
 
-To reject $H_0$, 
+To reject $H_0$
 
--   we compare $t$ to a **critical value** $c_{df, \text{CL}}$, with
+::: incremental
+-   we compare t-statistics to a **critical value** $c_{df, \text{CL}}$, with
 
 -   $\text{CL}$ - the confidence level 
     
     -   opposite to the significance level: $\text{CL} = 1-\alpha$
 
 -   $df$ - degrees of freedom
+:::
 
-## Step 3. Setting a decision rule (2)
+## Step 3. Critical value
 
-**Critical value**, 
+is the **minimum values of the t-statistics** when we **can reject** $H_0$ 
 
--   is the **minimum values of the t-statistics** when we **can reject** $H_0$ 
+-   at the given **confidence level**, and
 
-    -   at the given **level of significance**, and
-    
-    -   with the given **number of degrees of freedom**.
+-   with the given **degrees of freedom**.
 
-FYI: Significance level depends on the alternative hypothesis:
+## Step 3. Confidence level 
 
+Confidence level depends on the **significance level** ($\alpha$) and the **alternative hypothesis**:
+
+::: fragment
 -   when $H_1: \mu \ne \mu_{0}$ we use a **two-sided** t-test, thus
 
     -   $\text{CL} = 1 - \alpha / 2$
+:::
 
+
+::: fragment
 -   when $H_1: \mu < \mu_{0}$ or $H_1: \mu > \mu_{0}$ we use a **one-sided** t-test,
 
     -   $\text{CL} = 1 - \alpha$
+:::
 
-## Step 3. Setting a decision rule (3)
+::: fragment
+level of significance $\alpha$;
 
-::: incremental
+    -   $\alpha = 0.05$
+:::
+
+## Step 3. Degrees of freedom
+
 the number of degrees of freedom $df = n - k$:
 
 -   $n$ is the number of observation in the sample and
@@ -179,16 +186,12 @@ the number of degrees of freedom $df = n - k$:
     
     -   $k=1$ for the one-sample t-test $k=2$ for the two-sample t-test
 
-level of significance $\alpha$;
 
-    -   $\alpha = 0.05$
-:::
+## Step 3. Reject/Accept
 
-## Step 3. Setting a decision rule (4)
+We can reject $H_0: \mu = \mu_0$ in favor of $H_1: \mu \neq \mu_{0}$ **only if**:
 
-We reject $H_0: \mu = \mu_0$ in favor of $H_1: \mu \neq \mu_{0}$ **only if**:
-
--   the absolute value of the t-statistics is striclty greater then the critical value.
+-   the absolute value of the t-statistics is strictly greater then the critical value.
 
 ::: incremental
 
@@ -197,7 +200,12 @@ We reject $H_0: \mu = \mu_0$ in favor of $H_1: \mu \neq \mu_{0}$ **only if**:
 -   $|t| > c_{df, 1 - \alpha}$ for one-sided t-test $H_1: \mu > \mu_{0}$ or $H_1: \mu > \mu_{0}$
 :::
 
-## Step 3. Setting a decision rule (4) {.smaller}
+
+::: fragment
+In all other cases, we need to accept $H_0$.
+:::
+
+## Step 3. Find a critical value {.smaller}
 
 ::: columns
 ::: {.column width="30%"}
@@ -251,8 +259,10 @@ Sample size: $n = 25$; $df = 25 - 1 = 24$
 Is the population mean different from zero at a 1% level of significance?
 
 ::: incremental
--   $H_1: \mu \ne 0$
+-   $H_1: \mu \ne 0$ - two-sided t-test ($\alpha / 2$)
+
 -   $1 - \alpha / 2 = 1 - 0.01 / 2 = 0.995$
+
 -   $c_{24, \, 1 - 0.01/ 2} = 2.7969$
 :::
 :::
@@ -275,6 +285,8 @@ Sample size: $n = 25$; $df = 25 - 1 = 24$
 Is the population mean different from zero at a 5% level of significance?
 
 ::: incremental
+-   $H_1: \mu \ne 0$ - two-sided t-test ($\alpha / 2$)
+
 -   $1 - \alpha / 2 = 1 - 0.05 / 2 = 0.975$
 
 -   $c_{24, \, 1 - 0.05/ 2} = 2.0639$
@@ -299,6 +311,8 @@ Sample size: $n = 25$; $df = 25 - 1 = 24$.
 Is the population mean different from zero at 10% level of significance?
 
 ::: incremental
+-   $H_1: \mu \ne 0$ - two-sided t-test ($\alpha / 2$)
+
 -   $1 - \alpha / 2 = 1 - 0.1 / 2 = 0.95$
 
 -   $c_{24, \, 1 - 0.1/ 2} = 1.7109$
@@ -321,12 +335,14 @@ Concluding either or:
 -   We reject $H_0$
 
     -   at least at the $\alpha$ level of significance.
-    -   The population mean is significantly different from $\mu_0$.
+    
+    -   the population mean is significantly different from $\mu_0$.
 
 -   We fail to reject (we accept) $H_0$.
 
-    -   Available data do not provide sufficient evidence to reject $H_0$ at the $\alpha$ level of significance.
-    -   The population mean is statistically indifferent from $\mu_0$.
+    -   available data do not provide sufficient evidence to reject $H_0$ at the $\alpha$ level of significance.
+    
+    -   the population mean is statistically indifferent from $\mu_0$.
 :::
 
 ## Step 4. Example (1)
@@ -348,6 +364,7 @@ Is the population mean different from zero ($\mu_0 = 0$) at 5% level of signific
 -   Conclusion:
 
     -   Fail to reject (we accept) $H_0$.
+    
     -   the population mean is statistically **indifferent** from $\mu_0 = 0$.
 :::
 :::
@@ -371,11 +388,12 @@ Is the population mean different from -5.5 at the 1% level of significance?
 -   Conclusion:
 
     -   Reject $H_0$.
+    
     -   the population mean is statistically different from $\mu_0 = -5.5$ at least at the 1% level of significance.
 :::
 :::
 
-## Homework (exam) examples (1) {.smaller}
+## Examples (1) {.smaller}
 
 ::: columns
 ::: {.column width="50%"}

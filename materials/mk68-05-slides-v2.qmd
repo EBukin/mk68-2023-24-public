@@ -1,5 +1,5 @@
 ---
-title: "Week 05. Hypothesis testing II. Central Limit Theorem. t-distribution. Confidence intervals."
+title: "Week 05. Hypothesis testing II. Central Limit Theorem. T-distribution. Confidence intervals."
 editor: source
 format: 
   revealjs:
@@ -9,7 +9,12 @@ editor_options:
 ---
 
 
+{{< include cct-2-simple.qmd >}}
+
+{{< include pop-dist-clt.qmd >}}
+
 {{< include ci-t-dist.qmd >}}
+
 
 # Practice
 
@@ -252,13 +257,18 @@ t.test(school ~ Group,
     -   School enrollment in treatment is larger than in control at the 5% level of significance. Therefore, the effect of CCT on school enrollment is indeed positive and significant.
 :::
 
+
+# Extra materials (for self-study)
+
+{{< include t-test.qmd >}}
+
 # t-scores
 
 The slides below contain the t-scores (critical values of the t-distribution) for t-distributions with 1-150 degrees of freedom.
 
 {{< include mk68-05-slides-t-scores.qmd >}}
 
-# Takeaways checklist
+# Homework
 
 ## Homework {.smaller}
 
@@ -267,7 +277,9 @@ This homework generally outlines examples of the exam questions.
 1.  Use paper [@Duflo2008] (available on Ilias);
 
     -   Perform a statistical hypothesis testing of the mean yield increase for panel A-C in table 1.
-    -   State H0 and H1; Calculate t-statistics and the 95% confidence intervals.
+    
+    -   State H0 and H1;
+    
     -   Conclude about the effect of fertilizer application on the yields for each of the panels.
 
 2.  Watch "[Randomized Trials: The Ideal Weapon](https://youtu.be/eGRd8jBdNYg)" (It was suggested already in one of the previous lectures)

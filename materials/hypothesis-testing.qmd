@@ -218,11 +218,12 @@ Alternative hypothesis:
 
 ## Errors examples
 
-Type I error:
+**Type I error:**
 
 
 ::: fragment
 1/4   We conclude **to reject** $H_0$: ${\Delta}_{\text{stunting}}\ne 0$,
+
 2/4   But this conclusion is driven **by a random variation in the sample**.
 :::
 
@@ -235,17 +236,21 @@ Type I error:
 :::
 
 
-Type II error:
+**Type II error:**
 
 ::: fragment
-1/2   We conclude **to accept** $H_0$: stunting rate did not change after training.
+1/3   We conclude **to accept** $H_0$: stunting rate did not change after training.
 :::
 
 ::: fragment
-2/2   Training helped but, e.g., the food shortage deepened the malnutrition problem in the survey year.
+2/3   In fact, the Training helped, but... 
 :::
 
-## Example (2): HT about ravens' color
+::: fragment
+3/3   other factors let to the food shortage in the survey year.
+:::
+
+## Example (2)
 
 ### Question: What % of ravens are White?
 
@@ -322,17 +327,22 @@ Did we make any errors? If yes, which one?
 ::: {.column width="50%"}
 Be prepared to answer the following questions in response to a hypothetical research question prompt during an exam.
 
-1.    Describe how you would measure the outcome variable.
+1.    What is the outcome variable and what is the treatment? Describe how you would measure those.
 
-2.    Formulate $H_0$ and $H_1$.
+2.    Define the factual and counterfactual outcomes. 
 
-3.    Discuss Type I and Type II errors in the context of your hypothesis.
+3.    Formulate $H_0$ and $H_1$.
 
-4.    Provide examples of factors that could lead to these errors.
+4.    What plausible causal channel(s) runs directly from the treatment to the
+outcome?
 
-5.    Propose an RCT experiment that could help answer these questions.
+5.    Discuss Type I and Type II errors in the context of your hypothesis.
 
-6.    Explain what makes an RCT a good/bad solution to the research question.    
+6.    Provide examples of factors that could lead to these errors.
+
+7.    Propose an RCT experiment that could help answer these questions.
+
+8.    Explain what makes an RCT a good/bad solution to the research question.    
 :::
 
 ::: {.column width="50%"}
@@ -341,27 +351,20 @@ Research questions:
 
 -   How does students' performance in a class vary across different years of enrollment?
 
--   Are wheat yields higher on farms that use precision agriculture?
+-   Are yields higher on farms that use precision agriculture?
 
 -   How effective are cash disbursements in alleviating poverty?
 
 -   What is the poverty-reducing effect of schooling?
+
+-    Many firms, particularly in southern European countries, are small, and owned and run by families. Are family owned firms growing more slowly than firms with a dispersed ownership?
+
+-   What is the effect of studying economics rather than sociology on the salaries of university graduates?
+
+-   What is the effect of mortgage interest rates on the number of new housing starts?
 :::
 :::
 
-## Exam questions examples (2) {.smaller}
-
--   Formulate H0 and H1.
-
--   Provide an example of a type I / II error relevant to the hypothesis.
-
--   What are the type I/II errors?
-
--   Which error type is not known to the researcher that operates observational data? Why?
-
--   When do we reject the null hypothesis? What kind of error we are trying to minimize?
-
--   What is the significance level?
 
 # Examples of Hypothesis Testing
 
@@ -376,7 +379,7 @@ Kuchenbecker, Judith, ... and Irmgard Jordan. 2017. “Nutrition Education Impro
 
 ## @Kuchenbecker2017: Research design
 
-<https://journals.plos.org/plosone/article/figure/image?size=large&id=10.1371/journal.pone.0175216.g003>
+![](img/pone.0175216.g003.png){fig-align="center"}
 
 ## @Kuchenbecker2017
 
@@ -422,7 +425,7 @@ The table usually shows:
 -   The probability value of the Type I error (p-value).
 :::
 
-## @Kuchenbecker2017 Table 2
+## @Kuchenbecker2017: Checks and balances tables 2-3
 
 ![](img/Kuchenbecker2017-t1-2.png){fig-align="center"}
 

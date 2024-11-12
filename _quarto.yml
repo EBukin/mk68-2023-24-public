@@ -11,6 +11,7 @@ project:
     - materials/mk68-02-slides-example-1.qmd
     - materials/mk68-03-slides.qmd
     - materials/mk68-04-slides.qmd
+    - materials/mk68-05-slides-v2.qmd
 
 author:
   - name: "Eduard Bukin"
