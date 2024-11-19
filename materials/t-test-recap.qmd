@@ -11,43 +11,45 @@ editor_options:
 
 # Example of an exam assignment
 
-The slides below show you what you can expect on an exam based on the material of the past weeks. Please note that:
+The slides below show you what you can expect on an exam based on the material of the past weeks. 
 
--   these slides try to show all possible types of questions,
+Please note that:
 
--   they exaggerated the complexity of the exam.
-
--   on the exam, only a few questions will be asked
+-   these examples exaggerated the complexity of the exam.
 
 ## Definition question
 
-Answer two of the three questions below:
+Answer **two** questions from the list below:
 
--   What measures of the central tendency do we most commonly apply in social sciences?
+-   What measures of central tendency are most commonly applied in social sciences?
 
--   What effect do extremely large observations have on the mean and standard deviation?
+-   What are extreme observations or outliers?
 
--   Is median one of the quantiles or it is a measure of the central tendency?
+-   What effect do outliers/extreme observations have on the mean/median, standard deviation/IQR?
+
+-   Is the median one of the quantiles or is it a measure of central tendency?
+
+-   What is the Hypothesis Testing?
 
 ## Problem introduction
 
-An RCT experimenter was designed to understand the effect of technology (Minimal vs Optimal) on rice yields. Researchers:
+An RCT experiment was designed to understand the effect of technology ("Minimal" vs "Optimal") on rice yields. It included:
 
-1.  Randomly selected 60 farms, and
+1.  Randomly selecting 60 farms and offering them two equivalent rice varieties to plant.
 
-    -   each farmer decide what rice variety to produce out of two available.
+    -   each farmer picked one variety randomly.
 
-2.  Trained half of them in applying Optimal technology (treatment), and
+2.  Training half of them in applying Optimal technology (treatment), and
 
-3.  Half of the farmers remained with the same minimal technology (control).
+3.  Keeping half of the farmers with the same minimal technology (control).
 
 During the production season, researchers recorded for each farm:
 
--   technology, rice variety, rice yield, and fertilizers use.
+-   Technology, rice variety, rice yield, and fertilizer use.
 
-The research objective is to **measure the effect of technology on rice yield**.
+-   The research objective was to measure the effect of technology on rice yield.
 
-Answer questions on the following slides based on this example.
+Answer the questions on the following slides based on this example.
 
 ## Descriptive analysis (1) {.smaller}
 
@@ -172,9 +174,9 @@ modelsummary::datasummary_balance(
 
 Significance levels are: '+'=.1, '\*'=.05, '\*\*'=.01, '\*\*\*'=0.001
 
--   What can we conclude about the quality of random assignment based on this table?
-
 -   Perform hypothesis testing about the difference in mean fertilizer application between the two technologies.
+
+-   What can we conclude about the quality of random assignment based on this table?
 
 ## Effect of technology on yields {.smaller}
 
@@ -224,34 +226,11 @@ modelsummary::datasummary_balance(
 
 Significance levels are: '+'=.1, '\*'=.05, '\*\*'=.01, '\*\*\*'=0.001
 
-```{r}
-#| eval: false
-#| echo: true
-t.test(yield ~ tech, data = fert_dta)
-# 
-# 	Welch Two Sample t-test
-# 
-# data:  yield by tech
-# t = -1.4497, df = 57.939, p-value = 0.1525
-# alternative hypothesis: true difference in 
-#     means between group Minimum (control) 
-#     and group Optimum (treatment) is 
-#     not equal to 0
-# 95 percent confidence interval:
-#  -0.9633503  0.1540836
-# sample estimates:
-#  mean in group Minimum (control) 
-#                         5.234200 
-# mean in group Optimum (treatment)
-#                         5.638833 
-```
 :::
 
 ::: {.column width="35%"}
 ::: incremental
--   Why do we need this?
-
--   What is the difference between the test in text and the table?
+-   Why do we need this HT?
 
 -   Formulate H0 and H1.
 
@@ -267,13 +246,15 @@ t.test(yield ~ tech, data = fert_dta)
 ## Conclude about the effect of technology on yields
 
 ::: incremental
--   Does the optimal technology have any effect on yields?
+-   Does the optimal technology have any causal effect on yields?
 
--   What is this effect?
+-   How large is this effect?
 
--   Do we have the ceteris paribus ensured here?
+-   Does the RCT performed here ensures the ceteris paribus?
 
 -   What else can influence the effect of technology on yield?
+
+-   How can we control for it?
 :::
 
 ## Differences in yields between varieties {.smaller}
@@ -292,13 +273,9 @@ fert_dta |> ggplot() + aes(x = yield, y = variety, colour = tech) + geom_boxplot
 ::: incremental
 -   What does this plot show?
 
--   Considering previous results,
+-   Considering previous results, can we conclude about the quality of random assignment now?
 
--   Can we conclude about the quality of random assignment now?
-
--   If there is a causal effect of technology on yields, which effect is this?
-
--   How does the effect change depending on the variety?
+-   Is there a causal effect of variety on yields, which effect is this?
 :::
 :::
 :::
@@ -315,22 +292,6 @@ modelsummary::datasummary_balance(
 
 Significance levels are: '+'=.1, '\*'=.05, '\*\*'=.01, '\*\*\*'=0.001
 
-```{r}
-#| eval: false
-#| echo: true
-t.test(yield ~ variety, data = fert_dta)
-# 	Welch Two Sample t-test
-# 
-# data:  yield by variety
-# t = -6.5019, df = 57.917, p-value = 2.013e-08
-# alternative hypothesis: true difference in means
-#     between group V1 and group V2 is not equal to 0
-# 95 percent confidence interval:
-#  -1.8375243 -0.9724091
-# sample estimates:
-# mean in group V1 mean in group V2 
-#         4.734033         6.139000 
-```
 :::
 
 ::: {.column width="35%"}
@@ -397,13 +358,13 @@ a2
 
 ***For your reference and information.***
 
-The keywords/concepts below are meant to improve the clarity of communication when delivering the hypothesis testing results. Please utilize them! They will help make your results understandable for the audience and the reader.
+The keywords/concepts below are meant to improve the clarity of communication when performing the hypothesis testing. Please use it! They will help make your results understandable for the reader.
 
 1.  Test name and what it is about (t-test about means comparison between two groups).
 
 2.  $H_0$ and $H_1$.
 
-3.  Estimated parameters (means, coefficients, differences, variance ratio), $df$ / n observations.
+3.  Estimated parameters (means, coefficients, differences, standard error), $df$ / n observations.
 
 4.  Level of significance of the HT. ($\alpha = 0.05$ or 5% level of significance)
 
