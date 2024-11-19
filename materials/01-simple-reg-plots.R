@@ -7,6 +7,7 @@ library(ggpmisc)
 # library(here)
 library(patchwork)
 # library(synthpop)
+library(ggbrace)
 
 n_pop <- 2*10^6
 bta0 =  656.15
@@ -248,15 +249,15 @@ pp_4 <-
     colour = "#4daf4a",
     size = 5
   ) +
-  geom_brace(
-    aes(x = c(2, 3),
-        y = c(1.5, 2) * bta1 + bta0),
-    rotate = 180,
-    colour = "#4daf4a",
-    size = 1.5,
-    inherit.aes = FALSE,
-    inherit.data = FALSE
-  ) +
+  # geom_brace(
+  #   aes(x = c(2, 3),
+  #       y = c(1.5, 2) * bta1 + bta0),
+  #   rotate = 180,
+  #   colour = "#4daf4a",
+  #   size = 1.5,
+  #   inherit.aes = FALSE,
+  #   inherit.data = FALSE
+  # ) +
   annotate(
     "label",
     alpha = 0.9,

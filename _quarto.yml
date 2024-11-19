@@ -13,6 +13,7 @@ project:
     - materials/mk68-04-slides.qmd
     - materials/mk68-05-slides-v2.qmd
     - materials/t-test-recap.qmd
+    - materials/mk68-06-slides.qmd
 
 author:
   - name: "Eduard Bukin"

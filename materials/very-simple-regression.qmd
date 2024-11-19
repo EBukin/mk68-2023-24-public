@@ -582,7 +582,7 @@ plot_dta %>%
 ```
 :::
 
-## Regression: Inference
+## Regression: Inference  {.smaller}
 
 ::: columns
 ::: {.column width="70%"}
@@ -642,7 +642,7 @@ $df = n - k$ with $n$ number of observations and $k$ number of regressors $k = 2
 :::
 :::
 
-## Regression: Goodness of Fit
+## Regression: Goodness of Fit {.smaller}
 
 ::: columns
 ::: {.column width="70%"}

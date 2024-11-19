@@ -475,18 +475,29 @@ get_plots(nonlin_dta,
 ::: columns
 ::: {.column width="45%"}
 ::: fragment
-```{r}
+```{r, eval=TRUE}
 #| code-fold: true
-anscombe %>%
-  mutate(id = row_number()) %>%
-  pivot_longer(c(contains("x"), contains("y")), names_to = "Variables") %>%
-  mutate(`Data set` = str_extract(Variables, "\\d"),
-         Variables = str_remove(Variables, "\\d")) %>%
-  pivot_wider(names_from = Variables, values_from = value) %>%
-  group_by(`Data set`) %>%
-  summarise(across(c(x, y), ~ mean(.), .names = "mean_{.col}"),
-            across(c(x, y), ~ sd(.), .names = "sd_{.col}"))
+# anscombe %>%
+#   mutate(id = row_number()) %>%
+#   pivot_longer(c(contains("x"), contains("y")), names_to = "Variables") %>%
+#   mutate(`Data set` = str_extract(Variables, "\\d"),
+#          Variables = str_remove(Variables, "\\d")) %>%
+#   pivot_wider(names_from = Variables, values_from = value) %>%
+#   group_by(`Data set`) %>%
+#   summarise(across(c(x, y), ~ mean(.), .names = "mean_{.col}"),
+#             across(c(x, y), ~ sd(.), .names = "sd_{.col}"))
 ```
+
+```{r}
+# # A tibble: 4 × 5
+#   `Data set` mean_x mean_y  sd_x  sd_y
+#   <chr>       <dbl>  <dbl> <dbl> <dbl>
+# 1 1               9   7.50  3.32  2.03
+# 2 2               9   7.50  3.32  2.03
+# 3 3               9   7.5   3.32  2.03
+# 4 4               9   7.50  3.32  2.03
+```
+
 :::
 :::
 
@@ -505,22 +516,37 @@ norm_anscombe <-
   pivot_wider(names_from = var, values_from = value) %>%
   arrange(data_sample, rowname) 
 
-norm_anscombe %>%
-    group_by(data_sample) %>%
-    nest %>%
-    
-    mutate(fits =
-               map2(data, data_sample,
-                    ~ {
-                        new_varname <- str_c("Data set ", .y)
-                        lm(y ~ x, .x) %>%
-                            broom::tidy() %>%
-                            mutate(`Data set` = new_varname) %>%
-                            select(`Data set`, everything())
-                    })) %>%
-    pull(fits) %>%
-    bind_rows() 
+# norm_anscombe %>%
+#     group_by(data_sample) %>%
+#     nest %>%
+#     
+#     mutate(fits =
+#                map2(data, data_sample,
+#                     ~ {
+#                         new_varname <- str_c("Data set ", .y)
+#                         lm(y ~ x, .x) %>%
+#                             broom::tidy() %>%
+#                             mutate(`Data set` = new_varname) %>%
+#                             select(`Data set`, everything())
+#                     })) %>%
+#     pull(fits) %>%
+#     bind_rows() 
 ```
+
+```{r}
+# # A tibble: 8 × 6
+#   `Data set` term        estimate std.error statistic p.value
+#   <chr>      <chr>          <dbl>     <dbl>     <dbl>   <dbl>
+# 1 Data set 1 (Intercept)    3.00      1.12       2.67 0.0257 
+# 2 Data set 1 x              0.500     0.118      4.24 0.00217
+# 3 Data set 2 (Intercept)    3.00      1.13       2.67 0.0258 
+# 4 Data set 2 x              0.5       0.118      4.24 0.00218
+# 5 Data set 3 (Intercept)    3.00      1.12       2.67 0.0256 
+# 6 Data set 3 x              0.500     0.118      4.24 0.00218
+# 7 Data set 4 (Intercept)    3.00      1.12       2.67 0.0256 
+# 8 Data set 4 x              0.500     0.118      4.24 0.00216
+```
+
 :::
 :::
 :::

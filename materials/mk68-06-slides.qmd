@@ -8,6 +8,13 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{css}
+div.sourceCode {
+  font-size: 2.5em;
+  /* or try font-size: xx-large; */
+}
+```
+
 {{< include t-test-recap.qmd >}}
 
 {{< include very-simple-regression.qmd >}}
