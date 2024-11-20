@@ -299,7 +299,7 @@ summary(fit_fule_0)
 -   NO! We do not control for other things!
 :::
 
-## 4. Estimating the Multiple Linear Regression
+## 4. Estimating the Multiple Linear Regression {.smaller}
 
 Multiple linear regression helps to reveal the true causal effect of `Tax` by
 

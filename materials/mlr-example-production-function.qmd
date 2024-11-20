@@ -118,23 +118,21 @@ kable_part <- function(x, rown_number = FALSE) {
 
 We would like to evaluate the causal effect of the BIMAS production intensification program on the rice output among rice-producing farmers in India.
 
-The outcome variable is:
+-   The outcome variable is:
 
--   `goutput` - gross output of rice in kg per year produced on the farm.
+    -   `goutput` - gross output of rice in kg per year produced on the farm.
+    
+-   Key variable of interest is:
+    
+    -   `bimas` **variable of interest** is an intensification program. Each farmer either participates in it (yes), partially participate (mixed), or does not participate (no).
 
-Independent variables are:
+-   Other control variables are:
 
-::: incremental
--   `bimas` **variable of interest** is an intensification program. Each farmer either participates in it (yes), partially participate (mixed), or does not participate (no).
-
-Control variables:
-
--   `size` the total area cultivated with rice, measured in hectares;
--   `urea` urea application in kilogram
--   `phosphate` phosphate application in kilogram
--   `hiredlabor` hired labor in hours
--   `famlabor` family labor in hours
-:::
+    -   `size` the total area cultivated with rice, measured in hectares;
+    -   `urea` urea application in kilogram
+    -   `phosphate` phosphate application in kilogram
+    -   `hiredlabor` hired labor in hours
+    -   `famlabor` family labor in hours
 
 ```{r}
 data(RiceFarms, package = "plm")
@@ -189,16 +187,18 @@ extract_eq(fit_rice_1, wrap = TRUE, terms_per_line = 3 , use_coefs = FALSE)
 ```
 :::
 
-## 2.1 Ex-ante hypothesis about the coefficients
+## 2.1 Ex-ante hypotheses about the coefficients
 
 ```{r}
 #| results: asis
 extract_eq(fit_rice_0, wrap = TRUE, terms_per_line = 3 , use_coefs = FALSE)
 ```
 
-What are the ex-ante expectations about the coefficients?
+EQ: **Formulate the ex-ante hypotheses about coefficients?**
 
-## 3.1 Exploratory data analysis (The data) {.smaller}
+## 3 Exploratory data analysis {.smaller}
+
+### 3.1 The data
 
 ```{r}
 library(knitr)

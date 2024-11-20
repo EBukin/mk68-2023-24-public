@@ -172,7 +172,7 @@ The theory of the hedonic price model allows us to estimate the price as a funct
 :::
 
 ::: fragment
-EQ: **Write down a regression equation.**
+EQ: **Write down a regression equation that could help answering the main research question.**
 :::
 
 ::: fragment
@@ -183,7 +183,7 @@ extract_eq(fit_land_0, wrap = TRUE, terms_per_line = 3 , use_coefs = FALSE)
 :::
 
 ::: fragment
-EQ: **Formulate the ex-ante hypothesis about the sign and magnitude of the coefficient XXX ?. In 1-2 sentences, explain why (based on what theory, common sense) you make this hypothesis.**
+EQ: **Formulate the ex-ante hypothesis about the sign and magnitude of the coefficient "\_\_\_\_\_\_". In 1-2 sentences, explain why (based on what theory, common sense) you make this hypothesis.**
 :::
 :::
 

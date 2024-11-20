@@ -10,7 +10,7 @@ editor_options:
 
 ```{css}
 div.sourceCode {
-  font-size: 2.5em;
+  font-size: 2em;
   /* or try font-size: xx-large; */
 }
 ```

@@ -1,5 +1,5 @@
 ---
-title: "Week 05. Hypothesis testing II. Central Limit Theorem. T-distribution. Confidence intervals."
+title: "Week 05. Hypothesis testing II. Central Limit Theorem. T-distribution. Confidence intervals. t-test"
 editor: source
 format: 
   revealjs:
