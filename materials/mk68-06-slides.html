@@ -1,0 +1,2914 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<link href="../img/jlu-logo.png" rel="icon" type="image/png">
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.10.18">
+
+  <meta name="author" content="Eduard Bukin">
+  <title>MK68 Quantitative Research Methods – Week 06. Recap. Simple Linear Regression. Multiple Regression. Bias. Regression assumptions. Linearity.</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-ea73607f19626fa80b977b1883638479.css">
+  <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <script src="../site_libs/kePrint-0.0.1/kePrint.js"></script>
+  <link href="../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<meta property="og:title" content="Week 06. Recap. Simple Linear Regression. Multiple Regression. Bias. Regression assumptions. Linearity. – MK68 Quantitative Research Methods">
+<meta property="og:description" content="Part 1: Statistics and Econometrics. MK68-2024/25">
+<meta property="og:site_name" content="MK68 Quantitative Research Methods">
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Week 06. Recap. Simple Linear Regression. Multiple Regression. Bias. Regression assumptions. Linearity.</h1>
+  <p class="subtitle">Part 1: Statistics and Econometrics. MK68-2024/25</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+<a href="https://www.uni-giessen.de/faculties/f09/institutes/agri/policy/team/bukin">Eduard Bukin</a>
+</div>
+<div class="quarto-title-author-email">
+<a href="mailto:eduard.bukin@agrar.uni-giessen.de">eduard.bukin@agrar.uni-giessen.de</a>
+</div>
+        <p class="quarto-title-affiliation">
+            <a href="https://www.uni-giessen.de/faculties/f09/institutes/agri/policy">
+            Justus Liebig University Giessen
+            </a>
+          </p>
+        <p class="quarto-title-affiliation">
+            Institute of Agricultural Policy and Market Research
+          </p>
+    </div>
+</div>
+
+</section><section id="TOC">
+<nav role="doc-toc"> 
+<h2 id="toc-title">Content</h2>
+<ul>
+<li><a href="#/example-of-an-exam-assignment" id="/toc-example-of-an-exam-assignment">Example of an exam assignment</a></li>
+<li><a href="#/very-simple-linear-regression" id="/toc-very-simple-linear-regression">(Very) Simple Linear Regression</a></li>
+<li><a href="#/self-study-simple-linear-regression-examples" id="/toc-self-study-simple-linear-regression-examples">Self-study: Simple Linear Regression Examples</a></li>
+<li><a href="#/multiple-regression" id="/toc-multiple-regression">Multiple regression</a></li>
+<li><a href="#/example-mlr-1.-effect-of-fuel-taxes-on-petrol-consumption" id="/toc-example-mlr-1.-effect-of-fuel-taxes-on-petrol-consumption">Example MLR (1). Effect of fuel taxes on petrol consumption</a></li>
+<li><a href="#/bias-and-efficiency" id="/toc-bias-and-efficiency">Bias and Efficiency</a></li>
+<li><a href="#/assumptions-of-the-mlr" id="/toc-assumptions-of-the-mlr">Assumptions of the MLR</a></li>
+<li><a href="#/assumption-1.-linearity" id="/toc-assumption-1.-linearity">Assumption 1. Linearity</a></li>
+<li><a href="#/linearity" id="/toc-linearity">Linearity</a></li>
+<li><a href="#/linearity-example-1-anscombe-quartet" id="/toc-linearity-example-1-anscombe-quartet">Linearity Example 1: Anscombe quartet</a></li>
+<li><a href="#/takeaways-checklist" id="/toc-takeaways-checklist">Takeaways checklist</a></li>
+<li><a href="#/self-study-cradle-of-the-regression-analysis" id="/toc-self-study-cradle-of-the-regression-analysis">Self-study: Cradle of the Regression Analysis</a></li>
+<li><a href="#/references" id="/toc-references">References</a></li>
+</ul>
+</nav>
+</section>
+<section class="slide level2">
+
+<div class="cell">
+<style type="text/css">
+div.sourceCode {
+  font-size: 2em;
+  /* or try font-size: xx-large; */
+}
+</style>
+</div>
+</section>
+<section>
+<section id="example-of-an-exam-assignment" class="title-slide slide level1 center">
+<h1>Example of an exam assignment</h1>
+<p>The slides below show you what you can expect on an exam based on the material of the past weeks.</p>
+<p>Please note that:</p>
+<ul>
+<li>these examples exaggerated the complexity of the exam.</li>
+</ul>
+</section>
+<section id="definition-question" class="slide level2">
+<h2>Definition question</h2>
+<p>Answer <strong>two</strong> questions from the list below:</p>
+<ul>
+<li><p>What measures of central tendency are most commonly applied in social sciences?</p></li>
+<li><p>What are extreme observations or outliers?</p></li>
+<li><p>What effect do outliers/extreme observations have on the mean/median, standard deviation/IQR?</p></li>
+<li><p>Is the median one of the quantiles or is it a measure of central tendency?</p></li>
+<li><p>What is the Hypothesis Testing?</p></li>
+</ul>
+</section>
+<section id="problem-introduction" class="slide level2 scrollable">
+<h2>Problem introduction</h2>
+<p>An RCT experiment was designed to understand the effect of technology (“Minimal” vs “Optimal”) on rice yields. It included:</p>
+<ol type="1">
+<li><p>Randomly selecting 60 farms and offering them two equivalent rice varieties to plant.</p>
+<ul>
+<li>each farmer picked one variety randomly.</li>
+</ul></li>
+<li><p>Training half of them in applying Optimal technology (treatment), and</p></li>
+<li><p>Keeping half of the farmers with the same minimal technology (control).</p></li>
+</ol>
+<p>During the production season, researchers recorded for each farm:</p>
+<ul>
+<li><p>Technology, rice variety, rice yield, and fertilizer use.</p></li>
+<li><p>The research objective was to measure the effect of technology on rice yield.</p></li>
+</ul>
+<p>Answer the questions on the following slides based on this example.</p>
+</section>
+<section id="descriptive-analysis-1" class="slide level2 smaller">
+<h2>Descriptive analysis (1)</h2>
+<h3 id="continuous-variables">Continuous variables</h3>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table caption-top" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Unique</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Missing Pct.</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Mean</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">SD</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Min</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Median</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">yield</td>
+<td style="text-align: left;">60</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">5.4</td>
+<td style="text-align: left;">1.1</td>
+<td style="text-align: left;">3.1</td>
+<td style="text-align: left;">5.4</td>
+<td style="text-align: left;">7.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">nitrogen</td>
+<td style="text-align: left;">52</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">77.3</td>
+<td style="text-align: left;">49.6</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: left;">79.0</td>
+<td style="text-align: left;">148.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">potassium</td>
+<td style="text-align: left;">60</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">33.1</td>
+<td style="text-align: left;">15.1</td>
+<td style="text-align: left;">1.7</td>
+<td style="text-align: left;">34.3</td>
+<td style="text-align: left;">61.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">phosphorus</td>
+<td style="text-align: left;">60</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">37.6</td>
+<td style="text-align: left;">21.6</td>
+<td style="text-align: left;">0.8</td>
+<td style="text-align: left;">38.8</td>
+<td style="text-align: left;">74.7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<h3 id="categorical-variables">Categorical variables</h3>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table caption-top" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">N</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">tech</td>
+<td style="text-align: left;">Minimum (control)</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">50.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Optimum (treatment)</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">50.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">variety</td>
+<td style="text-align: left;">V1</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">50.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">V2</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">50.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="checks-and-balances-1" class="slide level2">
+<h2>Checks and Balances (1)</h2>
+<div class="columns">
+<div class="column" style="width:75%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-5-1.png" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:25%;">
+<ul>
+<li><p>What differences do you observe between technologies in terms of the fertilizers used?</p></li>
+<li><p>What can we conclude about the quality of random assignment based on this plot?</p></li>
+</ul>
+</div></div>
+</section>
+<section id="checks-and-balances-2" class="slide level2 smaller">
+<h2>Checks and Balances (2)</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table caption-top" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; empty-cells: hide; border-bottom: hidden;"></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Minimum (control) (N=30)
+</div></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Optimum (treatment) (N=30)
+</div></th>
+</tr>
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Std. Dev.</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Std. Dev.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">nitrogen</td>
+<td style="text-align: right;">77.7</td>
+<td style="text-align: right;">50.4</td>
+<td style="text-align: right;">76.9</td>
+<td style="text-align: right;">49.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">potassium</td>
+<td style="text-align: right;">28.0</td>
+<td style="text-align: right;">14.4</td>
+<td style="text-align: right;">38.2</td>
+<td style="text-align: right;">14.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">phosphorus</td>
+<td style="text-align: right;">31.7</td>
+<td style="text-align: right;">17.9</td>
+<td style="text-align: right;">43.4</td>
+<td style="text-align: right;">23.7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Significance levels are: ‘+’=.1, ‘*’=.05, ‘**’=.01, ‘***’=0.001</p>
+<ul>
+<li><p>Perform hypothesis testing about the difference in mean fertilizer application between the two technologies.</p></li>
+<li><p>What can we conclude about the quality of random assignment based on this table?</p></li>
+</ul>
+</section>
+<section id="effect-of-technology-on-yields" class="slide level2 smaller">
+<h2>Effect of technology on yields</h2>
+<div class="columns">
+<div class="column" style="width:75%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-7-1.png" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:25%;">
+<ul>
+<li class="fragment"><p>Our key objective is to quantify the effect of technology on yields.</p></li>
+<li class="fragment"><p>What differences do you observe between technologies in terms of rice yields?</p></li>
+<li class="fragment"><p>Can we conclude about the causal effect of technologies based on this plot?</p></li>
+</ul>
+</div></div>
+</section>
+<section id="ht-effect-of-technology-on-yields" class="slide level2 smaller">
+<h2>HT: effect of technology on yields</h2>
+<div class="columns">
+<div class="column" style="width:65%;">
+<div class="cell">
+<div class="cell-output-display">
+<table class="table caption-top" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; empty-cells: hide; border-bottom: hidden;"></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Minimum (control) (N=30)
+</div></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Optimum (treatment) (N=30)
+</div></th>
+</tr>
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Std. Dev.</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Std. Dev.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">yield</td>
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">1.1</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">1.1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Significance levels are: ‘+’=.1, ‘*’=.05, ‘**’=.01, ‘***’=0.001</p>
+</div><div class="column" style="width:35%;">
+<ul>
+<li class="fragment"><p>Why do we need this HT?</p></li>
+<li class="fragment"><p>Formulate H0 and H1.</p></li>
+<li class="fragment"><p>Conclude about the effect of technology on yields.</p></li>
+<li class="fragment"><p>What statistics did you use?</p></li>
+<li class="fragment"><p>What is the highest level of significance for your results?</p></li>
+</ul>
+</div></div>
+</section>
+<section id="conclude-about-the-effect-of-technology-on-yields" class="slide level2">
+<h2>Conclude about the effect of technology on yields</h2>
+<ul>
+<li class="fragment"><p>Does the optimal technology have any causal effect on yields?</p></li>
+<li class="fragment"><p>How large is this effect?</p></li>
+<li class="fragment"><p>Does the RCT performed here ensures the ceteris paribus?</p></li>
+<li class="fragment"><p>What else can influence the effect of technology on yield?</p></li>
+<li class="fragment"><p>How can we control for it?</p></li>
+</ul>
+</section>
+<section id="differences-in-yields-between-varieties" class="slide level2 smaller">
+<h2>Differences in yields between varieties</h2>
+<div class="columns">
+<div class="column" style="width:75%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-9-1.png" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:25%;">
+<ul>
+<li class="fragment"><p>What does this plot show?</p></li>
+<li class="fragment"><p>Considering previous results, can we conclude about the quality of random assignment now?</p></li>
+<li class="fragment"><p>Is there a causal effect of variety on yields, which effect is this?</p></li>
+</ul>
+</div></div>
+</section>
+<section id="ht-effect-of-variety-on-yields" class="slide level2 smaller">
+<h2>HT: effect of variety on yields</h2>
+<div class="columns">
+<div class="column" style="width:65%;">
+<div class="cell">
+<div class="cell-output-display">
+<table class="table caption-top" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; empty-cells: hide; border-bottom: hidden;"></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+V1 (N=30)
+</div></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+V2 (N=30)
+</div></th>
+</tr>
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Std. Dev.</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Std. Dev.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">yield</td>
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">0.8</td>
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">0.9</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Significance levels are: ‘+’=.1, ‘*’=.05, ‘**’=.01, ‘***’=0.001</p>
+</div><div class="column" style="width:35%;">
+<ul>
+<li class="fragment"><p>Formulate H0 and H1.</p></li>
+<li class="fragment"><p>Conclude about the yield difference between varieties.</p></li>
+<li class="fragment"><p>Based on our sample, can we conclude that variety has a causal effect on yields?</p></li>
+<li class="fragment"><p>Does our sample ensure the ceteris paribus? How does our sample ensure it?</p></li>
+</ul>
+</div></div>
+</section>
+<section id="conclude-again" class="slide level2">
+<h2>Conclude again</h2>
+<ul>
+<li class="fragment"><p>Does the random assignment of technology ensure the ceteris paribus here?</p></li>
+<li class="fragment"><p>What are the most relevant other factors that may influence the ceteris paribus in our sample?</p></li>
+<li class="fragment"><p>Given that what can we conclude about the causal effect of technology on yields?</p></li>
+<li class="fragment"><p>After today’s lecture you should be able to answer the following:</p>
+<ul>
+<li class="fragment"><p>Can we “control” the effects of the other factors?</p></li>
+<li class="fragment"><p>What econometric method can we use to re-establish the ceteris paribus?</p></li>
+<li class="fragment"><p>How (can we at all) measure the effects of other factors such as fertilizer application on the yields?</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="how-to-measure-the-effect-of-nitrogen-fertilizer-on-yield" class="slide level2">
+<h2>How to measure the effect of nitrogen fertilizer on yield?</h2>
+<div class="r-stack">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-12-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-13-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="framework-for-interpreting-any-statistical-test" class="slide level2 smaller scrollable">
+<h2>Framework for interpreting any statistical test</h2>
+<p><strong><em>For your reference and information.</em></strong></p>
+<p>The keywords/concepts below are meant to improve the clarity of communication when performing the hypothesis testing. Please use it! They will help make your results understandable for the reader.</p>
+<ol type="1">
+<li><p>Test name and what it is about (t-test about means comparison between two groups).</p></li>
+<li><p><span class="math inline">\(H_0\)</span> and <span class="math inline">\(H_1\)</span>.</p></li>
+<li><p>Estimated parameters (means, coefficients, differences, standard error), <span class="math inline">\(df\)</span> / n observations.</p></li>
+<li><p>Level of significance of the HT. (<span class="math inline">\(\alpha = 0.05\)</span> or 5% level of significance)</p></li>
+<li><p>Rejection rule: <span class="math inline">\(\text{p-value} &lt; \alpha\)</span> or <span class="math inline">\(|t| &lt; c_{df, \, 1 - \alpha /2}\)</span> (statistics vs critical value) or <span class="math inline">\(1 - \alpha\)</span> confidence intervals (95% CI).</p></li>
+<li><p>Conclusions: reject/fail to reject;</p></li>
+<li><p>Implications</p>
+<ul>
+<li><p>what do these conclusions imply for your analysis?</p></li>
+<li><p>(for example. … reject <span class="math inline">\(H_0\)</span>. Thus, the mean “outcome” in the treatment group XX is higher than that in the control group, suggesting about the great success of our intervention …).</p></li>
+</ul></li>
+</ol>
+</section></section>
+<section>
+<section id="very-simple-linear-regression" class="title-slide slide level1 center">
+<h1>(Very) Simple Linear Regression</h1>
+<p>two-variables linear or bi-variate linear regression model.</p>
+<blockquote>
+<p>Explains how <span class="math inline">\(y\)</span> the Dependent variable varies with changes in <span class="math inline">\(x\)</span> the independent variable.</p>
+</blockquote>
+</section>
+<section id="slr-on-population-and-sample" class="slide level2 smaller">
+<h2>SLR on population and sample</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="population-regression-prf">Population regression (PRF)</h3>
+<div class="fragment">
+<blockquote>
+<p>Always unknown</p>
+</blockquote>
+<p><span class="math display">\[y = {\beta}_{0} + {\beta}_{1}x + u\]</span></p>
+<ul>
+<li><span class="math inline">\(y\)</span> - dependent variable</li>
+<li><span class="math inline">\(x\)</span> - independent variable</li>
+<li><span class="math inline">\({\beta}_{0}\)</span> - the true value of the intercept (constant term)</li>
+<li><span class="math inline">\({\beta}_{1}\)</span> - the true value of the slope</li>
+<li><span class="math inline">\(u\)</span> - the true value of the error term or disturbance</li>
+</ul>
+</div>
+</div><div class="column" style="width:50%;">
+<h3 id="estimated-regression">Estimated regression</h3>
+<div class="fragment">
+<blockquote>
+<p>What we learn from the sample of size <span class="math inline">\(n\)</span>, where <span class="math inline">\(i \in {1, 2, \dots, n}\)</span></p>
+</blockquote>
+<p><span class="math display">\[y_i = \hat{\beta}_{0} + \hat{\beta}_{1} x_i + \hat{u_i}\]</span></p>
+<ul>
+<li><span class="math inline">\(y_i\)</span> - dependent variable from <span class="math inline">\(i\)</span> obs. in the sample</li>
+<li><span class="math inline">\(x_i\)</span> - independent variable</li>
+<li><span class="math inline">\(\hat{\beta}_{0}\)</span> - estimated intercept (constant term)</li>
+<li><span class="math inline">\(\hat{\beta}_{1}\)</span> - estimated slope<br>
+</li>
+<li><span class="math inline">\(\hat{u_i}\)</span> - estimated error term or disturbance</li>
+</ul>
+</div>
+</div></div>
+</section>
+<section id="plot-size-and-farmland-prices" class="slide level2">
+<h2>Plot size and farmland prices</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>We simulate a population of <span class="math inline">\(2\times 10^{6}\)</span> agricultural fields. Each field has only two characteristics:</p>
+<ul>
+<li>price of 1 ha of land in in a land plot in Euro</li>
+<li>size of a land plot in ha</li>
+</ul>
+<p>Each field could be different in quality of soil, landscape, accessibility but we assume that <strong>the other things are equal</strong>.</p>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-16-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="footer">
+<p>See <span class="citation" data-cites="Ritter2020">(<a href="#/references" role="doc-biblioref" onclick="">Ritter et al. 2020</a>)</span> for a discussion on the size-price relationship.</p>
+</div>
+</section>
+<section id="regression-line" class="slide level2">
+<h2>Regression Line</h2>
+<div class="r-stack">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-17-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-18-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-19-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-20-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-21-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-22-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-23-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-24-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="regression-line-cont." class="slide level2">
+<h2>Regression Line (cont.)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="r-stack">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-25-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-26-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<p><code>plot_large</code> is a dummy variable also called an “indicator variable”</p>
+</div>
+<div class="r-stack">
+<div class="fragment">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 600 × 4
+    area value plot_size  plot_large
+   &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;           &lt;dbl&gt;
+ 1 3.79  3180. Large plot          1
+ 2 3.01  2920. Large plot          1
+ 3 1.10  1252. Small plot          0
+ 4 1.06  1669. Small plot          0
+ 5 2.23  2656. Small plot          0
+ 6 4.11  3276. Large plot          1
+ 7 3.65  4393. Large plot          1
+ 8 0.705  928. Small plot          0
+ 9 4.30  4179. Large plot          1
+10 1.09  1720. Small plot          0
+11 3.77  3869. Large plot          1
+12 1.85  2655. Small plot          0
+# ℹ 588 more rows</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-28-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-29-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-30-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-31-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="regression-line-cont.-1" class="slide level2">
+<h2>Regression Line (cont.)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-32-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a aria-label="1"></a><span class="fu">t.test</span>(value <span class="sc">~</span> plot_size, plot_pop_dta2)</span>
+<span id="cb2-2"><a aria-label="2"></a><span class="co">#   Welch Two Sample t-test</span></span>
+<span id="cb2-3"><a aria-label="3"></a><span class="co"># data:  value by plot_size</span></span>
+<span id="cb2-4"><a aria-label="4"></a><span class="co"># t = -29.887, df = 594.75, p-value &lt; 2.2e-16</span></span>
+<span id="cb2-5"><a aria-label="5"></a><span class="co"># alternative hypothesis: true difference in means </span></span>
+<span id="cb2-6"><a aria-label="6"></a><span class="co">#    between group Small plot and group Large plot </span></span>
+<span id="cb2-7"><a aria-label="7"></a><span class="co">#    is not equal to 0</span></span>
+<span id="cb2-8"><a aria-label="8"></a><span class="co"># 95 percent confidence interval:</span></span>
+<span id="cb2-9"><a aria-label="9"></a><span class="co">#  -2094.443 -1836.148</span></span>
+<span id="cb2-10"><a aria-label="10"></a><span class="co"># sample estimates:</span></span>
+<span id="cb2-11"><a aria-label="11"></a><span class="co"># mean in group Small plot </span></span>
+<span id="cb2-12"><a aria-label="12"></a><span class="co">#                 1699.595</span></span>
+<span id="cb2-13"><a aria-label="13"></a><span class="co"># mean in group Large plot </span></span>
+<span id="cb2-14"><a aria-label="14"></a><span class="co">#                 3664.890 </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="regression-coefficients" class="slide level2">
+<h2>Regression: Coefficients</h2>
+<p>Regression parameters / coefficient (<span class="math inline">\(\hat{\beta}_0\)</span> and <span class="math inline">\(\hat{\beta}_1\)</span>) are estimated using the <a href="https://en.wikipedia.org/wiki/Ordinary_least_squares">Ordinary Least Squares</a> (OLS) method. These are:</p>
+<div class="fragment">
+<p><strong>The intercept</strong>: (<span class="math inline">\(\hat{\beta}_0\)</span>)</p>
+<ul>
+<li>is the value of <span class="math inline">\(\hat{y}\)</span>, when all regressors (<span class="math inline">\(x\)</span>) are zero.</li>
+</ul>
+</div>
+<div class="fragment">
+<p><strong>The slope</strong>: (<span class="math inline">\(\hat{\beta}_1\)</span>)</p>
+<ul>
+<li>change in the <strong>expected value of</strong> <span class="math inline">\(\hat{y}\)</span> (in units of <span class="math inline">\(y\)</span>), when <span class="math inline">\(x\)</span> <strong>increases by one unit</strong>.</li>
+</ul>
+</div>
+</section>
+<section id="regression-coefficients-interpretation" class="slide level2">
+<h2>Regression: Coefficients interpretation</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell" data-fig-heigts="6">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-34-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:60%;">
+<p>In the example of land price, where <span class="math inline">\(\hat{\beta_0} = 656.15\)</span> and <span class="math inline">\(\hat{\beta_1} = 810.95\)</span>:</p>
+<div class="fragment">
+<p>Intercept:</p>
+<ul>
+<li>On average, starting price of a land plot with near to zero size is 656.15 Euros per ha.</li>
+</ul>
+</div>
+<div class="fragment">
+<p>Slope:</p>
+<ul>
+<li>The <strong>expected price of 1 ha of land</strong> increases by 810.95 Euros when the plot size increases by 1 HA</li>
+</ul>
+</div>
+</div></div>
+</section>
+<section id="regression-ols-algorithm" class="slide level2 smaller">
+<h2>Regression: OLS Algorithm</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="r-stack">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-37-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment" data-fragment-index="1">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-38-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment" data-fragment-index="2">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-39-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment" data-fragment-index="3">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-40-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="fragment" data-fragment-index="1">
+<p>1 Proposes <span class="math inline">\(\hat{\beta_0}\)</span> and <span class="math inline">\(\hat{\beta_1}\)</span> so that actual values are: <span class="math inline">\(y_i = \hat{\beta}_0 + \hat{\beta}_1 \cdot x_i + \hat{u}_i\)</span></p>
+</div>
+<div class="fragment" data-fragment-index="2">
+<p>2 Computes <strong>fitted values</strong> (<span class="math inline">\(\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 \cdot x_i\)</span>) and <strong>residuals</strong> (<span class="math inline">\(\hat{u}_i = y_i - \hat{y}_i\)</span>).</p>
+</div>
+<div class="fragment" data-fragment-index="4">
+<p>3 Computes <strong>squared residuals</strong> and the sum of it <span class="math inline">\(\sum \hat{u}^2\)</span></p>
+</div>
+<div class="fragment" data-fragment-index="5">
+<p>4 Repeats 1-3 with new estimates of <span class="math inline">\(\hat{\beta_0}\)</span> and <span class="math inline">\(\hat{\beta_1}\)</span>;</p>
+</div>
+<div class="fragment" data-fragment-index="5">
+<p>5 Compare new <strong>sum of squared residuals</strong> <span class="math inline">\(\sum \hat{u}\)</span> to the previous one.</p>
+</div>
+<div class="fragment" data-fragment-index="6">
+<p>6 Repeats 4-5 to minimize <strong>sum of squared residuals</strong> until it no longer reduces.</p>
+</div>
+<div class="fragment" data-fragment-index="7">
+<p>7 Estimates of <span class="math inline">\(\hat{\beta_0} = 656.15\)</span> and <span class="math inline">\(\hat{\beta_1} = 810.95\)</span> are values, where sum of squared residuals are minimal (<span class="math inline">\(\sum \hat{u}^2 = 530,480,825,704.7\)</span>).</p>
+</div>
+</div></div>
+</section>
+<section id="population-regression-function-and-random-sampling" class="slide level2">
+<h2>Population Regression Function and Random sampling</h2>
+<ul>
+<li class="fragment"><p><strong>we never have the entire population</strong></p></li>
+<li class="fragment"><p>instead, <strong>we can only derive (random) samples</strong></p></li>
+<li class="fragment"><p>Therefore, absolute estimates of the population’s parameters (slope and intercept) are insufficient.</p>
+<ul>
+<li class="fragment"><p>We need to perform …</p></li>
+<li class="fragment"><p>Hypothesis testing!</p></li>
+</ul></li>
+</ul>
+<div class="fragment">
+<p>To illustrate this, let us follow-up on the simulated population and derive <strong>6 random samples</strong> of <strong>9 observations</strong> in each sample.</p>
+</div>
+</section>
+<section id="sample-variation" class="slide level2 smaller">
+<h2>Sample variation</h2>
+<p><strong>population regression line is in red</strong> and <strong>estimated regression line is in blue</strong></p>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-42-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="regression-inference" class="slide level2 smaller">
+<h2>Regression: Inference</h2>
+<div class="columns">
+<div class="column" style="width:70%;">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" data-code-line-numbers="4-6,10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-label="1"></a>fit0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(value <span class="sc">~</span> area, land_pop)</span>
+<span id="cb3-2"><a aria-label="2"></a><span class="fu">summary</span>(fit0)</span>
+<span id="cb3-3"><a aria-label="3"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb3-4"><a aria-label="4"></a><span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb3-5"><a aria-label="5"></a><span class="co">#&gt; (Intercept) 656.4388     0.7503   874.9   &lt;2e-16 ***</span></span>
+<span id="cb3-6"><a aria-label="6"></a><span class="co">#&gt; area        810.8136     0.2574  3150.0   &lt;2e-16 ***</span></span>
+<span id="cb3-7"><a aria-label="7"></a><span class="co">#&gt; ---</span></span>
+<span id="cb3-8"><a aria-label="8"></a><span class="co">#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span></span>
+<span id="cb3-9"><a aria-label="9"></a><span class="co">#&gt; </span></span>
+<span id="cb3-10"><a aria-label="10"></a><span class="co">#&gt; Residual standard error: 515 on 1999998 degrees of freedom</span></span>
+<span id="cb3-11"><a aria-label="11"></a><span class="co">#&gt; Multiple R-squared:  0.8322, Adjusted R-squared:  0.8322 </span></span>
+<span id="cb3-12"><a aria-label="12"></a><span class="co">#&gt; F-statistic: 9.922e+06 on 1 and 1999998 DF,  p-value: &lt; 2.2e-16</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div><div class="column" style="width:30%;">
+<p><span class="math inline">\(H_0:\beta = 0\)</span></p>
+<p><span class="math inline">\(H_1:\beta \neq 0\)</span></p>
+<div class="fragment">
+<p><span class="math inline">\(t = {\hat{\beta}}/{se_{\hat\beta}}\)</span></p>
+</div>
+<div class="fragment">
+<p><span class="math inline">\(t^* = c_{df, \, 1 - \alpha /2}\)</span></p>
+</div>
+</div></div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="fragment">
+<p><span class="math inline">\(df = n - k\)</span> with <span class="math inline">\(n\)</span> number of observations and <span class="math inline">\(k\)</span> number of regressors <span class="math inline">\(k = 2\)</span> (one for the intercept and one the slope).</p>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<ul>
+<li><p>Reject <span class="math inline">\(H_0\)</span>, when</p>
+<ul>
+<li><p><span class="math inline">\(|t| &gt; t^*\)</span>, or</p></li>
+<li><p><span class="math inline">\(\text{p-value} &lt; 0.05\)</span>, or</p></li>
+<li><p><span class="math inline">\({\hat{\beta}}/{se_{\hat\beta}} &gt; 2\)</span> (rule of thumb).</p></li>
+</ul></li>
+<li><p>Fail to reject <span class="math inline">\(H_0\)</span> otherwise.</p></li>
+</ul>
+</div>
+</div></div>
+</section>
+<section id="regression-goodness-of-fit" class="slide level2 smaller">
+<h2>Regression: Goodness of Fit</h2>
+<div class="columns">
+<div class="column" style="width:70%;">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" data-code-line-numbers="11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a aria-label="1"></a>fit0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(value <span class="sc">~</span> area, land_pop)</span>
+<span id="cb4-2"><a aria-label="2"></a><span class="fu">summary</span>(fit0)</span>
+<span id="cb4-3"><a aria-label="3"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb4-4"><a aria-label="4"></a><span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb4-5"><a aria-label="5"></a><span class="co">#&gt; (Intercept) 656.4388     0.7503   874.9   &lt;2e-16 ***</span></span>
+<span id="cb4-6"><a aria-label="6"></a><span class="co">#&gt; area        810.8136     0.2574  3150.0   &lt;2e-16 ***</span></span>
+<span id="cb4-7"><a aria-label="7"></a><span class="co">#&gt; ---</span></span>
+<span id="cb4-8"><a aria-label="8"></a><span class="co">#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span></span>
+<span id="cb4-9"><a aria-label="9"></a><span class="co">#&gt; </span></span>
+<span id="cb4-10"><a aria-label="10"></a><span class="co">#&gt; Residual standard error: 515 on 1999998 degrees of freedom</span></span>
+<span id="cb4-11"><a aria-label="11"></a><span class="co">#&gt; Multiple R-squared:  0.8322, Adjusted R-squared:  0.8322 </span></span>
+<span id="cb4-12"><a aria-label="12"></a><span class="co">#&gt; F-statistic: 9.922e+06 on 1 and 1999998 DF,  p-value: &lt; 2.2e-16</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div><div class="column" style="width:30%;">
+<p>Explanatory power of the model:</p>
+<ul>
+<li>R-squared</li>
+</ul>
+</div></div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="fragment">
+<p>R-squared: measures the fraction of variance in the dependent variable that is explained by the independent variable.</p>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<p>Adjusted R-squared: accounts for the number of independent variables, usually decreasing compared to the R-squared, when we add irrelevant independent variables.</p>
+</div>
+</div></div>
+</section>
+<section id="key-takaway-concepts" class="slide level2">
+<h2>Key Takaway concepts</h2>
+<ul>
+<li><p>Regression coefficients: an intercept and a slope</p></li>
+<li><p>Interpretation of the regression coefficients</p></li>
+<li><p>Statistical inference about the regression coefficients</p></li>
+<li><p>Fitted (predicted) values</p></li>
+<li><p>Error terms</p></li>
+<li><p>Adjusted R squared.</p></li>
+</ul>
+</section></section>
+<section>
+<section id="self-study-simple-linear-regression-examples" class="title-slide slide level1 center">
+<h1>Self-study: Simple Linear Regression Examples</h1>
+<p>Review examples below at home:</p>
+<ul>
+<li>Discuss how would you interpret the coefficients?</li>
+</ul>
+</section>
+<section id="example-1" class="slide level2 smaller">
+<h2>Example 1</h2>
+
+<img data-src="img/ex1-slr-pic-1.png" style="width:100.0%" class="r-stretch"><p>Comment on (1) what relationship is measured by this regression? (2) what are the interpretations of the coefficients?</p>
+<ul>
+<li class="fragment"><p><span class="math inline">\(\beta_0\)</span> indicates the <strong>expected level</strong> of <span class="math inline">\(yield\)</span> (in the units of <span class="math inline">\(yield\)</span> ) given <strong>zero</strong> level of <span class="math inline">\(fertilizer\)</span> application given that other things (rainfall, land quality, etc.)</p></li>
+<li class="fragment"><p><span class="math inline">\(\beta_1\)</span> indicates the <strong>expected change</strong> in <span class="math inline">\(yield\)</span> (in the units of <span class="math inline">\(yield\)</span> ) given <strong>one unit change</strong> (usually increase, but not always) in <span class="math inline">\(fertilizer\)</span> application given that other factors remain fixed (rainfall, land quality, etc.)</p></li>
+</ul>
+<div class="footer">
+<p>Source: <span class="citation" data-cites="wooldridge2020introductory">(<a href="#/references" role="doc-biblioref" onclick="">Wooldridge 2020</a>)</span></p>
+</div>
+</section>
+<section id="example-2" class="slide level2">
+<h2>Example 2</h2>
+
+<img data-src="img/ex1-slr-pic-2.png" style="width:100.0%" class="r-stretch"><p>Interpret the slope:</p>
+<ul>
+<li class="fragment">With the one year increase in education, average hourly wage increases / (decreases) by <span class="math inline">\(\beta_1\)</span>.</li>
+</ul>
+</section>
+<section id="example-3-ozone-o3-in-stratosphere" class="slide level2 smaller">
+<h2>Example 3 Ozone <span class="math inline">\(O^3\)</span> in stratosphere</h2>
+<p>The goal of this example is to show that simple linear regression could be used for exposing trends and showing how those trends change significantly after the introduction of a new policy.</p>
+<ul>
+<li class="fragment">Ozone <span class="math inline">\(O^3\)</span> - forms in the stratosphere from oxygen under influence of ultraviolet radiation;</li>
+<li class="fragment">The amount of ozone in the atmosphere is very small;</li>
+<li class="fragment">Ozone absorbs most of the ultraviolet radiation from the sun;</li>
+<li class="fragment">Ozone holes expose humanity to solar radiation.</li>
+</ul>
+</section>
+<section id="background" class="slide level2 smaller">
+<h2>Background</h2>
+<ul>
+<li class="fragment"><p>In 1971, <a href="https://en.wikipedia.org/wiki/James_Lovelock">James Lovelock</a> had discovered a new compound in the earth’s atmosphere, trichlorofluoromethane, a chlorofluorocarbon (CFC). See: <span class="citation" data-cites="Lovelock1971">(<a href="#/references" role="doc-biblioref" onclick="">Lovelock 1971</a>)</span></p></li>
+<li class="fragment"><p>In 1974 <a href="https://en.wikipedia.org/wiki/F._Sherwood_Rowland">Sherwood Rowland</a> and <a href="https://en.wikipedia.org/wiki/Mario_Molina">Mario Molina</a> <span class="citation" data-cites="Molina1974">(<a href="#/references" role="doc-biblioref" onclick="">Molina and Rowland 1974</a>)</span> discovered the mechanism how CFC gases damage the ozone layer by photolysis. (In 1995 together with <a href="https://en.wikipedia.org/wiki/Paul_J._Crutzen">Paul Crutzen</a> they were awarded a 1995 Nobel Prize in Chemistry)</p></li>
+<li class="fragment"><p>In 1987, <a href="https://www.unep.org/ozonaction/who-we-are/about-montreal-protocol">The Montreal Protocol</a> was accepted by 191 countries aiming to reduce the levels of ozone depleting substances (ODSs) in the atmosphere.</p></li>
+<li class="fragment"><p>It took humanity only 14 years to bridge scientific finding with the global policy.</p></li>
+</ul>
+<div class="footer">
+<p>Data source: <a href="https://gml.noaa.gov/aftp/data/hats/cfcs/cfc11/combined/HATS_global_F11.txt">gml.noaa.gov</a></p>
+</div>
+</section>
+<section id="the-problem" class="slide level2">
+<h2>The problem:</h2>
+<p>Let us establish a causal effect between the Montreal Protocol and the global CFC-11 emissions/concentration.</p>
+</section>
+<section id="cfc-11-content-in-the-atmosphere" class="slide level2">
+<h2>CFC-11 content in the atmosphere</h2>
+
+<img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-46-1.png" style="width:100.0%" class="r-stretch"></section>
+<section id="to-establish-a-causal-relationship" class="slide level2">
+<h2>To establish a causal relationship,</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>we can:</p>
+<ul>
+<li class="fragment"><p>split data into <strong>Before</strong> and <strong>After</strong> The Montreal Protocol;</p></li>
+<li class="fragment"><p>fit two separate simple regressions: <span class="math inline">\(\text{CFC-11} = \hat \beta_0 + \hat \beta_1 \cdot \text{year} + \hat u\)</span></p></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<h3 id="why-ceteris-paribus-is-satisfied-here">Why Ceteris Paribus is satisfied here?</h3>
+<div class="fragment">
+<ul>
+<li class="fragment"><p>There are no other factors which could have affected the CFC-11 emissions but the Montreal Protocol.</p></li>
+<li class="fragment"><p>Technology change, although endogenous, has forced to reduce CFC-11 emissions due to the Protocol.</p></li>
+</ul>
+</div>
+</div></div>
+</section>
+<section id="cfc-11-content-over-time-monthly-averages" class="slide level2">
+<h2>CFC-11 content over time (Monthly averages)</h2>
+
+<img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-47-1.png" style="width:100.0%" class="r-stretch"></section>
+<section id="results-of-the-slr-1-coefficients-values" class="slide level2">
+<h2>Results of the SLR (1): Coefficients values</h2>
+
+<img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-48-1.png" style="width:100.0%" class="r-stretch"></section>
+<section id="results-of-the-simple-regression-2" class="slide level2">
+<h2>Results of the simple regression (2)</h2>
+
+<img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-49-1.png" style="width:100.0%" class="r-stretch"></section></section>
+<section>
+<section id="multiple-regression" class="title-slide slide level1 center">
+<h1>Multiple regression</h1>
+<ul>
+<li><p>Watch: Selection Bias: <a href="https://youtu.be/6YrIDhaUQOE" class="uri">https://youtu.be/6YrIDhaUQOE</a></p></li>
+<li><p>Readings for your reference:</p>
+<ul>
+<li>Chapter 2 in <span class="citation" data-cites="Angrist2014">Angrist and Pischke (<a href="#/references" role="doc-biblioref" onclick="">2014</a>)</span></li>
+<li>Chapter 3 in <span class="citation" data-cites="Angrist2009">Angrist and Pischke (<a href="#/references" role="doc-biblioref" onclick="">2009</a>)</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="multiple-linear-regression-vocabulary" class="slide level2">
+<h2>Multiple Linear Regression vocabulary</h2>
+<p>Regression equation:</p>
+<p><span class="math display">\[y = \hat {\beta}_{0} + \hat {\beta}_{1}x_1 + \hat {\beta}_{2}x_2 + \hat {\beta}_{3}x_3 + \cdots + \hat {\beta}_{k}x_k + \hat u\]</span></p>
+<ul>
+<li class="fragment"><p><span class="math inline">\(y\)</span> the dependent variable;</p></li>
+<li class="fragment"><p><span class="math inline">\(x_1, x_2, x_3, \cdots x_k\)</span> the independent variables from the set <span class="math inline">\(k\)</span>;</p></li>
+<li class="fragment"><p><span class="math inline">\(\hat {\beta}_{0}\)</span> - intercept (constant term);</p></li>
+<li class="fragment"><p><span class="math inline">\(\hat {\beta}_{1}\)</span>, <span class="math inline">\(\hat {\beta}_{2}\)</span>, <span class="math inline">\(\hat {\beta}_{k}\)</span> - coefficients / parameters associated with <span class="math inline">\(x_1\)</span>, <span class="math inline">\(x_2\)</span>, … <span class="math inline">\(x_k\)</span>;</p></li>
+</ul>
+</section>
+<section id="multiple-linear-regression-vocabulary-cont." class="slide level2">
+<h2>Multiple Linear Regression vocabulary (cont.)</h2>
+<p>After we estimate the regression equation and obtain our estimates <span class="math inline">\(\hat {\beta}_{0}, \hat {\beta}_{1}, \hat {\beta}_{2}, \cdots, \hat {\beta}_{k}\)</span> we can calculate:</p>
+<div class="fragment">
+<p><span class="math inline">\(\hat y\)</span> fitted of predicted value or the dependent variable and <span class="math inline">\(\hat u\)</span> error terms</p>
+</div>
+<div class="fragment">
+<p><span class="math display">\[\hat y = \hat {\beta}_{0} + \hat {\beta}_{1}x_1 + \hat {\beta}_{2}x_2 + \hat {\beta}_{3}x_3 + \cdots + \hat {\beta}_{k}x_k\]</span></p>
+</div>
+<div class="fragment">
+<p><span class="math display">\[\hat u = y - \hat y\]</span></p>
+</div>
+</section>
+<section id="motivation-befind-mlr" class="slide level2">
+<h2>Motivation befind MLR</h2>
+<ul>
+<li class="fragment"><p>To incorporate more explanatory factors into a model;</p></li>
+<li class="fragment"><p>Explicitly hold fixed (some) other factors;</p></li>
+<li class="fragment"><p>Allow for more flexible functional forms;</p></li>
+<li class="fragment"><p>To correct the selection bias problem in the absence of (poor quality of) the RCT;</p></li>
+<li class="fragment"><p>To establish the ceteris paribus in observational data;</p></li>
+</ul>
+</section>
+<section id="interpretation" class="slide level2">
+<h2>Interpretation</h2>
+<ul>
+<li>The multiple linear regression shows the effect of each variable, holding other explanatory variables fixed;</li>
+</ul>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-51-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>We assume that all unobserved factors do not change if the explanatory variables are changed.</strong></p>
+</div>
+<div class="callout-content">
+
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="example-1.-wage-equation" class="slide level2">
+<h2>Example 1. Wage equation</h2>
+
+<img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-52-1.png" style="width:100.0%" class="r-stretch"></section>
+<section id="example-2.-average-test-scores-and-spending" class="slide level2">
+<h2>Example 2. Average test scores and spending</h2>
+
+<img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-53-1.png" style="width:100.0%" class="r-stretch"></section>
+<section id="example-3.-ceo-salary-sales-and-ceo-tenure" class="slide level2">
+<h2>Example 3. CEO salary, sales and CEO tenure</h2>
+
+<img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-54-1.png" style="width:100.0%" class="r-stretch"><ul>
+<li class="fragment"><p>Model assumes a constant elasticity relationship between CEO salary and the sales of his or her firm.</p></li>
+<li class="fragment"><p>Model assumes a quadratic relationship between CEO salary and his or her tenure with the firm.</p></li>
+</ul>
+</section>
+<section id="mechanics" class="slide level2 scrollable">
+<h2>Mechanics</h2>
+<p><span class="math display">\[y = \hat {\beta}_{0} + \hat {\beta}_{1}x_1 + \hat {\beta}_{2}x_2 + \hat {\beta}_{3}x_3 + \cdots + \hat {\beta}_{k}x_k + \hat u\]</span></p>
+<ol type="1">
+<li class="fragment"><p>MLR uses the Ordinary Least Squares (OLS) method to <strong>estimate regression parameters</strong> <span class="math inline">\(\beta\)</span>.</p>
+<ul>
+<li class="fragment">Such parameters <span class="math inline">\(\beta\)</span> are found that the sum of squared errors is minimal.</li>
+</ul></li>
+<li class="fragment"><p>As any estimate of <span class="math inline">\(\beta\)</span> is based on a sample, we need to relay on the <strong>inference</strong> to test a hypothesis about the true coefficients in the population.</p></li>
+</ol>
+</section></section>
+<section>
+<section id="example-mlr-1.-effect-of-fuel-taxes-on-petrol-consumption" class="title-slide slide level1 center">
+<h1>Example MLR (1). Effect of fuel taxes on petrol consumption</h1>
+<p>We use data on motor fuel consumption and related variables, for the year 2001. Each observation represents a state in the United States. (based on the data from <span class="citation" data-cites="weisberg2005a">Weisberg (<a href="#/references" role="doc-biblioref" onclick="">2005</a>)</span>). Variables are:</p>
+<ul>
+<li><span class="math inline">\(Tax\)</span> : Gasoline state tax rate, cents per liter</li>
+<li><span class="math inline">\(Dlic\)</span> : The number of licensed drivers per 1000 population over the age of 16;</li>
+<li><span class="math inline">\(Income\)</span> : in 1000 USD Per capita personal income (year 2000)</li>
+<li><span class="math inline">\(Miles\)</span> : Miles of Federal-aid highway miles in the state</li>
+<li><span class="math inline">\(Fuel\)</span> : Gasoline consumption per capita (liter)</li>
+</ul>
+</section>
+<section id="problem-formulation" class="slide level2 smaller">
+<h2>1. Problem formulation</h2>
+<p>How do fuel taxes affect gasoline consumption?:</p>
+<div class="fragment">
+<h3 id="regression-model-and-hypothesis">2. Regression model and hypothesis</h3>
+<p>Write a regression equation:</p>
+<div class="fragment">
+<p><span class="math display">\[Fuel = \hat\beta_0 + \hat\beta_1  Tax + \hat\beta_2  Dlic + \hat\beta_3 Income + \hat\beta_4  Miles + \hat{u}\]</span></p>
+</div>
+<p>Discuss, what effects can we expect from change in each variable <span class="math inline">\(x\)</span> on <span class="math inline">\(y\)</span>?</p>
+<div class="fragment">
+<p>Hypotheses:</p>
+<ul>
+<li><span class="math inline">\(\hat\beta_0\)</span> <span class="fragment"><span class="math inline">\(&gt;0\)</span> because on average some consumption should occur</span></li>
+<li><span class="math inline">\(\hat\beta_1\)</span> <span class="fragment"><span class="math inline">\(&lt;0\)</span> taxes make flue more expensive leading people to consume less</span></li>
+<li><span class="math inline">\(\hat\beta_2\)</span> <span class="fragment"><span class="math inline">\(&gt;0\)</span> more people with driving licences increase consumption of flue</span></li>
+<li><span class="math inline">\(\hat\beta_3\)</span> <span class="fragment"><span class="math inline">\(&gt;0\)</span> higher income relaxes budget constraints allowing to drive more</span></li>
+<li><span class="math inline">\(\hat\beta_4\)</span> <span class="fragment"><span class="math inline">\(&gt;0\)</span> a larger road network makes people drive more</span></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="exploratory-data-analysis-1" class="slide level2 smaller">
+<h2>Exploratory data analysis (1)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">rowname</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">median</th>
+<th style="text-align: right;">skew</th>
+<th style="text-align: right;">kurtosis</th>
+<th style="text-align: right;">se</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Tax</td>
+<td style="text-align: right;">20.15</td>
+<td style="text-align: right;">4.54</td>
+<td style="text-align: right;">20.00</td>
+<td style="text-align: right;">-0.67</td>
+<td style="text-align: right;">0.55</td>
+<td style="text-align: right;">0.64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dlic</td>
+<td style="text-align: right;">903.68</td>
+<td style="text-align: right;">72.86</td>
+<td style="text-align: right;">909.07</td>
+<td style="text-align: right;">-0.30</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">10.20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Income</td>
+<td style="text-align: right;">28.40</td>
+<td style="text-align: right;">4.45</td>
+<td style="text-align: right;">27.87</td>
+<td style="text-align: right;">0.62</td>
+<td style="text-align: right;">-0.04</td>
+<td style="text-align: right;">0.62</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">logMiles</td>
+<td style="text-align: right;">10.91</td>
+<td style="text-align: right;">1.03</td>
+<td style="text-align: right;">11.28</td>
+<td style="text-align: right;">-1.43</td>
+<td style="text-align: right;">1.92</td>
+<td style="text-align: right;">0.14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fuel</td>
+<td style="text-align: right;">613.13</td>
+<td style="text-align: right;">88.96</td>
+<td style="text-align: right;">626.02</td>
+<td style="text-align: right;">-0.88</td>
+<td style="text-align: right;">2.09</td>
+<td style="text-align: right;">12.46</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Variable of interest:</strong> <code>Tax</code>.</p>
+<p><strong>Outcome variable:</strong> <code>Fule</code>.</p>
+<div class="callout callout-note callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>What kind of relationship exists between Tax and Fuel?</strong></p>
+</div>
+<div class="callout-content">
+
+</div>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-57-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="exploratory-data-analysis-2" class="slide level2">
+<h2>Exploratory data analysis (2)</h2>
+<h3 id="what-kind-of-relationship-exists-between-tax-and-fuel-1">What kind of relationship exists between Tax and Fuel?</h3>
+<div class="r-stack">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-58-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-59-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="estimating-a-simple-linear-reg." class="slide level2 smaller">
+<h2>4. Estimating a Simple Linear Reg.</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" data-code-line-numbers="1,2,5-8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a aria-label="1"></a>fit_fule_0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Fuel <span class="sc">~</span>  Tax, fule_cons)</span>
+<span id="cb5-2"><a aria-label="2"></a><span class="fu">summary</span>(fit_fule_0)</span>
+<span id="cb5-3"><a aria-label="3"></a><span class="co"># Coefficients:</span></span>
+<span id="cb5-4"><a aria-label="4"></a><span class="co">#             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb5-5"><a aria-label="5"></a><span class="co"># (Intercept)  715.485     55.770  12.829   &lt;2e-16 ***</span></span>
+<span id="cb5-6"><a aria-label="6"></a><span class="co"># Tax           -5.078      2.701  -1.881    0.066 .  </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<h3 id="what-does-it-show">What does it show?</h3>
+<ul>
+<li class="fragment">The estaimted effect of taxes is -5.1.
+<ul>
+<li class="fragment">A unit change in tax level (1 cent increase in taxes per liter)</li>
+<li class="fragment"><strong>reduces</strong> fuel consumption by 5.1 liters per person</li>
+<li class="fragment">assuming all other factors are fixed.</li>
+</ul></li>
+<li class="fragment">However, p-value &gt; 0.05. The same effect of taxes may not hold for the population.</li>
+<li class="fragment">Is this the true <strong>causal effect</strong>? Is there the Ceteris Paribus?</li>
+<li class="fragment">NO! We do not control for other things!</li>
+</ul>
+</section>
+<section id="estimating-the-multiple-linear-regression" class="slide level2 smaller">
+<h2>4. Estimating the Multiple Linear Regression</h2>
+<p>Multiple linear regression helps to reveal the true causal effect of <code>Tax</code> by</p>
+<ul>
+<li><p>controlling all other things</p></li>
+<li><p>making them equal when the tax changes by one unit</p></li>
+</ul>
+<div class="fragment">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" data-code-line-numbers="1,2,5-6,8-9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a aria-label="1"></a>fit_fule_1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Fuel <span class="sc">~</span>  Tax <span class="sc">+</span> Dlic <span class="sc">+</span> Income <span class="sc">+</span> logMiles, fule_cons)</span>
+<span id="cb6-2"><a aria-label="2"></a><span class="fu">summary</span>(fit_fule_1)</span>
+<span id="cb6-3"><a aria-label="3"></a><span class="co"># Coefficients:</span></span>
+<span id="cb6-4"><a aria-label="4"></a><span class="co">#             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb6-5"><a aria-label="5"></a><span class="co"># (Intercept) 154.1928   194.9062   0.791 0.432938    </span></span>
+<span id="cb6-6"><a aria-label="6"></a><span class="co"># Tax          -4.2280     2.0301  -2.083 0.042873 *  </span></span>
+<span id="cb6-7"><a aria-label="7"></a><span class="co"># Dlic          0.4719     0.1285   3.672 0.000626 ***</span></span>
+<span id="cb6-8"><a aria-label="8"></a><span class="co"># Income       -6.1353     2.1936  -2.797 0.007508 ** </span></span>
+<span id="cb6-9"><a aria-label="9"></a><span class="co"># logMiles     26.7552     9.3374   2.865 0.006259 ** </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="inspecting-and-interpreting-the-results" class="slide level2">
+<h2>6. Inspecting and interpreting the results</h2>
+<p>Here we need to:</p>
+<ul>
+<li><p>perform the HT about estimated coefficients;</p></li>
+<li><p>interpretation of their economic meaning;</p></li>
+<li><p>compare estimates with ex-ante expectations.</p></li>
+</ul>
+</section>
+<section id="the-intercept" class="slide level2 smaller">
+<h2>The Intercept</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" data-code-line-numbers="1,2,5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a aria-label="1"></a>fit_fule_1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Fuel <span class="sc">~</span>  Tax <span class="sc">+</span> Dlic <span class="sc">+</span> Income <span class="sc">+</span> logMiles, fule_cons)</span>
+<span id="cb7-2"><a aria-label="2"></a><span class="fu">summary</span>(fit_fule_1)</span>
+<span id="cb7-3"><a aria-label="3"></a><span class="co"># Coefficients:</span></span>
+<span id="cb7-4"><a aria-label="4"></a><span class="co">#             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb7-5"><a aria-label="5"></a><span class="co"># (Intercept) 154.1928   194.9062   0.791 0.432938    </span></span>
+<span id="cb7-6"><a aria-label="6"></a><span class="co"># Tax          -4.2280     2.0301  -2.083 0.042873 *  </span></span>
+<span id="cb7-7"><a aria-label="7"></a><span class="co"># Dlic          0.4719     0.1285   3.672 0.000626 ***</span></span>
+<span id="cb7-8"><a aria-label="8"></a><span class="co"># Income       -6.1353     2.1936  -2.797 0.007508 ** </span></span>
+<span id="cb7-9"><a aria-label="9"></a><span class="co"># logMiles     26.7552     9.3374   2.865 0.006259 **</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li class="fragment"><p>Positive but insignificant at the 5% level. (p-value = 0.432).</p></li>
+<li class="fragment"><p>Contradicts our ex-ante hypothesis about some basic level of fuel consumption;</p></li>
+<li class="fragment"><p>Suggests that the absence of a road network could drive fuel consumption to zero.</p></li>
+</ul>
+</section>
+<section id="the-slope-of-taxes" class="slide level2 smaller">
+<h2>The Slope of Taxes</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" data-code-line-numbers="1,2,6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a aria-label="1"></a>fit_fule_1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Fuel <span class="sc">~</span>  Tax <span class="sc">+</span> Dlic <span class="sc">+</span> Income <span class="sc">+</span> logMiles, fule_cons)</span>
+<span id="cb8-2"><a aria-label="2"></a><span class="fu">summary</span>(fit_fule_1)</span>
+<span id="cb8-3"><a aria-label="3"></a><span class="co"># Coefficients:</span></span>
+<span id="cb8-4"><a aria-label="4"></a><span class="co">#             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb8-5"><a aria-label="5"></a><span class="co"># (Intercept) 154.1928   194.9062   0.791 0.432938    </span></span>
+<span id="cb8-6"><a aria-label="6"></a><span class="co"># Tax          -4.2280     2.0301  -2.083 0.042873 *  </span></span>
+<span id="cb8-7"><a aria-label="7"></a><span class="co"># Dlic          0.4719     0.1285   3.672 0.000626 ***</span></span>
+<span id="cb8-8"><a aria-label="8"></a><span class="co"># Income       -6.1353     2.1936  -2.797 0.007508 ** </span></span>
+<span id="cb8-9"><a aria-label="9"></a><span class="co"># logMiles     26.7552     9.3374   2.865 0.006259 **</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li class="fragment"><p>Negative and significant at the 5% level (p-value = 0.043).</p></li>
+<li class="fragment"><p>One cent increase in taxes per liter causes flue consumption to reduce by -4.2 liter per capita, given that all other factors remain fixed.</p>
+<ul>
+<li class="fragment">Note: <span class="math inline">\(Tax\)</span> Gasoline state tax rate, cents per liter and <span class="math inline">\(Fuel\)</span> Gasoline consumption per capita (liter)</li>
+</ul></li>
+<li class="fragment"><p>This is in line with our ex-ante hypothesis.</p></li>
+</ul>
+</section>
+<section id="the-slope-of-income" class="slide level2 smaller">
+<h2>The Slope of Income</h2>
+<p>Note: <span class="math inline">\(Income\)</span> in 1000 USD Per capita personal income (the year 2000)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9" data-code-line-numbers="1,2,8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a aria-label="1"></a>fit_fule_1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Fuel <span class="sc">~</span>  Tax <span class="sc">+</span> Dlic <span class="sc">+</span> Income <span class="sc">+</span> logMiles, fule_cons)</span>
+<span id="cb9-2"><a aria-label="2"></a><span class="fu">summary</span>(fit_fule_1)</span>
+<span id="cb9-3"><a aria-label="3"></a><span class="co"># Coefficients:</span></span>
+<span id="cb9-4"><a aria-label="4"></a><span class="co">#             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb9-5"><a aria-label="5"></a><span class="co"># (Intercept) 154.1928   194.9062   0.791 0.432938    </span></span>
+<span id="cb9-6"><a aria-label="6"></a><span class="co"># Tax          -4.2280     2.0301  -2.083 0.042873 *  </span></span>
+<span id="cb9-7"><a aria-label="7"></a><span class="co"># Dlic          0.4719     0.1285   3.672 0.000626 ***</span></span>
+<span id="cb9-8"><a aria-label="8"></a><span class="co"># Income       -6.1353     2.1936  -2.797 0.007508 ** </span></span>
+<span id="cb9-9"><a aria-label="9"></a><span class="co"># logMiles     26.7552     9.3374   2.865 0.006259 ** </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li class="fragment"><p>Negative and significant at the 5% level (p-value = 0.043).</p></li>
+<li class="fragment"><p>An increase in income by 1000 USD per person causes fuel consumption to reduce by -6.1 liter per capita, ceteris paribus.</p></li>
+<li class="fragment"><p>This contradicts our ex-ante hypothesis. Why?</p></li>
+</ul>
+</section>
+<section id="the-slope-of-logmiles" class="slide level2 smaller">
+<h2>The Slope of logMiles</h2>
+<p>Note: <span class="math inline">\(logMiles\)</span> is the logarithm of miles. Interpretation differs because this is a level-log transformation</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" data-code-line-numbers="1,2,9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-label="1"></a>fit_fule_1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Fuel <span class="sc">~</span>  Tax <span class="sc">+</span> Dlic <span class="sc">+</span> Income <span class="sc">+</span> logMiles, fule_cons)</span>
+<span id="cb10-2"><a aria-label="2"></a><span class="fu">summary</span>(fit_fule_1)</span>
+<span id="cb10-3"><a aria-label="3"></a><span class="co"># Coefficients:</span></span>
+<span id="cb10-4"><a aria-label="4"></a><span class="co">#             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
+<span id="cb10-5"><a aria-label="5"></a><span class="co"># (Intercept) 154.1928   194.9062   0.791 0.432938    </span></span>
+<span id="cb10-6"><a aria-label="6"></a><span class="co"># Tax          -4.2280     2.0301  -2.083 0.042873 *  </span></span>
+<span id="cb10-7"><a aria-label="7"></a><span class="co"># Dlic          0.4719     0.1285   3.672 0.000626 ***</span></span>
+<span id="cb10-8"><a aria-label="8"></a><span class="co"># Income       -6.1353     2.1936  -2.797 0.007508 ** </span></span>
+<span id="cb10-9"><a aria-label="9"></a><span class="co"># logMiles     26.7552     9.3374   2.865 0.006259 ** </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li class="fragment"><p>Positive and significant at the 5% level (p-value = 0.043).</p></li>
+<li class="fragment"><p>An increase in road network by 1% causes fuel consumption to increase by 26.7/100 (0.26) liter per capita, given ceteris paribus.</p></li>
+</ul>
+</section></section>
+<section>
+<section id="bias-and-efficiency" class="title-slide slide level1 center">
+<h1>Bias and Efficiency</h1>
+
+</section>
+<section id="sampling-from-the-population" class="slide level2">
+<h2>Sampling from the population</h2>
+
+<img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-69-1.png" style="width:100.0%" class="r-stretch"></section>
+<section id="unbiased-and-efficient-estimates" class="slide level2 smaller">
+<h2>Unbiased and efficient estimates</h2>
+<div class="r-stack">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-71-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-72-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-73-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-74-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-75-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-76-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-77-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-78-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-79-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="unbiased-but-inefficient" class="slide level2">
+<h2>Unbiased but <strong>inefficient</strong></h2>
+
+<img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-80-1.png" style="width:100.0%" class="r-stretch"></section>
+<section id="biased-but-efficient" class="slide level2">
+<h2><strong>Biased</strong> but efficient</h2>
+
+<img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-81-1.png" style="width:100.0%" class="r-stretch"></section>
+<section id="biased-and-inefficient" class="slide level2">
+<h2><strong>Biased</strong> and <strong>inefficient</strong></h2>
+
+<img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-82-1.png" style="width:100.0%" class="r-stretch"></section></section>
+<section id="assumptions-of-the-mlr" class="title-slide slide level1 smaller center scrollable">
+<h1>Assumptions of the MLR</h1>
+<blockquote>
+<p>exist to ensure that linear regression estimates are unbiased and efficient!</p>
+</blockquote>
+<div class="callout callout-important no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>OLS is unbiased. Assumptions 1 to 4 are satisfied:</strong></p>
+</div>
+<div class="callout-content">
+<ol type="1">
+<li>Linearity</li>
+<li>Random Sampling</li>
+<li>No Collinearity</li>
+<li>No Endogeneity</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="callout callout-warning no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>OLS is unbiased and efficient. Best Linear Unbiased Estimator (BLUE). Assumptions 1 to 5 are satisfied</strong></p>
+</div>
+<div class="callout-content">
+<ol start="5" type="1">
+<li>Homoscedasticity (No Autocorrelation)</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="callout callout-caution no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>OLS is a Classical linear model (CLM). Assumptions 1 to 6 are satisfied</strong></p>
+</div>
+<div class="callout-content">
+<ol start="6" type="1">
+<li>Error Terms Normality</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+
+<section id="assumption-1.-linearity" class="title-slide slide level1 center">
+<h1>Assumption 1. Linearity</h1>
+
+</section>
+
+<section>
+<section id="linearity" class="title-slide slide level1 center">
+<h1>Linearity</h1>
+<ul>
+<li class="fragment"><p>the expected value of the dependent variable is a straight-line function of the independent variable</p></li>
+<li class="fragment"><p>If linearity is violated:</p>
+<ul>
+<li class="fragment">the estimates are <strong>biased</strong> and regression is invalid!</li>
+</ul></li>
+</ul>
+</section>
+<section id="can-we-draw-a-straight-line-through-the-dots" class="slide level2">
+<h2>Can we draw a straight line through the dots?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="r-stack">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-86-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-87-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-88-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="r-stack">
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-89-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-90-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-91-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="linearity-detection" class="slide level2">
+<h2>Linearity: detection</h2>
+<p>To detect non-linearity, we inspect data visually with:</p>
+<ul>
+<li><p>Scatter plots of dependent variable <span class="math inline">\(y\)</span> plotted versus independent variables (<span class="math inline">\(x\)</span>).</p></li>
+<li><p>Scatter plot of <strong>residuals</strong> versus <strong>predicted/fitted</strong> values</p></li>
+</ul>
+</section>
+<section id="linearity-detection-1" class="slide level2 smaller">
+<h2>Linearity detection (1)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>We’ve estimated a regression mode <span class="math inline">\(Y = \beta_0 + \beta_1 x\)</span> on 50 observations. Results:</p>
+<div class="r-stack">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-92-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-93-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<p>To check nonlinearity, we need to plot fitted values on <span class="math inline">\(x\)</span> axis and residuals on <span class="math inline">\(y\)</span> axis.</p>
+<p>If we can draw a horizontal line through the dots, we have linearity, if not, we have non-linearity.</p>
+</div>
+<div class="r-stack">
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-94-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-95-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="linearity-detection-2" class="slide level2 smaller">
+<h2>Linearity detection (2)</h2>
+<p>Here we use the same population but increase our sample size to 150 observations. (Small sample size may cause seeming nonliearities).</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="r-stack">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-96-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-97-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="r-stack">
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-98-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-99-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="linearity-detection-3" class="slide level2 smaller">
+<h2>Linearity detection (3)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="r-stack">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-100-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-101-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="r-stack">
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-102-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-103-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="linearity-resolutions" class="slide level2 scrollable">
+<h2>Linearity: resolutions</h2>
+<ol type="1">
+<li><p>Functional form: multiple regression and transformation.</p></li>
+<li><p>(non) linear transformation to the dependent and/or independent variables;</p>
+<ul>
+<li><strong>does change the way how we must interpret coefficients</strong>;</li>
+</ul></li>
+<li><p>find a different independent variable;</p></li>
+<li><p>propose a different functional form;</p></li>
+</ol>
+</section>
+<section id="example-of-linearity-resolution" class="slide level2 smaller">
+<h2>Example of linearity resolution</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>We had nonlinearity with a simple regression: <span class="math inline">\(y = \beta_0 + \beta_1x\)</span>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-104-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<p>Let us estimate a multiple regression: <span class="math inline">\(y = \beta_0 + \beta_1 x + \beta_2 x^2\)</span>.</p>
+</div>
+<div class="r-stack">
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-105-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-106-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="example-of-linearity-resolution-cont." class="slide level2 smaller">
+<h2>Example of linearity resolution (cont.)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>After the linear transformation of <span class="math inline">\(x\)</span> and multiple regression <span class="math inline">\(y = \beta_0 + \beta_1x\)</span>, our regression line is a curve (non linear).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-107-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<p>Residuals vs.&nbsp;Fitted plot also changes:</p>
+</div>
+<div class="r-stack">
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-108-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-109-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="common-linear-transformations" class="slide level2 smaller">
+<h2>Common linear transformations</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Dep. Var.</th>
+<th style="text-align: center;">Indep. Var.</th>
+<th style="text-align: center;">Interpretation of <span class="math inline">\(\beta_1\)</span></th>
+<th style="text-align: center;">Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Level-level</td>
+<td style="text-align: center;"><span class="math inline">\(y\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(x\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\Delta y = \beta_1 \Delta x\)</span></td>
+<td style="text-align: center;">1 unit change in <span class="math inline">\(x\)</span> causes <span class="math inline">\(\beta_1\)</span> units change in <span class="math inline">\(y\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Level-log</td>
+<td style="text-align: center;"><span class="math inline">\(y\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(log(x)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\Delta y = (\beta_1/100)\% \Delta x\)</span></td>
+<td style="text-align: center;">1 % change in <span class="math inline">\(x\)</span> causes <span class="math inline">\(\beta_1/100\)</span> units change in <span class="math inline">\(y\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Log-level</td>
+<td style="text-align: center;"><span class="math inline">\(log(y)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(x\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\% \Delta y = (100\beta_1) \Delta x\)</span></td>
+<td style="text-align: center;">1 unit change in <span class="math inline">\(x\)</span> causes <span class="math inline">\(100 \beta_1\)</span> % change in <span class="math inline">\(y\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Log-log</td>
+<td style="text-align: center;"><span class="math inline">\(log(y)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(log(x)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\% \Delta y = \beta_1 \% \Delta x\)</span></td>
+<td style="text-align: center;">1 % change in <span class="math inline">\(x\)</span> causes <span class="math inline">\(\beta_1\)</span> % change in <span class="math inline">\(y\)</span> (elasticity)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>Power transformation (<span class="math inline">\(x^2\)</span>, <span class="math inline">\(\sqrt x\)</span>), Box-Cox transformations;</p></li>
+<li><p>Variables normalization to the standard normal distribution;</p></li>
+<li><p>Tailor expansion (Cobb-Douglas, Trans-log)</p></li>
+</ul>
+</section></section>
+<section>
+<section id="linearity-example-1-anscombe-quartet" class="title-slide slide level1 center">
+<h1>Linearity Example 1: Anscombe quartet</h1>
+
+</section>
+<section id="the-anscombe-quartet" class="slide level2 smaller">
+<h2>The Anscombe quartet</h2>
+<ul>
+<li>Four data sets of 11 observations each and two variables (x and y).</li>
+</ul>
+<div class="columns">
+<div class="column" style="width:45%;">
+<div class="fragment">
+
+</div>
+</div><div class="column" style="width:55%;">
+<div class="fragment">
+<h3 id="slr-y-on-x">SLR y on x</h3>
+</div>
+</div></div>
+</section>
+<section id="scatter-plots" class="slide level2">
+<h2>Scatter plots</h2>
+
+<img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-114-1.png" style="width:100.0%" class="r-stretch"></section>
+<section id="residuals-vs-fitted" class="slide level2">
+<h2>Residuals vs fitted</h2>
+
+<img data-src="mk68-06-slides_files/figure-revealjs/unnamed-chunk-116-1.png" style="width:100.0%" class="r-stretch"></section></section>
+<section>
+<section id="takeaways-checklist" class="title-slide slide level1 center">
+<h1>Takeaways checklist</h1>
+
+</section>
+<section id="key-concepts-covered-in-the-lecture" class="slide level2 smaller">
+<h2>Key concepts covered in the lecture</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Simple linear regression:</p>
+<ul>
+<li>Regressor and regressand;</li>
+<li>Fitted values and residuals;</li>
+<li>OLS method;</li>
+<li>Estimated coefficients;</li>
+<li>Interpretation of the slope and the intercept.</li>
+<li>HT about the regression coefficients.</li>
+</ul>
+<p>Ceteris Paribus</p>
+<ul>
+<li>Establishing Ceteris Paribus without an RCT.</li>
+<li>Multiple Linear Regression that controls for other things.</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p>Multiple linear regression</p>
+<ul>
+<li>Coefficients, HT and interpretation.</li>
+<li>Goodness of fit.</li>
+<li>Causal meaning.</li>
+<li>Observed included, not included and unobserved factors.</li>
+<li>Interpreting coefficients of the MLR.</li>
+</ul>
+<p>Assumptions of the regression analysis.</p>
+<ul>
+<li>Bias and unbiased estimates.</li>
+<li>Role of assumptions in the bias of the estimates.</li>
+</ul>
+<p>Linearity assumption</p>
+<ul>
+<li>Detection.</li>
+<li>Implications or why the linearity assumption is important.</li>
+<li>How to correct the non-linearity (linear transformation).</li>
+</ul>
+</div></div>
+</section></section>
+<section>
+<section id="self-study-cradle-of-the-regression-analysis" class="title-slide slide level1 center">
+<h1>Self-study: Cradle of the Regression Analysis</h1>
+<ul>
+<li><p>The term “regression” was coined by Sir Francis Galton, Charles Darwin’s half-cousin, in 1886</p>
+<ul>
+<li><p>he was gripped by Darwin’s masterpiece, The Origin of Species.</p></li>
+<li><p>he used “Regression” to prove his points of Eugenics…</p></li>
+</ul></li>
+</ul>
+<blockquote>
+<p>Statistics has some dark history…</p>
+</blockquote>
+<blockquote>
+<p>Paper: Francis Galton, “Regression towards Mediocrity in Hereditary Stature,” Journal of the Anthropological Institute of Great Britain and Ireland, vol.&nbsp;15, 1886, pages 246–263</p>
+</blockquote>
+</section>
+<section id="galtons-introduction-of-regression" class="slide level2">
+<h2>Galton’s introduction of regression</h2>
+<ul>
+<li><p>Galton discovered that the average heights of fathers and sons are linked by a regression equation.</p></li>
+<li><p>the average height of sons is a weighted average of their fathers’ height and the average height in the population from which the fathers and sons were sampled.</p></li>
+</ul>
+</section>
+<section id="first-application-in-causality-analysis" class="slide level2">
+<h2>First application in causality analysis</h2>
+<ul>
+<li><p>pioneered by George Udny Yule in “An Investigation into the Causes of Changes in Pauperism in England, Chiefly during the Last Two Intercensal Decades,” Journal of the Royal Statistical Society, vol.&nbsp;62, no. 2, June 1899, pages 249–295.</p></li>
+<li><p>Student of statistician Karl Pearson (Pearson’s correlation …) and Galton’s protege.</p></li>
+</ul>
+<p>Yule realized that Galton’s regression method could be extended to include many variables (multiple regression).</p>
+</section>
+<section id="george-udny-yule" class="slide level2 smaller">
+<h2>George Udny Yule</h2>
+<p>In an 1899 MLR was used to link the administration of the English Poor Laws in different counties to the likelihood county residents were poor, while controlling for population growth and the age distribution in the county.</p>
+<ul>
+<li><p>The poor laws provided subsistence for the indigent, usually by offering shelter and employment in institutions called workhouses.</p></li>
+<li><p>Yule was particularly interested in whether the practice of outdoor relief, which provided income support for poor people without requiring them to move to a workhouse, increased poverty rates by making pauperism less onerous.</p></li>
+<li><p>This is a well-defined causal question much like those that occupy social scientists today.</p></li>
+</ul>
+</section>
+<section id="the-past-of-statistics" class="slide level2">
+<h2>The past of statistics</h2>
+<p>Statistics has a dark past.</p>
+<ul>
+<li><p>It was used and developed in the disposal of really terrible things like Eugenics.</p></li>
+<li><p>But the world was terrible then.</p></li>
+</ul>
+<p>Nowadays, same statistical methods are fundamental for revealing causal effects as 100 years ago.</p>
+<ul>
+<li>Yet we apply it for some different causes.</li>
+</ul>
+</section></section>
+<section id="references" class="title-slide slide level1 smaller scrollable">
+<h1>References</h1>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Angrist2009" class="csl-entry" role="listitem">
+Angrist, Joshua D., and Jörn-Steffen Pischke. 2009. <em>Mostly Harmless Econometrics</em>. Princeton University Press. <a href="https://doi.org/10.1515/9781400829828">https://doi.org/10.1515/9781400829828</a>.
+</div>
+<div id="ref-Angrist2014" class="csl-entry" role="listitem">
+Angrist, Joshua D., and Jörn-Steffen Pischke. 2014. <em>Mastering’metrics: The Path from Cause to Effect</em>. Princeton University Press.
+</div>
+<div id="ref-Lovelock1971" class="csl-entry" role="listitem">
+Lovelock, J. E. 1971. <span>“Atmospheric Fluorine Compounds as Indicators of Air Movements.”</span> <em>Nature</em> 230 (5293): 379–79. <a href="https://doi.org/10.1038/230379a0">https://doi.org/10.1038/230379a0</a>.
+</div>
+<div id="ref-Molina1974" class="csl-entry" role="listitem">
+Molina, Mario J., and F. S. Rowland. 1974. <span>“Stratospheric Sink for Chlorofluoromethanes: Chlorine Atom-Catalysed Destruction of Ozone.”</span> <em>Nature</em> 249 (5460): 810–12. <a href="https://doi.org/10.1038/249810a0">https://doi.org/10.1038/249810a0</a>.
+</div>
+<div id="ref-Ritter2020" class="csl-entry" role="listitem">
+Ritter, Matthias, Silke Hüttel, Martin Odening, and Stefan Seifert. 2020. <span>“Revisiting the Relationship Between Land Price and Parcel Size in Agriculture.”</span> <em>Land Use Policy</em> 97 (September): 104771. <a href="https://doi.org/10.1016/j.landusepol.2020.104771">https://doi.org/10.1016/j.landusepol.2020.104771</a>.
+</div>
+<div id="ref-weisberg2005a" class="csl-entry" role="listitem">
+Weisberg, Sanford. 2005. <em>Applied Linear Regression</em>. John Wiley &amp; Sons, Inc. <a href="https://doi.org/10.1002/0471704091">https://doi.org/10.1002/0471704091</a>.
+</div>
+<div id="ref-wooldridge2020introductory" class="csl-entry" role="listitem">
+Wooldridge, M. Jeffrey. 2020. <em>Introductory Econometrics: A Modern Approach</em>. South-Western. <a href="https://www.cengage.uk/shop/isbn/9781337558860">https://www.cengage.uk/shop/isbn/9781337558860</a>.
+</div>
+</div>
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="img/jlu-logo.png" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>MK-068-EN (TM) WS2024/25. (c) Eduard Bukin</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: true,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'fade',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 800,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/ebukin\.github\.io\/mk68-2023-24-public\/");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
