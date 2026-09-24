@@ -1,0 +1,56 @@
+---
+title: "Week 4 · Cause and effect in the RCT. Hypothesis testing. t-tests"
+subtitle: "Null and alternative hypotheses, the two error types and the p-value, applied to two field experiments"
+---
+
+The week turns the causal language of Week 3 into a testable procedure. It
+introduces hypothesis testing in the Neyman-Pearson framework and then works
+through two randomised experiments, a school deworming programme in Kenya and a
+conditional cash transfer, to see how checks-and-balances tables and t-tests
+are used to read an RCT.
+
+## Slides
+
+The 2024/25 deck is titled *Cause and Effect in the RCT. Hypothesis testing.
+T-tests. Examples. Central Limit Theorem.* The 2023/24 PDF was shared as *Week
+04. Cause and Effect in the RCT. Hypothesis testing. T-tests* and is longer
+(78 pages against 60); the Central Limit Theorem is not in its title.
+
+| Material | WS 2024/25 | WS 2023/24 |
+|:--|:--|:--|
+| 🖥 Interactive slides | [Week 04](/materials/mk68-04-slides.html) | not rendered (sources were revised for 2024/25) |
+| 📄 PDF from Ilias | [Week 04 (version 1).pdf](/ilias-2024-25/Week%2004.%20Cause%20and%20Effect%20in%20the%20RCT.%20Hypothesis%20testing.%20T-tests.%20Exmples.%20Central%20Limit%20Theorem_.pdf) · 60 pages · added 5 Nov 2024<br>[Week 04 (version 2).pdf](/ilias-2024-25/Week%2004-V2.%20Cause%20and%20Effect%20in%20the%20RCT.%20Hypothesis%20testing.%20T-tests.%20Exmples.%20Central%20Limit%20Theorem_.pdf) · 60 pages · added 27 Nov 2024 | [Week 04. Cause and Effect in the RCT. Hypothesis testing. T-tests.pdf](/ilias-2023-24/Week%2004.%20Cause%20and%20Effect%20in%20the%20RCT.%20Hypothesis%20testing.%20T-tests_.pdf) · 78 pages · added 10 Jan 2024 |
+| 💻 Source | [`mk68-04-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mk68-04-slides.qmd), which includes [`hypothesis-testing.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/hypothesis-testing.qmd), [`deworming.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/deworming.qmd) and [`cct-2-simple.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/cct-2-simple.qmd) | [`mk68-04-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-04-slides.qmd) |
+
+: {tbl-colwidths="[24,38,38]"}
+
+## What the deck covers
+
+-   **Hypothesis testing**: the Neyman-Pearson approach, the steps of a test,
+    the two errors a test can make, the p-value and the level of significance;
+    examples on stunting and education and on raven colour; homework.
+-   **Examples of hypothesis testing** from a nutrition education RCT:
+    research design, checks and balances, balance of household size, and how
+    to identify whether the intervention helped.
+-   **Effects of a deworming pill**: the Primary School Deworming Project
+    timeline, checks and balances between groups, immediate effects on health
+    and school participation, long-term economic effects, and costs and
+    benefits.
+-   **t-tests with conditional cash transfers**: cause and effect, what makes
+    the difference in enrolment rates a causal effect, good controls in an RCT,
+    checking that ceteris paribus holds, the checks-and-balances table, the
+    t-test algorithm with worked examples, and conclusions.
+-   Homework, readings (Chapters 1 and 2 of *Mastering 'Metrics*) and the key
+    concepts checklist: causal meaning of averages, random sample variation,
+    type I and type II errors, significance level, p-value, and the standard
+    error of a sample mean.
+
+## Data used
+
+The examples in this week are read from the published tables of the studies
+discussed; the images are in
+[`materials/img`](https://github.com/EBukin/mk68-2023-24-public/tree/main/materials/img).
+
+## Where the course goes next
+
+← [Week 3 · Bi-variate data. Correlation and causation](week-03.qmd) · → [Week 5 · Central Limit Theorem. t-distribution. Confidence intervals](week-05.qmd)

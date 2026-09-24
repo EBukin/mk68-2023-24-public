@@ -1,0 +1,110 @@
+---
+title: "All slide decks"
+subtitle: "Interactive decks of the 2024/25 cohort and the PDFs of both cohorts, in teaching order"
+---
+
+Every interactive deck opens as a full-screen revealjs presentation rendered
+from its `.qmd` source. Useful keys inside a deck: `?` shows all shortcuts, `o`
+opens the slide overview, `m` opens the menu with a table of contents, `f` goes
+full screen, and `e` switches to print view so you can save the deck as a PDF
+from your browser.
+
+The **PDF** columns hold the files exactly as they were shared with each cohort
+on Ilias; they are also listed with dates and page counts on the cohort pages
+([2024/25](cohorts/ws-2024-25.qmd), [2023/24](cohorts/ws-2023-24.qmd)).
+
+## Week 0 · Prerequisites
+
+| Deck | Interactive | PDF 2024/25 | PDF 2023/24 |
+|:--|:--|:--|:--|
+| Week 00. Prerequisites for the part on quantitative research methods | 📖 [Web page](/prerequisites.html) | 📄 [PDF](/ilias-2024-25/mk68-00-part-1-prerequisites.pdf) | 📄 [PDF](/ilias-2023-24/mk68-00-part-1-prerequisites.pdf) |
+| MK68 additional literature | | 📄 [PDF](/ilias-2024-25/mk68-additional-literature.pdf) | |
+
+: {tbl-colwidths="[46,18,18,18]"}
+
+→ [Week page](weeks/week-00.qmd)
+
+## Week 1 · Introduction. Descriptive statistics
+
+| Deck | Interactive | PDF 2024/25 | PDF 2023/24 |
+|:--|:--|:--|:--|
+| Week 01. Part 1. Introduction | 🖥 [Open](/materials/mk68-01-p1-slides.html) | 📄 [PDF](/ilias-2024-25/Week%2001.%20Part%201.%20Introduction.pdf) | 📄 [PDF](/ilias-2023-24/Week%2001.%20Part%201.%20Introduction.pdf) |
+| Week 01. Part 2. Descriptive statistics | PDF only | 📄 [PDF](/ilias-2024-25/Week%2001.%20Part%202.%20Descriptive%20statistics.pdf) | 📄 [PDF](/ilias-2023-24/Week%2001.%20Part%202.%20Descriptive%20statistics.pdf) |
+
+: {tbl-colwidths="[46,18,18,18]"}
+
+→ [Week page](weeks/week-01.qmd)
+
+## Week 2 · Distribution, variance and its applications
+
+| Deck | Interactive | PDF 2024/25 | PDF 2023/24 |
+|:--|:--|:--|:--|
+| Week 02. Distribution, Variance and its applications | 🖥 [Open](/materials/mk68-02-slides.html) | 📄 [PDF](/ilias-2024-25/Week%2002.%20Distribution,%20Variance%20and%20its%20applications.pdf) | 📄 [PDF](/ilias-2023-24/Week%2002.%20Distribution,%20Variance%20and%20its%20applications.pdf) |
+| Part: Distribution | 🖥 [Open](/materials/mk68-02-slides-distributions.html) | | |
+| Part: Variance | 🖥 [Open](/materials/mk68-02-slides-variance.html) | | |
+| Part: Quantiles | 🖥 [Open](/materials/mk68-02-slides-quantiles.html) | | |
+| Part: Income deciles example | 🖥 [Open](/materials/mk68-02-slides-example-1.html) | | |
+
+: {tbl-colwidths="[46,18,18,18]"}
+
+→ [Week page](weeks/week-02.qmd)
+
+## Week 3 · Bi-variate data. Correlation and causation
+
+| Deck | Interactive | PDF 2024/25 | PDF 2023/24 |
+|:--|:--|:--|:--|
+| Week 03. Variance. Bi-variate data. Correlation and Causation | PDF only | 📄 [PDF](/ilias-2024-25/Week%2003.%20Variance.%20Bi-variate%20data.%20Correlation%20and%20Causation_.pdf) | 📄 [PDF](/ilias-2023-24/Week%2003.%20Variance.%20Bi-variate%20data.%20Correlation%20and%20Causation_.pdf) |
+
+: {tbl-colwidths="[46,18,18,18]"}
+
+→ [Week page](weeks/week-03.qmd)
+
+## Week 4 · Cause and effect in the RCT. Hypothesis testing. t-tests
+
+| Deck | Interactive | PDF 2024/25 | PDF 2023/24 |
+|:--|:--|:--|:--|
+| Week 04. Cause and Effect in the RCT. Hypothesis testing. T-tests. Examples. Central Limit Theorem | 🖥 [Open](/materials/mk68-04-slides.html) | 📄 [version 1](/ilias-2024-25/Week%2004.%20Cause%20and%20Effect%20in%20the%20RCT.%20Hypothesis%20testing.%20T-tests.%20Exmples.%20Central%20Limit%20Theorem_.pdf) · [version 2](/ilias-2024-25/Week%2004-V2.%20Cause%20and%20Effect%20in%20the%20RCT.%20Hypothesis%20testing.%20T-tests.%20Exmples.%20Central%20Limit%20Theorem_.pdf) | 📄 [PDF](/ilias-2023-24/Week%2004.%20Cause%20and%20Effect%20in%20the%20RCT.%20Hypothesis%20testing.%20T-tests_.pdf) |
+
+: {tbl-colwidths="[46,18,18,18]"}
+
+→ [Week page](weeks/week-04.qmd)
+
+## Week 5 · Central Limit Theorem. t-distribution. Confidence intervals
+
+| Deck | Interactive | PDF 2024/25 | PDF 2023/24 |
+|:--|:--|:--|:--|
+| Week 05. Hypothesis testing II. Central Limit Theorem. T-distribution. Confidence intervals. t-test | 🖥 [Open](/materials/mk68-05-slides-v2.html) | 📄 [PDF](/ilias-2024-25/Week%2005.%20Hypothesis%20testing%20II.%20Central%20Limit%20Theorem.%20T-distribution.%20Confidence%20intervals..pdf) | 📄 [PDF](/ilias-2023-24/Week%2005.%20Hypothesis%20testing%20II.%20Central%20Limit%20Theorem.%20t-distribution.%20Confidence%20intervals_.pdf) |
+
+: {tbl-colwidths="[46,18,18,18]"}
+
+→ [Week page](weeks/week-05.qmd)
+
+## Week 6 · Simple and multiple regression. Bias. Linearity
+
+| Deck | Interactive | PDF 2024/25 | PDF 2023/24 |
+|:--|:--|:--|:--|
+| Week 06. Recap. Simple Linear Regression. Multiple Regression. Bias. Regression assumptions. Linearity | 🖥 [Open](/materials/mk68-06-slides.html) | 📄 [version 1](/ilias-2024-25/Week%2006.%20Recap.%20Simple%20Linear%20Regression.%20Multiple%20Regression.%20Bias.%20Regression%20assumptions.%20Linearity_.pdf) · [version 2](/ilias-2024-25/Week%2006-V2.%20Recap.%20Simple%20Linear%20Regression.%20Multiple%20Regression.%20Bias.%20Regression%20assumptions.%20Linearity_.pdf) | 📄 [PDF](/ilias-2023-24/Week%2006.%20Recap.%20Simple%20Linear%20Regression.%20Multiple%20Regression.%20Bias.%20Regression%20assumptions.%20Linearity_.pdf) |
+| t-test recap: example of an exam assignment | 🖥 [Open](/materials/t-test-recap.html) | | |
+
+: {tbl-colwidths="[46,18,18,18]"}
+
+→ [Week page](weeks/week-06.qmd)
+
+## Week 7 · Multiple linear regression. Practice
+
+| Deck | Interactive | PDF 2024/25 | PDF 2023/24 |
+|:--|:--|:--|:--|
+| Week 07. Multiple Linear Regression. Practice | 🖥 [Open](/materials/mk68-07-slides.html) | 📄 [PDF](/ilias-2024-25/Week%2007.%20Multiple%20Linear%20Regression.%20Practice_.pdf) | 📄 [PDF](/ilias-2023-24/Week%2007.%20Multiple%20Linear%20Regression.%20Practice_.pdf) |
+
+: {tbl-colwidths="[46,18,18,18]"}
+
+→ [Week page](weeks/week-07.qmd)
+
+::: {.callout-note appearance="simple"}
+## About "PDF only"
+
+Week 01 Part 2 and Week 03 read data files that are kept out of the public
+repository, so they cannot be rendered here. The PDFs are the versions the
+students received. The [README](https://github.com/EBukin/mk68-2023-24-public/#readme)
+explains how to render them locally.
+:::

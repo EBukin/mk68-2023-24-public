@@ -1,0 +1,193 @@
+---
+title: "Datasets"
+subtitle: "The data files the slides read, where each one comes from, and how it was prepared"
+---
+
+The decks read their data from
+[`materials/data/`](https://github.com/EBukin/mk68-2023-24-public/tree/main/materials/data).
+Every file there is a cleaned extract; the scripts that produced them are in
+[`data-raw/`](https://github.com/EBukin/mk68-2023-24-public/tree/main/data-raw),
+next to a note on the source. The raw downloads themselves are not in the
+repository. The `.rds` files open in R with `readr::read_rds()` or
+`readRDS()`.
+
+Several examples use datasets shipped with R packages rather than files; those
+are listed at the end.
+
+## Files in `materials/data`
+
+```{=html}
+<div class="mk-files">
+  <div class="mk-files-head"><span>File</span><span>Download</span></div>
+
+  <div class="mk-file">
+    <span class="mk-file-name">congo-nutrition.rds</span>
+    <span class="mk-file-desc">395 rows × 17 columns. Individual daily nutrient intake (energy, protein, carbohydrates, sugar, fat, fibre) with subject attributes. Week 1, Part 2.</span>
+    <span class="mk-file-links"><a href="/materials/data/congo-nutrition.rds" download>rds</a></span>
+  </div>
+
+  <div class="mk-file">
+    <span class="mk-file-name">brazil-nutrition.rds</span>
+    <span class="mk-file-desc">66,903 rows × 17 columns. Same structure for Brazil, with survey day, state and urban/rural area. Used in the Week 2 auxiliary deck of 2023/24.</span>
+    <span class="mk-file-links"><a href="/materials/data/brazil-nutrition.rds" download>rds</a></span>
+  </div>
+
+  <div class="mk-file">
+    <span class="mk-file-name">burkina-faso-nutrition.rds</span>
+    <span class="mk-file-desc">1,909 rows × 16 columns. Same structure for two provinces of rural Burkina Faso. Prepared but not read by the current decks.</span>
+    <span class="mk-file-links"><a href="/materials/data/burkina-faso-nutrition.rds" download>rds</a></span>
+  </div>
+
+  <div class="mk-file">
+    <span class="mk-file-name">income-distribution.rds</span>
+    <span class="mk-file-desc">4,200 rows × 4 columns: region, year, income, freq. The global income distribution by region for 1988, 1993, 1998, 2003, 2008 and 2011. Weeks 1 and 2.</span>
+    <span class="mk-file-links"><a href="/materials/data/income-distribution.rds" download>rds</a></span>
+  </div>
+
+  <div class="mk-file">
+    <span class="mk-file-name">who_lhfa.rds</span>
+    <span class="mk-file-desc">3,714 rows × 14 columns. WHO length/height-for-age standard by day of age for boys and girls: LMS parameters and the −4 to +4 SD curves. Week 2.</span>
+    <span class="mk-file-links"><a href="/materials/data/who_lhfa.rds" download>rds</a></span>
+  </div>
+
+  <div class="mk-file">
+    <span class="mk-file-name">un-population.rds</span>
+    <span class="mk-file-desc">259,065 rows × 9 columns. Population by location, single year of age and sex for 1960, 1990 and 2020. Used in the Week 2 auxiliary deck of 2023/24.</span>
+    <span class="mk-file-links"><a href="/materials/data/un-population.rds" download>rds</a></span>
+  </div>
+
+  <div class="mk-file">
+    <span class="mk-file-name">DatasaurusDozen.tsv</span>
+    <span class="mk-file-desc">Thirteen datasets (dataset, x, y) with near-identical summary statistics and completely different shapes. Week 2.</span>
+    <span class="mk-file-links"><a href="/materials/data/DatasaurusDozen.tsv" download>tsv</a></span>
+  </div>
+
+  <div class="mk-file">
+    <span class="mk-file-name">CATS_mlo_F11_Day.dat</span>
+    <span class="mk-file-desc">Monthly CFC-11 concentrations from the NOAA HATS programme, by station. Week 6, self-study example on ozone.</span>
+    <span class="mk-file-links"><a href="/materials/data/CATS_mlo_F11_Day.dat" download>dat</a></span>
+  </div>
+</div>
+```
+
+## Provenance
+
+### Nutrition surveys (Congo, Brazil, Burkina Faso) {#nutrition}
+
+Individual food consumption surveys shared through the
+[FAO/WHO GIFT](https://www.fao.org/gift-individual-food-consumption/data-and-indicator/en/)
+platform (Global Individual Food consumption data Tool). Prepared by
+[`congo-consumption.R`](https://github.com/EBukin/mk68-2023-24-public/blob/main/data-raw/congo-consumption.R),
+[`brazil-food-consumption.R`](https://github.com/EBukin/mk68-2023-24-public/blob/main/data-raw/brazil-food-consumption.R)
+and
+[`burkin-faso-consumption.R`](https://github.com/EBukin/mk68-2023-24-public/blob/main/data-raw/burkin-faso-consumption.R):
+the consumption file is joined to the subject file and summed to daily intake
+per subject.
+
+The contributors ask to be acknowledged whenever the data or its derivatives
+are presented:
+
+-   **Burkina Faso** (BFA-00001): Institut de Recherche pour le Développement
+    (IRD); Institut de Recherche en Sciences de la Santé (IRSS); HarvestPlus,
+    International Food Policy Research Institute (IFPRI), 2016, "The 2010 Food
+    consumption and iron status survey in two provinces of rural Burkina
+    Faso", doi:10.7910/DVN/5CXCLX.
+-   **Democratic Republic of the Congo** (COD-00091): University of Colorado
+    School of Medicine, Anschutz Medical Campus and their collaborators in
+    Kinshasa; Sud-Ubangi, Democratic Republic of the Congo; 2014/2016; Women
+    First Dietary Recall Data.
+
+::: {.callout-warning appearance="simple"}
+## A known quirk of the Congo file
+
+`congo-consumption.R` reads the Congo consumption file but joins it to the
+**Burkina Faso** subject file (line 14 of the script). The country and region
+columns of `congo-nutrition.rds` therefore read "Burkina Faso" and its
+provinces, and the subject attributes (sex, age, weight, height) come from that
+survey too, while the nutrient columns are from the Congo survey. The slides use
+only the nutrient columns.
+:::
+
+### World income distribution {#income-distribution}
+
+Lakner and Milanovic's global income distribution, as made available to Our
+World in Data and published on
+[Max Roser's website](https://www.maxroser.com/roser/graphs/WorldIncomeDistribution_LaknerAndMilanovic/WorldIncomeDistribution_LaknerAndMilanovic1988_100.html).
+The data up to 2008 accompany Lakner and Milanovic (2015), *Global Income
+Distribution: From the Fall of the Berlin Wall to the Great Recession*, World
+Bank. The JSON series were saved from the website's console and parsed by
+[`income-distribution.R`](https://github.com/EBukin/mk68-2023-24-public/blob/main/data-raw/income-distribution.R);
+the six yearly folders of raw series are in
+[`data-raw/income-distribution/`](https://github.com/EBukin/mk68-2023-24-public/tree/main/data-raw/income-distribution).
+
+### WHO child growth standards {#who}
+
+The [length/height-for-age](https://www.who.int/tools/child-growth-standards/standards/length-height-for-age)
+z-score expanded tables for boys and girls from the WHO Child Growth Standards,
+stacked by
+[`who.R`](https://github.com/EBukin/mk68-2023-24-public/blob/main/data-raw/who.R).
+
+### UN World Population Prospects {#un-population}
+
+Population on 1 January by single age and sex, medium variant, from the
+[UN World Population Prospects 2022](https://population.un.org/wpp/Download/Standard/Population/),
+filtered to 1960, 1990 and 2020 by
+[`un-population.R`](https://github.com/EBukin/mk68-2023-24-public/blob/main/data-raw/un-population.R).
+The raw download was too large to keep.
+
+### The Datasaurus Dozen {#datasaurus}
+
+From Matejka and Fitzmaurice (2017), *Same Stats, Different Graphs*
+([Autodesk Research](https://www.autodesk.com/research/publications/same-stats-different-graphs)),
+via Alberto Cairo's
+[Download the Datasaurus](http://www.thefunctionalart.com/2016/08/download-datasaurus-never-trust-summary.html).
+
+### CFC-11 at Mauna Loa {#cfc11}
+
+Monthly mean CFC-11 (F11) mixing ratios by station from the NOAA Global
+Monitoring Laboratory's HATS programme,
+[gml.noaa.gov](https://gml.noaa.gov/aftp/data/hats/cfcs/cfc11/combined/HATS_global_F11.txt).
+
+### Not in the repository
+
+Two files the decks read are deliberately excluded by the `.gitignore`:
+
+-   `materials/data/poverty-population.csv`, a country-level extract of extreme
+    poverty rates and population used for the weighted-mean example in Week 1,
+    Part 2. The slide credits
+    [Our World in Data](https://ourworldindata.org/extreme-poverty) and the
+    World Bank's [Poverty and Inequality Platform](https://pip.worldbank.org/home).
+-   `data-raw/uganda-poject/Uganda_B_E_agri and nutrition 04.06.2018.sav`,
+    the baseline and endline survey of the Uganda nutrition project used for
+    the scatter-plot section of Week 3 (Jordan et al., 2022, *Foods* 11(3):344,
+    [doi:10.3390/foods11030344](https://doi.org/10.3390/foods11030344)).
+    [`uganda-poject.R`](https://github.com/EBukin/mk68-2023-24-public/blob/main/data-raw/uganda-poject.R)
+    explores its variable dictionary.
+
+Two further scripts in `data-raw/` are not used by any deck:
+[`read-geojson.R`](https://github.com/EBukin/mk68-2023-24-public/blob/main/data-raw/read-geojson.R)
+(parses `SO_geojson_2020_A.json`) and
+[`summarystata.R`](https://github.com/EBukin/mk68-2023-24-public/blob/main/data-raw/summarystata.R)
+(helper for cleaning `skimr` summaries). The `progressa/` folder holds a
+PROGRESA extract with a variable list, taken from a
+[public replication repository](https://github.com/snehavcs/Progresa-Analysis-Econometrics),
+and `cambodia/` a pointer to a
+[PLOS ONE article](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0150750);
+neither is read by the current decks.
+
+## Datasets from R packages
+
+| Dataset | Package | Used in |
+|:--|:--|:--|
+| `penguins` | [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) | Week 3: bi-variate data, scatter plots, correlation matrix |
+| `UN11` | [alr4](https://cran.r-project.org/package=alr4) | Week 3: correlation and causation (life expectancy and fertility) |
+| `RiceFarms` | [plm](https://cran.r-project.org/package=plm) | Week 3: rice yields and fertiliser; Week 7: production function |
+| `sleep` | base R (`datasets`) | Week 5: one-sample t-test |
+| `gomez.splitsplit` | [agridat](https://cran.r-project.org/package=agridat) | Week 6: t-test recap |
+| `fuel2001` | [alr4](https://cran.r-project.org/package=alr4) | Week 6: multiple regression example |
+| `MinnLand` | [alr4](https://cran.r-project.org/package=alr4) | Week 7: hedonic land prices |
+
+: {tbl-colwidths="[22,22,56]"}
+
+The sampling, confidence-interval and simple-regression sections simulate their
+populations in the slides themselves, with fixed seeds.

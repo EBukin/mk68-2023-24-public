@@ -1,0 +1,61 @@
+---
+title: "Week 0 · Prerequisites"
+subtitle: "What to refresh before the first lectures, and the additional reading list"
+---
+
+The programme assumes undergraduate statistics. The prerequisites sheet lists
+the concepts each of the first three weeks builds on and points to pre-recorded
+lectures on Ilias and to Khan Academy units for anyone who needs to close a gap.
+A second sheet, distributed to the 2024/25 cohort, names the two handbooks the
+lectures follow and a few additions.
+
+## Materials
+
+| Material | WS 2024/25 | WS 2023/24 |
+|:--|:--|:--|
+| 📖 Prerequisites, as a web page | [Week 00. Prerequisites](/prerequisites.html) | rendered from the same source |
+| 📄 Prerequisites, PDF from Ilias | [mk68-00-part-1-prerequisites.pdf](/ilias-2024-25/mk68-00-part-1-prerequisites.pdf) · 2 pages · added 14 Oct 2024 | [mk68-00-part-1-prerequisites.pdf](/ilias-2023-24/mk68-00-part-1-prerequisites.pdf) · 2 pages · added 4 Dec 2023 |
+| 📄 Additional literature, PDF from Ilias | [mk68-additional-literature.pdf](/ilias-2024-25/mk68-additional-literature.pdf) · 2 pages · added 23 Oct 2024 | not distributed |
+| 💻 Source | [`mk68-00-part-1-prerequisites.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mk68-00-part-1-prerequisites.qmd) | [`mk68-00-part-1-prerequisites.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-00-part-1-prerequisites.qmd) |
+
+: {tbl-colwidths="[28,36,36]"}
+
+## What the prerequisites sheet covers
+
+**Before Week 1.** Mean, median, mode, maximum, minimum, quantiles, quartiles
+and percentiles; box plot and histogram; distribution, skew and kurtosis;
+powers and the logarithm transformation. Four pre-recorded Ilias lectures
+(introduction to statistics and scale levels; basic measures; understanding and
+visualising data I and II) and Khan Academy units on summarising and displaying
+quantitative data and on logarithms.
+
+**Before Week 2.** Mean, variance and standard deviation; probability; the
+normal distribution and confidence intervals. Three pre-recorded Ilias lectures
+(probability; statistical distributions; confidence intervals) and Khan Academy
+units on variance, standard deviation and basic probability.
+
+**Before Week 3.** Optional only: the Khan Academy module on modelling data
+distributions, in particular percentiles, z-scores, and the normal distribution
+with the empirical rule.
+
+## What the additional literature sheet covers
+
+Two key handbooks, with the chapters the lectures draw on, and three additions:
+
+-   📖 **OpenIntro Statistics** (Diez, Çetinkaya-Rundel and Barr, 2019):
+    sampling principles and strategies, experiments, summarising data, defining
+    probability and the law of large numbers, random variables, continuous
+    distributions, the normal distribution, inference for numerical data, and
+    the introduction to linear regression.
+-   📖 **Mastering 'Metrics: the path from cause to effect** (Angrist and
+    Pischke, 2015): Chapter 1, Randomized Trials, and Chapter 2, Regression.
+-   📖 **Fundamentals of Data Visualization** (Wilke, 2019), Part I chapters 6
+    to 9 on visualising distributions.
+-   📖 Our World in Data on the Gini coefficient and on the history of global
+    economic inequality.
+
+The full list with links is on the [reading list](../resources.qmd) page.
+
+## Where the course goes next
+
+→ [Week 1 · Introduction. Descriptive statistics](week-01.qmd)

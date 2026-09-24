@@ -6,7 +6,7 @@ format:
     preview-links: true
     incremental: false
 editor_options: 
-  chunk_output_type: consoles
+  chunk_output_type: console
 ---
 
 # t-test

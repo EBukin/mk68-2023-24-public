@@ -1,0 +1,55 @@
+# Applies to every document in materials/ only.
+#
+# These were the project-level settings of the 2024/25 _quarto.yml. They moved
+# here when the repository became a website, so that the site pages are not
+# rendered as slide decks and do not inherit the course subtitle, footer and
+# logo. Paths are relative to this directory.
+#
+# Only the revealjs format may be declared here. Quarto renders a document to
+# the union of its own formats and this file's, and a second format with the
+# same output name (an html page) silently overwrites the deck.
+
+author:
+  - name: "Eduard Bukin"
+    url: "https://www.uni-giessen.de/faculties/f09/institutes/agri/policy/team/bukin"
+    email: "eduard.bukin@agrar.uni-giessen.de"
+    affiliations:
+      - name: "Justus Liebig University Giessen"
+        department: "Institute of Agricultural Policy and Market Research"
+        url: "https://www.uni-giessen.de/faculties/f09/institutes/agri/policy"
+
+subtitle: "Part 1: Statistics and Econometrics. MK68-2024/25"
+
+course: "MK-068-EN (TM) WS2024/25. Empirical Research Methods"
+
+institute: "Institute of Agricultural Policy and Market Research"
+
+footer: "MK-068-EN (TM) WS2024/25. (c) Eduard Bukin"
+
+logo: "./img/jlu-logo.png"
+
+format:
+  revealjs:
+    theme: [default, "../eddies-theme.scss"]
+    transition: fade
+    slide-number: c/t
+    width: 1280
+    height: 800
+    show-slide-number: all
+    preview-links: auto
+    scrollable: true
+    incremental: false
+    overview: true
+    menu: true
+    chalkboard: true
+    progress: true
+    self-contained: false
+    toc: true
+    toc-depth: 1
+    toc-title: Content
+
+bibliography:
+  - "../references.bib"
+
+editor_options:
+  chunk_output_type: console

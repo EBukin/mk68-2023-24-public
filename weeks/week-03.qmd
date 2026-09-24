@@ -1,0 +1,70 @@
+---
+title: "Week 3 · Bi-variate data. Correlation and causation"
+subtitle: "Scatter plots, trend lines, the correlation coefficient and its pitfalls, and the first step towards cause and effect"
+---
+
+With two variables at once the questions change: how do they move together, how
+strongly, and does one cause the other? The week builds the scatter plot from
+scratch, introduces the correlation coefficient and its pitfalls, and closes
+with the ideas the rest of the course rests on: cause, effect, potential
+outcomes and ceteris paribus.
+
+## Slides
+
+| Material | WS 2024/25 | WS 2023/24 |
+|:--|:--|:--|
+| 🖥 Interactive slides | PDF only, see the note below | not rendered |
+| 📄 PDF from Ilias | [Week 03. Variance. Bi-variate data. Correlation and Causation.pdf](/ilias-2024-25/Week%2003.%20Variance.%20Bi-variate%20data.%20Correlation%20and%20Causation_.pdf) · 76 pages · added 5 Nov 2024 | [Week 03. Variance. Bi-variate data. Correlation and Causation.pdf](/ilias-2023-24/Week%2003.%20Variance.%20Bi-variate%20data.%20Correlation%20and%20Causation_.pdf) · 57 pages · added 11 Dec 2023 |
+| 💻 Source | [`mk68-03-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mk68-03-slides.qmd), which includes [`ceteris-paribus.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/ceteris-paribus.qmd) | [`mk68-03-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-03-slides.qmd) |
+
+: {tbl-colwidths="[24,38,38]"}
+
+## What the deck covers
+
+-   **Bi-variate data**, introduced with the Palmer penguins, and building a
+    scatter plot step by step.
+-   **The scatter plot**: what makes a scatter plot self-explaining (title and
+    sources, axis labels and units, points, legends, a temporal dimension),
+    shown with the height and weight of children under three from a nutrition
+    study in Uganda.
+-   **Trend lines** and examples of describing scatter plots; homework with
+    further examples and drawing a linear trend line.
+-   **The correlation coefficient**: methodology, interpretation, examples, the
+    non-linearity pitfall and other pitfalls, the correlation matrix, homework
+    and spurious correlations.
+-   **Correlation and causation**: do we live longer because of a low birth
+    rate? What it takes to establish a causal relationship; insights on the HIV
+    pandemic from Gapminder.
+-   **Example: rice yields and fertiliser application**: exploratory,
+    univariate and descriptive analysis, the scatter plot, linearity and the
+    linear transformation, correlation exam questions and the causality
+    conclusion.
+-   **Cause, effect, potential outcome and ceteris paribus**: cause and effect
+    in rice yields, factual and counterfactual outcomes, treatment; randomised
+    control trials, regression and innovation as three routes to ceteris
+    paribus; an RCT example based on a nutrition education trial; potential
+    exam questions.
+
+::: {.callout-note appearance="simple"}
+## Why this week has no interactive version
+
+The scatter-plot section reads the SPSS file of the Uganda nutrition project
+(`data-raw/uganda-poject/Uganda_B_E_agri and nutrition 04.06.2018.sav`), which
+is not part of the public repository. The deck is therefore not in the render
+list, and the PDFs above are the versions the students received. See the
+[README](https://github.com/EBukin/mk68-2023-24-public/#readme) for how to
+render it locally once the file is in place.
+:::
+
+## Data used
+
+-   `penguins` from the palmerpenguins R package.
+-   `UN11` (national statistics, including life expectancy and fertility) from
+    the alr4 R package.
+-   `RiceFarms` (Indonesian rice farms) from the plm R package, for the rice
+    yield and fertiliser example.
+-   The Uganda nutrition project survey, not published.
+
+## Where the course goes next
+
+← [Week 2 · Distribution, variance and its applications](week-02.qmd) · → [Week 4 · Cause and effect in the RCT. Hypothesis testing. t-tests](week-04.qmd)

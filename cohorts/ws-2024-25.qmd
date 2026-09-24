@@ -1,0 +1,72 @@
+---
+title: "Winter Semester 2024/25"
+subtitle: "Part 1: Statistics and Econometrics · MK-068-EN (TM) WS2024/25. Empirical Research Methods"
+---
+
+The second run of the programme, and the one the slide sources in the
+repository correspond to. Every deck below exists in two forms: the
+**interactive slides** rendered from the `.qmd` source, and the **PDF** that was
+uploaded to Ilias for the students (the dates are the days the PDF was added to
+the repository). Two decks read data that is not in the public repository, so
+for those only the PDF is available; see the note at the end.
+
+Inside a deck: `?` shows the keyboard shortcuts, `o` opens the slide overview,
+`f` goes full screen, `m` opens the menu, and `e` switches to print view so you
+can save the deck as a PDF from your browser.
+
+## Slides, in teaching order
+
+| Week | Interactive slides | PDF shared on Ilias | Added |
+|:--|:--|:--|:--|
+| 0 | 📖 [Prerequisites](/prerequisites.html) | 📄 [mk68-00-part-1-prerequisites.pdf](/ilias-2024-25/mk68-00-part-1-prerequisites.pdf) (2 pages) | 14 Oct 2024 |
+| 0 | | 📄 [mk68-additional-literature.pdf](/ilias-2024-25/mk68-additional-literature.pdf) (2 pages) | 23 Oct 2024 |
+| 1 | 🖥 [Week 01. Part 1. Introduction](/materials/mk68-01-p1-slides.html) | 📄 [Week 01. Part 1. Introduction.pdf](/ilias-2024-25/Week%2001.%20Part%201.%20Introduction.pdf) (38 pages) | 14 Oct 2024 |
+| 1 | PDF only (see note) | 📄 [Week 01. Part 2. Descriptive statistics.pdf](/ilias-2024-25/Week%2001.%20Part%202.%20Descriptive%20statistics.pdf) (53 pages) | 14 Oct 2024 |
+| 2 | 🖥 [Week 02. Distribution, Variance and its applications](/materials/mk68-02-slides.html) | 📄 [Week 02. Distribution, Variance and its applications.pdf](/ilias-2024-25/Week%2002.%20Distribution,%20Variance%20and%20its%20applications.pdf) (72 pages) | 21 Oct 2024 |
+| 3 | PDF only (see note) | 📄 [Week 03. Variance. Bi-variate data. Correlation and Causation.pdf](/ilias-2024-25/Week%2003.%20Variance.%20Bi-variate%20data.%20Correlation%20and%20Causation_.pdf) (76 pages) | 5 Nov 2024 |
+| 4 | 🖥 [Week 04. Cause and Effect in the RCT. Hypothesis testing. T-tests. Examples. Central Limit Theorem](/materials/mk68-04-slides.html) | 📄 [Week 04 (version 1).pdf](/ilias-2024-25/Week%2004.%20Cause%20and%20Effect%20in%20the%20RCT.%20Hypothesis%20testing.%20T-tests.%20Exmples.%20Central%20Limit%20Theorem_.pdf) (60 pages) | 5 Nov 2024 |
+| 4 | | 📄 [Week 04 (version 2).pdf](/ilias-2024-25/Week%2004-V2.%20Cause%20and%20Effect%20in%20the%20RCT.%20Hypothesis%20testing.%20T-tests.%20Exmples.%20Central%20Limit%20Theorem_.pdf) (60 pages) | 27 Nov 2024 |
+| 5 | 🖥 [Week 05. Hypothesis testing II. Central Limit Theorem. T-distribution. Confidence intervals. t-test](/materials/mk68-05-slides-v2.html) | 📄 [Week 05. Hypothesis testing II.pdf](/ilias-2024-25/Week%2005.%20Hypothesis%20testing%20II.%20Central%20Limit%20Theorem.%20T-distribution.%20Confidence%20intervals..pdf) (99 pages) | 12 Nov 2024 |
+| 6 | 🖥 [Week 06. Recap. Simple Linear Regression. Multiple Regression. Bias. Regression assumptions. Linearity](/materials/mk68-06-slides.html) | 📄 [Week 06 (version 1).pdf](/ilias-2024-25/Week%2006.%20Recap.%20Simple%20Linear%20Regression.%20Multiple%20Regression.%20Bias.%20Regression%20assumptions.%20Linearity_.pdf) (92 pages) | 19 Nov 2024 |
+| 6 | 🖥 [t-test recap (exam-style example)](/materials/t-test-recap.html) | 📄 [Week 06 (version 2).pdf](/ilias-2024-25/Week%2006-V2.%20Recap.%20Simple%20Linear%20Regression.%20Multiple%20Regression.%20Bias.%20Regression%20assumptions.%20Linearity_.pdf) (93 pages) | 27 Nov 2024 |
+| 7 | 🖥 [Week 07. Multiple Linear Regression. Practice](/materials/mk68-07-slides.html) | 📄 [Week 07. Multiple Linear Regression. Practice.pdf](/ilias-2024-25/Week%2007.%20Multiple%20Linear%20Regression.%20Practice_.pdf) (55 pages) | 19 Nov 2024 |
+
+: {tbl-colwidths="[6,40,42,12]"}
+
+Week 2 is also published in four shorter parts, which are the sections of the
+full deck rendered on their own:
+[Distribution](/materials/mk68-02-slides-distributions.html) ·
+[Variance](/materials/mk68-02-slides-variance.html) ·
+[Quantiles](/materials/mk68-02-slides-quantiles.html) ·
+[Income deciles example](/materials/mk68-02-slides-example-1.html).
+
+## Sources
+
+The sources of this cohort are the current state of the repository:
+[`materials/`](https://github.com/EBukin/mk68-2023-24-public/tree/main/materials)
+on the `main` branch. The last content change for the cohort is commit
+[`f36972a`](https://github.com/EBukin/mk68-2023-24-public/commit/f36972a)
+of 27 November 2024, "Slides completed 2024".
+
+::: {.callout-note appearance="simple"}
+## Two decks are PDF only
+
+**Week 01, Part 2** reads `materials/data/poverty-population.csv` and
+**Week 03** reads an SPSS file from the Uganda nutrition project. Both files are
+kept out of the public repository (see the `.gitignore`), so the decks cannot be
+rendered here. The PDFs above are the versions the students received. Once the
+two files are in place locally, the decks render with the rest of the site;
+the [README](https://github.com/EBukin/mk68-2023-24-public/#readme) explains
+how.
+:::
+
+## Week pages
+
+[Week 0](../weeks/week-00.qmd) ·
+[Week 1](../weeks/week-01.qmd) ·
+[Week 2](../weeks/week-02.qmd) ·
+[Week 3](../weeks/week-03.qmd) ·
+[Week 4](../weeks/week-04.qmd) ·
+[Week 5](../weeks/week-05.qmd) ·
+[Week 6](../weeks/week-06.qmd) ·
+[Week 7](../weeks/week-07.qmd)

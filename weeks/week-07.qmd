@@ -1,0 +1,53 @@
+---
+title: "Week 7 · Multiple linear regression. Practice"
+subtitle: "Three worked examples end to end: hedonic land prices, a rice production function, and returns to fertiliser in a field experiment"
+---
+
+The final week applies everything: each example goes from problem setting and
+model formulation through exploratory analysis, estimation, interpretation,
+checking linearity and re-specifying the model, to a conclusion. The third
+example shows how regression is used to read the results of a randomised
+experiment.
+
+## Slides
+
+| Material | WS 2024/25 | WS 2023/24 |
+|:--|:--|:--|
+| 🖥 Interactive slides | [Week 07. Multiple Linear Regression. Practice](/materials/mk68-07-slides.html) | not rendered (sources were revised for 2024/25) |
+| 📄 PDF from Ilias | [Week 07. Multiple Linear Regression. Practice.pdf](/ilias-2024-25/Week%2007.%20Multiple%20Linear%20Regression.%20Practice_.pdf) · 55 pages · added 19 Nov 2024 | [Week 07. Multiple Linear Regression. Practice.pdf](/ilias-2023-24/Week%2007.%20Multiple%20Linear%20Regression.%20Practice_.pdf) · 56 pages · added 30 Jan 2024, file replaced 14 Oct 2024 |
+| 💻 Source | [`mk68-07-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mk68-07-slides.qmd), which includes [`mlr-example-land-price.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mlr-example-land-price.qmd), [`mlr-example-production-function.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mlr-example-production-function.qmd) and [`mlr-rct-example-duflo2008.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mlr-rct-example-duflo2008.qmd) | [`mk68-07-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-07-slides.qmd) |
+
+: {tbl-colwidths="[24,38,38]"}
+
+## What the deck covers
+
+-   **Causal interpretation of the MLR**: multiple regression controls only for
+    the factors included in the model; external ceteris paribus is assumed;
+    the regression assumptions restated.
+-   **Example 1, a hedonic land prices model**: problem setting, regression
+    model formulation, exploratory analysis (summary statistics, regional
+    differences, distributions, scatter plots), estimating the regression,
+    interpreting the results, checking linearity, re-specifying the model and
+    re-checking, and comparing the two models.
+-   **Example 2, a production function**: problem setting, the regression model
+    and ex-ante hypotheses about the coefficients, exploratory analysis
+    including the effect of the BIMAS programme, estimating the regression and
+    interpreting it coefficient by coefficient, checking linearity, moving to
+    a log specification, interpreting the log model, and conclusions.
+-   **Example 3, returns to fertiliser in Kenya**: objective and results of the
+    field experiment, whether ceteris paribus is ensured in the RCT, the
+    authors' regression solution, and checks and balances.
+-   **Regression in Excel**: a pointer for those who do not use R.
+
+## Data used
+
+-   `MinnLand` (Minnesota farmland sales) from the alr4 R package, for the
+    hedonic land prices model.
+-   `RiceFarms` (Indonesian rice farms) from the plm R package, for the
+    production function.
+-   Tables of the published field experiment, as images in
+    [`materials/img`](https://github.com/EBukin/mk68-2023-24-public/tree/main/materials/img).
+
+## Where the course goes next
+
+← [Week 6 · Simple and multiple regression. Bias. Linearity](week-06.qmd) · [All slide decks](../slides.qmd) · [Reading list](../resources.qmd)

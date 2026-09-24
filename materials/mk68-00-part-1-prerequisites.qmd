@@ -1,7 +1,5 @@
 ---
 title: "Week 00. Prerequisites for part on quantitative research methods"
-date: "Latest update on: `r Sys.Date()`"
-format: pdf
 editor_options: 
   chunk_output_type: console
 ---

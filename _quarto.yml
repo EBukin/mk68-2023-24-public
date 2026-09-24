@@ -1,80 +1,227 @@
 project:
-  title: "mk68-2024-25-public"
-  output-dir: _output
+  type: website
+  output-dir: _site
+
+  # An explicit list, for two reasons.
+  #
+  # 1. materials/ also holds files that exist only to be {{< include >}}d into
+  #    a deck (cct-2-simple.qmd, t-test.qmd, MLR.qmd, ...). They have no setup
+  #    chunk of their own, so rendering them standalone fails, and they would
+  #    duplicate content that is already in the parent deck.
+  # 2. Two decks read data that is deliberately kept out of the repository
+  #    (see .gitignore). They stay commented out until the files are in place:
+  #      materials/mk68-01-p2-slides.qmd  needs  materials/data/poverty-population.csv
+  #      materials/mk68-03-slides.qmd     needs  data-raw/uganda-poject/Uganda_B_E_agri and nutrition 04.06.2018.sav
+  #    Their PDF versions are published for both cohorts instead.
+  #
+  # The decks listed are the ones the 2024/25 configuration rendered, plus the
+  # prerequisites page. Rendered output is frozen under _freeze/ so a CI build
+  # executes no R.
   render:
-    - materials/mk68-01-p1-slides.qmd
-    - materials/mk68-01-p2-slides.qmd
-    - materials/mk68-02-slides.qmd
-    - materials/mk68-02-slides-distributions.qmd
-    - materials/mk68-02-slides-variance.qmd
-    - materials/mk68-02-slides-quantiles.qmd
-    - materials/mk68-02-slides-example-1.qmd
-    - materials/mk68-03-slides.qmd
-    - materials/mk68-04-slides.qmd
-    - materials/mk68-05-slides-v2.qmd
-    - materials/t-test-recap.qmd
-    - materials/mk68-06-slides.qmd
-    - materials/mk68-07-slides.qmd
+    - "index.qmd"
+    - "about.qmd"
+    - "slides.qmd"
+    - "data.qmd"
+    - "resources.qmd"
+    - "cohorts/*.qmd"
+    - "weeks/*.qmd"
+    - "prerequisites.qmd"
+    - "materials/mk68-01-p1-slides.qmd"
+    # - "materials/mk68-01-p2-slides.qmd"
+    - "materials/mk68-02-slides.qmd"
+    - "materials/mk68-02-slides-distributions.qmd"
+    - "materials/mk68-02-slides-variance.qmd"
+    - "materials/mk68-02-slides-quantiles.qmd"
+    - "materials/mk68-02-slides-example-1.qmd"
+    # - "materials/mk68-03-slides.qmd"
+    - "materials/mk68-04-slides.qmd"
+    - "materials/mk68-05-slides-v2.qmd"
+    - "materials/t-test-recap.qmd"
+    - "materials/mk68-06-slides.qmd"
+    - "materials/mk68-07-slides.qmd"
 
-author:
-  - name: "Eduard Bukin"
-    url: "https://www.uni-giessen.de/faculties/f09/institutes/agri/policy/team/bukin"
-    email: "eduard.bukin@agrar.uni-giessen.de"
-    affiliations:
-      - name: "Justus Liebig University Giessen"
-        department: "Institute of Agricultural Policy and Market Research"
-        url: "https://www.uni-giessen.de/faculties/f09/institutes/agri/policy"
+  # Quarto only copies resources it sees referenced from a rendered page.
+  # The PDFs and datasets are linked from tables and download buttons, so they
+  # are declared explicitly. Anchored with a leading slash on purpose: an
+  # unanchored "img/**" would also match materials/img and any img/ folder
+  # inside a checkout of the deployed site.
+  resources:
+    - "/ilias-2023-24/**"
+    - "/ilias-2024-25/**"
+    - "/materials/data/**"
+    - "/materials/img/**"
+    - "/img/**"
 
-subtitle: "Part 1: Statistics and Econometrics. MK68-2024/25"
+website:
+  page-navigation: true
+  title: "MK68 Quantitative Research Methods"
+  description: "Lecture slides for the quantitative part of MK-068-EN Empirical Research Methods at JLU Giessen, Winter Semesters 2023/24 and 2024/25. By Eduard Bukin."
+  site-url: "https://ebukin.github.io/mk68-2023-24-public/"
+  favicon: "img/jlu-logo.png"
 
-course: "MK-068-EN (TM) WS2024/25. Empirical Research Methods"
+  repo-url: https://github.com/EBukin/mk68-2023-24-public/
+  repo-actions: [edit, issue]
 
-institute: "Institute of Agricultural Policy and Market Research"
+  open-graph: true
 
-footer: "MK-068-EN (TM) WS2024/25. (c) Eduard Bukin"
+  page-footer:
+    left: |
+      &copy; 2023&ndash;2024 [Eduard Bukin](https://www.uni-giessen.de/faculties/f09/institutes/agri/policy/team/bukin)
+    center: |
+      Course materials for MK-068-EN at [JLU Giessen](https://www.uni-giessen.de/),
+      [Institute of Agricultural Policy and Market Research](https://www.uni-giessen.de/faculties/f09/institutes/agri/policy)
+    right: |
+      Built with [Quarto](https://quarto.org/) &middot;
+      [Source](https://github.com/EBukin/mk68-2023-24-public/)
+    background: "#0168b3"
 
-logo: "./img/jlu-logo.png"
+  navbar:
+    logo: "img/jlu-logo.png"
+    logo-alt: "JLU Giessen logo"
+    title: "MK68 Quantitative Research Methods"
+    search: true
+    left:
+      - href: index.qmd
+        text: "Home"
+      - href: cohorts/ws-2024-25.qmd
+        text: "WS 2024/25"
+      - href: cohorts/ws-2023-24.qmd
+        text: "WS 2023/24"
+      - href: slides.qmd
+        text: "All slides"
+      - href: data.qmd
+        text: "Data"
+      - href: resources.qmd
+        text: "Reading"
+      - href: about.qmd
+        text: "About"
+    right:
+      - icon: github
+        href: https://github.com/EBukin/mk68-2023-24-public/
+        aria-label: "Source code on GitHub"
+      - icon: person-circle
+        href: https://www.uni-giessen.de/faculties/f09/institutes/agri/policy/team/bukin
+        aria-label: "Author's page at JLU Giessen"
 
-editor: source
+  sidebar:
+    style: "docked"
+    pinned: true
+    align: left
+    search: true
+    collapse-level: 1
+    contents:
+      - href: index.qmd
+        text: "Course information"
+      - href: about.qmd
+        text: "About the author"
 
-format: 
-  revealjs:
-    theme: [default, "../eddies-theme.scss"]
-    transition: fade
-    slide-number: c/t
-    width: 1280
-    height: 800
-    show-slide-number: all
-    preview-links: auto
-    scrollable: true
-    incremental: false 
-    overview: true
-    menu: true
-    chalkboard: true
-    progress: true
-    self-contained: false
-    toc: true
-    toc-depth: 1
-    toc-title: Content
+      - section: "Cohorts"
+        contents:
+          - href: cohorts/ws-2024-25.qmd
+            text: "WS 2024/25 (Part 1)"
+          - href: cohorts/ws-2023-24.qmd
+            text: "WS 2023/24 (Part 2)"
+
+      - section: "Week 0 &middot; Prerequisites"
+        href: weeks/week-00.qmd
+        contents:
+          - href: weeks/week-00.qmd
+            text: "Overview"
+          - text: "📖 Prerequisites (web page)"
+            href: /prerequisites.html
+
+      - section: "Week 1 &middot; Introduction. Descriptive statistics"
+        href: weeks/week-01.qmd
+        contents:
+          - href: weeks/week-01.qmd
+            text: "Overview"
+          - text: "🖥 Part 1. Introduction"
+            href: /materials/mk68-01-p1-slides.html
+          - text: "📄 Part 2. Descriptive statistics (PDF)"
+            href: /ilias-2024-25/Week%2001.%20Part%202.%20Descriptive%20statistics.pdf
+
+      - section: "Week 2 &middot; Distribution. Variance"
+        href: weeks/week-02.qmd
+        contents:
+          - href: weeks/week-02.qmd
+            text: "Overview"
+          - text: "🖥 Full deck"
+            href: /materials/mk68-02-slides.html
+          - text: "🖥 Part: Distribution"
+            href: /materials/mk68-02-slides-distributions.html
+          - text: "🖥 Part: Variance"
+            href: /materials/mk68-02-slides-variance.html
+          - text: "🖥 Part: Quantiles"
+            href: /materials/mk68-02-slides-quantiles.html
+          - text: "🖥 Part: Income deciles example"
+            href: /materials/mk68-02-slides-example-1.html
+
+      - section: "Week 3 &middot; Bi-variate data. Correlation and causation"
+        href: weeks/week-03.qmd
+        contents:
+          - href: weeks/week-03.qmd
+            text: "Overview"
+          - text: "📄 Week 03 slides (PDF)"
+            href: /ilias-2024-25/Week%2003.%20Variance.%20Bi-variate%20data.%20Correlation%20and%20Causation_.pdf
+
+      - section: "Week 4 &middot; RCT. Hypothesis testing. t-tests"
+        href: weeks/week-04.qmd
+        contents:
+          - href: weeks/week-04.qmd
+            text: "Overview"
+          - text: "🖥 Week 04 slides"
+            href: /materials/mk68-04-slides.html
+
+      - section: "Week 5 &middot; CLT. t-distribution. Confidence intervals"
+        href: weeks/week-05.qmd
+        contents:
+          - href: weeks/week-05.qmd
+            text: "Overview"
+          - text: "🖥 Week 05 slides"
+            href: /materials/mk68-05-slides-v2.html
+
+      - section: "Week 6 &middot; Regression. Bias. Linearity"
+        href: weeks/week-06.qmd
+        contents:
+          - href: weeks/week-06.qmd
+            text: "Overview"
+          - text: "🖥 Week 06 slides"
+            href: /materials/mk68-06-slides.html
+          - text: "🖥 t-test recap (exam-style example)"
+            href: /materials/t-test-recap.html
+
+      - section: "Week 7 &middot; Multiple regression practice"
+        href: weeks/week-07.qmd
+        contents:
+          - href: weeks/week-07.qmd
+            text: "Overview"
+          - text: "🖥 Week 07 slides"
+            href: /materials/mk68-07-slides.html
+
+      - section: "Reference"
+        contents:
+          - href: slides.qmd
+            text: "All slide decks"
+          - href: data.qmd
+            text: "Datasets"
+          - href: resources.qmd
+            text: "Reading list and references"
+
+format:
   html:
     theme:
-      light: [cosmo]
-      dark: [cosmo]
-    mainfont: "Roboto"
+      light: [cosmo, styles.scss]
+      dark: [cosmo, styles-dark.scss]
+    toc: true
+    toc-depth: 3
     code-copy: true
     code-overflow: wrap
-    toc: true
+    anchor-sections: true
+    smooth-scroll: true
+    link-external-newwindow: true
+    link-external-icon: false
 
-  
 execute:
   freeze: auto
-  
-bibliography: 
-  - "../references.bib"
 
-editor_options: 
-  chunk_output_type: console
-
-  
-
-
+editor: source

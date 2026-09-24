@@ -1,0 +1,61 @@
+---
+title: "Winter Semester 2023/24"
+subtitle: "Part 2: Statistics and Econometrics · MK-068-EN (TM) WS2023/24. Empirical Research Methods"
+---
+
+The first run of the programme. The materials of this cohort are the **PDF
+slides** that were uploaded to Ilias, listed below in teaching order with the
+day each one was added to the repository. The slide sources were revised
+afterwards for the 2024/25 cohort, so the interactive decks on this site do not
+reproduce these PDFs; the sources as they stood for this cohort are linked
+under each PDF.
+
+## Slides, in teaching order
+
+| Week | PDF shared on Ilias | Pages | Added | Source at the time |
+|:--|:--|:--|:--|:--|
+| 0 | 📄 [Week 00. Prerequisites](/ilias-2023-24/mk68-00-part-1-prerequisites.pdf) | 2 | 4 Dec 2023 | 💻 [`mk68-00-part-1-prerequisites.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-00-part-1-prerequisites.qmd) |
+| 1 | 📄 [Week 01. Part 1. Introduction](/ilias-2023-24/Week%2001.%20Part%201.%20Introduction.pdf) | 42 | 6 Dec 2023 | 💻 [`mk68-01-p1-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-01-p1-slides.qmd) |
+| 1 | 📄 [Week 01. Part 2. Descriptive statistics](/ilias-2023-24/Week%2001.%20Part%202.%20Descriptive%20statistics.pdf) | 54 | 6 Dec 2023 | 💻 [`mk68-01-p2-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-01-p2-slides.qmd) |
+| 2 | 📄 [Week 02. Distribution, Variance and its applications](/ilias-2023-24/Week%2002.%20Distribution,%20Variance%20and%20its%20applications.pdf) | 72 | 11 Dec 2023 | 💻 [`mk68-02-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-02-slides.qmd) |
+| 3 | 📄 [Week 03. Variance. Bi-variate data. Correlation and Causation](/ilias-2023-24/Week%2003.%20Variance.%20Bi-variate%20data.%20Correlation%20and%20Causation_.pdf) | 57 | 11 Dec 2023 | 💻 [`mk68-03-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-03-slides.qmd) |
+| 4 | 📄 [Week 04. Cause and Effect in the RCT. Hypothesis testing. T-tests](/ilias-2023-24/Week%2004.%20Cause%20and%20Effect%20in%20the%20RCT.%20Hypothesis%20testing.%20T-tests_.pdf) | 78 | 10 Jan 2024 | 💻 [`mk68-04-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-04-slides.qmd) |
+| 5 | 📄 [Week 05. Hypothesis testing II. Central Limit Theorem. t-distribution. Confidence intervals](/ilias-2023-24/Week%2005.%20Hypothesis%20testing%20II.%20Central%20Limit%20Theorem.%20t-distribution.%20Confidence%20intervals_.pdf) | 80 | 16 Jan 2024 | 💻 [`mk68-05-slides-v2.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-05-slides-v2.qmd) |
+| 6 | 📄 [Week 06. Recap. Simple Linear Regression. Multiple Regression. Bias. Regression assumptions. Linearity](/ilias-2023-24/Week%2006.%20Recap.%20Simple%20Linear%20Regression.%20Multiple%20Regression.%20Bias.%20Regression%20assumptions.%20Linearity_.pdf) | 95 | 23 Jan 2024 | 💻 [`mk68-06-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-06-slides.qmd) |
+| 7 | 📄 [Week 07. Multiple Linear Regression. Practice](/ilias-2023-24/Week%2007.%20Multiple%20Linear%20Regression.%20Practice_.pdf) | 56 | 30 Jan 2024, file replaced 14 Oct 2024 | 💻 [`mk68-07-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-07-slides.qmd) |
+
+: {tbl-colwidths="[6,44,8,12,30]"}
+
+## Sources
+
+The last content change for this cohort is commit
+[`9c5d2e6`](https://github.com/EBukin/mk68-2023-24-public/commit/9c5d2e6) of
+30 January 2024, "Week 7 slides". The whole `materials/` folder as it stood then
+is browsable at
+[`tree/9c5d2e6/materials`](https://github.com/EBukin/mk68-2023-24-public/tree/9c5d2e6/materials).
+The week decks were rendered with the 2023/24
+[`_quarto.yml`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/_quarto.yml),
+which differed from the 2024/25 one mainly in the subtitle and footer
+("Part 2 … WS2023/24") and in having incremental slide builds switched on by
+default.
+
+::: {.callout-note appearance="simple"}
+## What changed for 2024/25
+
+Between the two cohorts the sources of every week were revised (2,810 lines
+added and 2,413 removed across 28 files). The largest changes were to Week 2,
+which was split into separately rendered parts, and to Weeks 4 and 5, whose
+PDFs went from 78 and 80 pages to 60 and 99. To see the revised version of a
+week, open it from the [2024/25 cohort page](ws-2024-25.qmd).
+:::
+
+## Week pages
+
+[Week 0](../weeks/week-00.qmd) ·
+[Week 1](../weeks/week-01.qmd) ·
+[Week 2](../weeks/week-02.qmd) ·
+[Week 3](../weeks/week-03.qmd) ·
+[Week 4](../weeks/week-04.qmd) ·
+[Week 5](../weeks/week-05.qmd) ·
+[Week 6](../weeks/week-06.qmd) ·
+[Week 7](../weeks/week-07.qmd)

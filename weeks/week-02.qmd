@@ -1,0 +1,67 @@
+---
+title: "Week 2 · Distribution, variance and its applications"
+subtitle: "Density and cumulative distributions, variance, quantiles, z-scores and the WHO growth standards"
+---
+
+The week moves from describing a variable's centre to describing its whole
+distribution. It ends with two applications that come back later in the course:
+measuring child stunting against the WHO length-for-age standard, and the
+Datasaurus, which shows why a univariate summary is never enough.
+
+## The full deck
+
+| Material | WS 2024/25 | WS 2023/24 |
+|:--|:--|:--|
+| 🖥 Interactive slides | [Week 02. Distribution, Variance and its applications](/materials/mk68-02-slides.html) | not rendered (sources were revised for 2024/25) |
+| 📄 PDF from Ilias | [Week 02. Distribution, Variance and its applications.pdf](/ilias-2024-25/Week%2002.%20Distribution,%20Variance%20and%20its%20applications.pdf) · 72 pages · added 21 Oct 2024 | [Week 02. Distribution, Variance and its applications.pdf](/ilias-2023-24/Week%2002.%20Distribution,%20Variance%20and%20its%20applications.pdf) · 72 pages · added 11 Dec 2023 |
+| 💻 Source | [`mk68-02-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mk68-02-slides.qmd) | [`mk68-02-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-02-slides.qmd) |
+
+: {tbl-colwidths="[24,38,38]"}
+
+In 2024/25 the deck was assembled from four parts, each of which is also
+rendered on its own:
+
+| Part | Interactive slides | Source |
+|:--|:--|:--|
+| Distribution | 🖥 [Open](/materials/mk68-02-slides-distributions.html) | 💻 [`mk68-02-slides-distributions.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mk68-02-slides-distributions.qmd) |
+| Variance | 🖥 [Open](/materials/mk68-02-slides-variance.html) | 💻 [`mk68-02-slides-variance.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mk68-02-slides-variance.qmd) |
+| Quantiles | 🖥 [Open](/materials/mk68-02-slides-quantiles.html) | 💻 [`mk68-02-slides-quantiles.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mk68-02-slides-quantiles.qmd) |
+| Income deciles example | 🖥 [Open](/materials/mk68-02-slides-example-1.html) | 💻 [`mk68-02-slides-example-1.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mk68-02-slides-example-1.qmd) |
+
+: {tbl-colwidths="[30,25,45]"}
+
+## What the deck covers
+
+-   **Distribution**: symmetric and non-symmetric distributions, extreme and
+    influential observations; from a density to a cumulative distribution; the
+    cumulative distribution of income; applications to income inequality and
+    the Lorenz curve, with homework examples.
+-   **Variance**: population versus sample variance, the standard deviation,
+    and why distributions with the same standard deviation can look very
+    different.
+-   **Quantiles**: quartiles and deciles for normal and non-normal
+    distributions; income deciles; an example on inequality, taxes and
+    subsidies; robust versus non-robust measures of spread; matching
+    distributions to box plots.
+-   **Application of variance in descriptive analysis**: measuring stunting;
+    the WHO length/height-for-age standard, how it is built and summarised, and
+    following one boy's development against it.
+-   **The (standard) normal distribution**: the z-score, why it is needed,
+    standardisation, and exam examples on determining stunting status.
+-   **When univariate analysis is not enough**: the Datasaurus, a synthetic
+    dataset whose univariate summaries hide everything.
+-   Reading before Week 4, homework examples on z-scores, variance and the
+    normal distribution, a pointer to Our World in Data on income inequality,
+    and the key concepts checklist.
+
+## Data used
+
+-   📊 [WHO length/height-for-age standard](../data.qmd#who) (`who_lhfa.rds`).
+-   📊 [World income distribution](../data.qmd#income-distribution)
+    (`income-distribution.rds`), in the Distribution part and the deciles
+    example.
+-   📊 [The Datasaurus Dozen](../data.qmd#datasaurus) (`DatasaurusDozen.tsv`).
+
+## Where the course goes next
+
+← [Week 1 · Introduction. Descriptive statistics](week-01.qmd) · → [Week 3 · Bi-variate data. Correlation and causation](week-03.qmd)

@@ -1,0 +1,132 @@
+---
+title: "MK68 Empirical Research Methods"
+subtitle: "Quantitative research methods · Statistics and Econometrics · JLU Giessen"
+toc: false
+---
+
+::: mk-hero
+# Lecture slides for two cohorts, week by week {.unnumbered}
+
+::: mk-hero-sub
+Everything used to teach the quantitative part of **MK-068-EN Empirical
+Research Methods** at Justus Liebig University Giessen: a prerequisites sheet
+and seven weeks of lectures, taught in Winter Semester 2023/24 and again,
+revised, in Winter Semester 2024/25. The 2024/25 decks are published as
+interactive slides rendered from their source; the slides of both cohorts are
+available as the PDFs that were shared with students on Ilias.
+:::
+
+::: mk-hero-meta
+[Taught and written by Eduard Bukin](https://www.uni-giessen.de/faculties/f09/institutes/agri/policy/team/bukin) ·
+[Institute of Agricultural Policy and Market Research](https://www.uni-giessen.de/faculties/f09/institutes/agri/policy) ·
+[Source on GitHub](https://github.com/EBukin/mk68-2023-24-public/)
+:::
+:::
+
+## Two cohorts
+
+The same seven-week programme ran twice. The slide sources were revised between
+the two runs, so the cohorts are kept apart: pick the one you attended.
+
+```{=html}
+<div class="mk-grid">
+
+  <div class="mk-card is-slide">
+    <span class="mk-card-kicker">Winter Semester 2024/25</span>
+    <h3 class="mk-card-title"><a href="cohorts/ws-2024-25.html">Part 1: Statistics and Econometrics</a></h3>
+    <p class="mk-card-desc">Interactive slides rendered from the current sources, plus the twelve PDFs shared on Ilias, added to the repository between 14 October and 27 November 2024.</p>
+  </div>
+
+  <div class="mk-card is-pdf">
+    <span class="mk-card-kicker">Winter Semester 2023/24</span>
+    <h3 class="mk-card-title"><a href="cohorts/ws-2023-24.html">Part 2: Statistics and Econometrics</a></h3>
+    <p class="mk-card-desc">The nine PDFs shared on Ilias during the semester, with links to the slide sources as they stood at the time.</p>
+  </div>
+
+</div>
+```
+
+## Week by week
+
+Each week page brings together the interactive deck, the PDFs of both cohorts,
+the slide sources and the data behind them.
+
+```{=html}
+<div class="mk-grid">
+
+  <div class="mk-card is-reading">
+    <span class="mk-card-kicker">Week 0</span>
+    <h3 class="mk-card-title"><a href="weeks/week-00.html">Prerequisites</a></h3>
+    <p class="mk-card-desc">What to refresh before weeks 1 to 3, with pre-recorded lectures and Khan Academy units, and the additional reading list.</p>
+  </div>
+
+  <div class="mk-card is-slide">
+    <span class="mk-card-kicker">Week 1</span>
+    <h3 class="mk-card-title"><a href="weeks/week-01.html">Introduction. Descriptive statistics</a></h3>
+    <p class="mk-card-desc">Population and sample, sampling designs, description versus inference; then central tendency, outliers, weighted means and box plots.</p>
+  </div>
+
+  <div class="mk-card is-slide">
+    <span class="mk-card-kicker">Week 2</span>
+    <h3 class="mk-card-title"><a href="weeks/week-02.html">Distribution, variance and its applications</a></h3>
+    <p class="mk-card-desc">Density and cumulative distributions, the Lorenz curve, variance and standard deviation, quantiles, z-scores and the WHO stunting standards.</p>
+  </div>
+
+  <div class="mk-card is-slide">
+    <span class="mk-card-kicker">Week 3</span>
+    <h3 class="mk-card-title"><a href="weeks/week-03.html">Bi-variate data. Correlation and causation</a></h3>
+    <p class="mk-card-desc">Scatter plots, trend lines, the correlation coefficient and its pitfalls, and the step from correlation to cause, effect and ceteris paribus.</p>
+  </div>
+
+  <div class="mk-card is-slide">
+    <span class="mk-card-kicker">Week 4</span>
+    <h3 class="mk-card-title"><a href="weeks/week-04.html">Cause and effect in the RCT. Hypothesis testing. t-tests</a></h3>
+    <p class="mk-card-desc">Null and alternative hypotheses, the two error types, p-values, and t-tests applied to deworming and conditional cash transfer experiments.</p>
+  </div>
+
+  <div class="mk-card is-slide">
+    <span class="mk-card-kicker">Week 5</span>
+    <h3 class="mk-card-title"><a href="weeks/week-05.html">Central Limit Theorem. t-distribution. Confidence intervals</a></h3>
+    <p class="mk-card-desc">From the population distribution to the sampling distribution of the mean, standard errors, confidence intervals and one- and two-sample t-tests.</p>
+  </div>
+
+  <div class="mk-card is-slide">
+    <span class="mk-card-kicker">Week 6</span>
+    <h3 class="mk-card-title"><a href="weeks/week-06.html">Simple and multiple regression. Bias. Linearity</a></h3>
+    <p class="mk-card-desc">The regression line and OLS, coefficient interpretation and inference, multiple regression, bias versus efficiency, the six assumptions and linearity.</p>
+  </div>
+
+  <div class="mk-card is-slide">
+    <span class="mk-card-kicker">Week 7</span>
+    <h3 class="mk-card-title"><a href="weeks/week-07.html">Multiple linear regression. Practice</a></h3>
+    <p class="mk-card-desc">Three worked examples end to end: hedonic land prices, a rice production function, and returns to fertiliser in a field experiment.</p>
+  </div>
+
+</div>
+```
+
+## How the materials are labelled
+
+The same icons are used in the sidebar and on every page:
+
+| Icon | Material |
+|:--:|:--|
+| 🖥 | Interactive slides: a revealjs deck rendered from the `.qmd` source, opens full screen |
+| 📄 | PDF slides, exactly as shared with the cohort on Ilias |
+| 💻 | Slide source on GitHub (`.qmd`), at the commit that matches the cohort |
+| 📊 | A dataset used in the slides, with its provenance |
+| 📖 | A reading or a reference |
+| 📺 | A video |
+
+## About this site
+
+This site collects the lecture materials for the quantitative part of
+**MK-068-EN (TM) Empirical Research Methods** at the Institute of Agricultural
+Policy and Market Research, JLU Giessen. It does not replace the Ilias course
+page, where the course was run; it makes the slides readable, searchable and
+downloadable on any device, and keeps the two cohorts' versions side by side.
+
+Written and taught by
+**[Eduard Bukin](https://www.uni-giessen.de/faculties/f09/institutes/agri/policy/team/bukin)**.
+All materials are open source and available
+[on GitHub](https://github.com/EBukin/mk68-2023-24-public/).

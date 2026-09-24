@@ -1,0 +1,66 @@
+---
+title: "About the author"
+subtitle: "Who wrote and taught these materials"
+toc: false
+---
+
+## Eduard (Eddie) Bukin
+
+All slides on this site were written and taught by **Eduard (Eddie) Bukin**, an
+applied economist and open-source data scientist working on impact evaluation,
+land markets and geospatial analysis. He taught the quantitative part of
+MK-068-EN at the **Institute of Agricultural Policy and Market Research**,
+Justus Liebig University Giessen, in the winter semesters 2023/24 and 2024/25.
+
+::: {.callout-note appearance="simple"}
+## Home page
+
+**[ebukin.github.io](https://ebukin.github.io)**: publications, CV and current
+projects.
+:::
+
+### Find him
+
+-   🌐 Home page: [ebukin.github.io](https://ebukin.github.io)
+-   🎓 [Team page at JLU Giessen](https://www.uni-giessen.de/faculties/f09/institutes/agri/policy/team/bukin)
+-   💻 Source code for this course: [github.com/EBukin/mk68-2023-24-public](https://github.com/EBukin/mk68-2023-24-public/)
+-   ✉️ [eduard.bukin\@agrar.uni-giessen.de](mailto:eduard.bukin@agrar.uni-giessen.de)
+
+## About the course
+
+**MK-068-EN (TM) Empirical Research Methods** is a module of the Faculty of
+Agricultural Sciences, Nutritional Sciences and Environmental Management (FB09)
+at JLU Giessen. The materials here are its quantitative part, *Statistics and
+Econometrics*: seven weeks that go from populations and samples, through
+descriptive statistics, distributions and correlation, to hypothesis testing,
+confidence intervals and linear regression, with worked examples from
+development economics and agricultural research. It was taught as Part 2 of the
+module in 2023/24 and as Part 1 in 2024/25.
+
+Both cohorts have their own page: [Winter Semester 2024/25](cohorts/ws-2024-25.qmd)
+and [Winter Semester 2023/24](cohorts/ws-2023-24.qmd).
+
+## Reusing these materials
+
+The materials are published openly so that students can revisit them after the
+course and so that other instructors can build on them. The
+[repository](https://github.com/EBukin/mk68-2023-24-public/) contains every
+source file: the `.qmd` decks and the parts they include, the R setup scripts,
+the cleaned datasets with the scripts that produced them, and the PDFs shared
+with each cohort.
+
+If you reuse or adapt them, please credit **Eduard Bukin** and link back to
+[ebukin.github.io](https://ebukin.github.io). The datasets carry their own
+acknowledgement requirements; see the [datasets](data.qmd) page.
+
+## Colophon
+
+Built with [Quarto](https://quarto.org/). Slides are
+[revealjs](https://quarto.org/docs/presentations/revealjs/) decks written in
+Quarto markdown with R code chunks; their executed results are frozen in the
+repository so that the site rebuilds without re-running the analysis. The site
+is deployed automatically from the
+[GitHub repository](https://github.com/EBukin/mk68-2023-24-public/) and follows
+the structure of the author's
+[MP223 Applied Econometrics](https://ebukin.github.io/mp223-2022-aem-R-public/)
+course site.

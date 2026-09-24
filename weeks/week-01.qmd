@@ -1,0 +1,85 @@
+---
+title: "Week 1 · Introduction. Descriptive statistics"
+subtitle: "Population and sample. Description and inference. Univariate data, central tendency and the box plot"
+---
+
+Two decks open the programme. Part 1 sets up the vocabulary the whole course
+uses: population and sample, sampling designs and their limits, and the
+difference between describing a sample and inferring something about a
+population. Part 2 turns to describing one variable at a time: the median, the
+mean, outliers, weighted averages and the box plot, with worked examples on
+nutrient intake, global poverty and the world income distribution.
+
+## Part 1. Introduction
+
+Subtitle: *Population and Sample. Description and Inference.*
+
+| Material | WS 2024/25 | WS 2023/24 |
+|:--|:--|:--|
+| 🖥 Interactive slides | [Week 01. Part 1. Introduction](/materials/mk68-01-p1-slides.html) | not rendered (sources were revised for 2024/25) |
+| 📄 PDF from Ilias | [Week 01. Part 1. Introduction.pdf](/ilias-2024-25/Week%2001.%20Part%201.%20Introduction.pdf) · 38 pages · added 14 Oct 2024 | [Week 01. Part 1. Introduction.pdf](/ilias-2023-24/Week%2001.%20Part%201.%20Introduction.pdf) · 42 pages · added 6 Dec 2023 |
+| 💻 Source | [`mk68-01-p1-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mk68-01-p1-slides.qmd) | [`mk68-01-p1-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-01-p1-slides.qmd) |
+
+: {tbl-colwidths="[24,38,38]"}
+
+**What the deck covers**
+
+-   The population: what it is and why we rarely observe all of it.
+-   Sampling: the simple random sample, the law of large numbers in action and
+    its limitation, what a simple random sample cannot do, and the stratified,
+    cluster and multistage designs that address it.
+-   Population and samples by research question.
+-   How to conclude about a population from a random sample: descriptive versus
+    inferential statistics, the process of statistical inference, and the basics
+    of a statistical hypothesis.
+-   Goals of the quantitative part of the course.
+-   Homework: an example of statistical inference in a research project
+    (question, design, two waves of data collection, analysis).
+-   Takeaways checklist, key concepts and example exam questions.
+
+## Part 2. Descriptive statistics
+
+Subtitle: *Univariate Data. Central tendency. Box plot.*
+
+| Material | WS 2024/25 | WS 2023/24 |
+|:--|:--|:--|
+| 🖥 Interactive slides | PDF only, see the note below | not rendered |
+| 📄 PDF from Ilias | [Week 01. Part 2. Descriptive statistics.pdf](/ilias-2024-25/Week%2001.%20Part%202.%20Descriptive%20statistics.pdf) · 53 pages · added 14 Oct 2024 | [Week 01. Part 2. Descriptive statistics.pdf](/ilias-2023-24/Week%2001.%20Part%202.%20Descriptive%20statistics.pdf) · 54 pages · added 6 Dec 2023 |
+| 💻 Source | [`mk68-01-p2-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mk68-01-p2-slides.qmd) | [`mk68-01-p2-slides.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-01-p2-slides.qmd) |
+
+: {tbl-colwidths="[24,38,38]"}
+
+**What the deck covers**
+
+-   Univariate data.
+-   Central tendency: individuals' nutrient consumption in the DR Congo as the
+    running example; describing a distribution; the median; the arithmetic
+    mean; extreme and influential observations and how to deal with them; the
+    weighted mean, illustrated with the average extreme poverty rate in the
+    world; exam problems on central tendency.
+-   The box plot: describing a single variable and comparing distributions.
+-   The global income distribution: the logarithm transformation and the
+    insights it reveals about data complexity and change over time.
+-   Comparing distributions of income between regions with box plots.
+
+::: {.callout-note appearance="simple"}
+## Why Part 2 has no interactive version
+
+The deck reads `materials/data/poverty-population.csv`, a country-level extract
+of extreme poverty rates and population used for the weighted-mean example. CSV
+files are excluded from the public repository, so the deck is not in the render
+list. The PDFs above are the versions the students received. See the
+[README](https://github.com/EBukin/mk68-2023-24-public/#readme) for how to
+render it locally once the file is in place.
+:::
+
+## Data used
+
+-   📊 [DR Congo nutrition](../data.qmd#nutrition) (`congo-nutrition.rds`) and
+    the [world income distribution](../data.qmd#income-distribution)
+    (`income-distribution.rds`), both in Part 2.
+-   The sampling examples in Part 1 use simulated populations.
+
+## Where the course goes next
+
+← [Week 0 · Prerequisites](week-00.qmd) · → [Week 2 · Distribution, variance and its applications](week-02.qmd)

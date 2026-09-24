@@ -1,0 +1,63 @@
+name: Build and deploy site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Only one deploy at a time; a newer push supersedes an in-flight one.
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          # The Ilias PDFs are stored in Git LFS. Without this they check out
+          # as ~130-byte pointer files, which would then be published as the
+          # slides themselves.
+          lfs: true
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      # Every deck has a committed _freeze/ result, so Quarto reuses it and
+      # executes no R here. R is installed only because the knitr engine is
+      # declared in the decks; no course package is needed.
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Install knitr and rmarkdown
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::knitr
+            any::rmarkdown
+
+      - name: Render site
+        run: quarto render
+
+      # Every internal link and image must resolve, the expected number of
+      # decks must be present, and no PDF may be an LFS pointer. The script
+      # prints what it found, so the log doubles as an inventory.
+      - name: Check the built site
+        run: python3 scripts/check-site.py --decks 11
+
+      - name: Deploy to GitHub Pages
+        if: github.event_name != 'pull_request'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: _site

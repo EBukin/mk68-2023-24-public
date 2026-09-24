@@ -4,15 +4,24 @@
 .Ruserdata
 
 /.quarto/
+/_site/
+*_files/
+**/*.quarto_ipynb
+
+# _freeze/ is intentionally committed: it holds the executed results of every
+# slide deck, so the CI build renders the site without running any R.
+
+# Raw and private data are kept out of the public repository. Two decks depend
+# on files matched by these rules and are therefore not in the render list of
+# _quarto.yml (see the comments there and README.md):
+#   materials/data/poverty-population.csv
+#   data-raw/uganda-poject/Uganda_B_E_agri and nutrition 04.06.2018.sav
 *.xlsx
 *.xls
 *.sav
 *.zip
 *.csv
-_freeze/
-_output/materials/*_files
-_output/materials/img
-_output/materials/*.html
-*_files/
 sources/
 
+# Render outputs that a failed project render can leave next to the sources
+*.html

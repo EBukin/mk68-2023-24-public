@@ -1,0 +1,59 @@
+---
+title: "Week 5 · Central Limit Theorem. t-distribution. Confidence intervals"
+subtitle: "Hypothesis testing II: from the population distribution to the sampling distribution of the mean, and the t-test in practice"
+---
+
+Week 4 used t-tests; Week 5 explains where they come from. Starting from a
+normally distributed population, the deck derives the sampling distribution of
+the mean, the Central Limit Theorem and the standard error, introduces the
+t-distribution and confidence intervals, and then practises one-sample and
+two-sample t-tests on three examples. A self-study section and a set of
+t-score tables close the deck.
+
+## Slides
+
+| Material | WS 2024/25 | WS 2023/24 |
+|:--|:--|:--|
+| 🖥 Interactive slides | [Week 05. Hypothesis testing II. Central Limit Theorem. T-distribution. Confidence intervals. t-test](/materials/mk68-05-slides-v2.html) | not rendered (sources were revised for 2024/25) |
+| 📄 PDF from Ilias | [Week 05. Hypothesis testing II.pdf](/ilias-2024-25/Week%2005.%20Hypothesis%20testing%20II.%20Central%20Limit%20Theorem.%20T-distribution.%20Confidence%20intervals..pdf) · 99 pages · added 12 Nov 2024 | [Week 05. Hypothesis testing II.pdf](/ilias-2023-24/Week%2005.%20Hypothesis%20testing%20II.%20Central%20Limit%20Theorem.%20t-distribution.%20Confidence%20intervals_.pdf) · 80 pages · added 16 Jan 2024 |
+| 💻 Source | [`mk68-05-slides-v2.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mk68-05-slides-v2.qmd), which includes [`cct-2-simple.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/cct-2-simple.qmd), [`pop-dist-clt.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/pop-dist-clt.qmd), [`ci-t-dist.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/ci-t-dist.qmd), [`mk68-05-slides-ex1.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mk68-05-slides-ex1.qmd), [`t-test.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/t-test.qmd) and [`mk68-05-slides-t-scores.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/main/materials/mk68-05-slides-t-scores.qmd) | [`mk68-05-slides-v2.qmd`](https://github.com/EBukin/mk68-2023-24-public/blob/9c5d2e6/materials/mk68-05-slides-v2.qmd) |
+
+: {tbl-colwidths="[24,38,38]"}
+
+## What the deck covers
+
+-   **t-test with conditional cash transfers**, the example carried over from
+    Week 4.
+-   **Normally distributed population and confidence intervals**: the
+    population distribution, the 95% interval for the mean, and 90%, 95% and
+    99% intervals; the population can have any distribution.
+-   **The Central Limit Theorem**, the standard error, a summary and the CLT in
+    practice.
+-   **The confidence interval and the t-distribution**: how to find a CI, the
+    t-distribution and how it differs from the normal, from the population to a
+    sample, the t-distribution in use on the travel-time example, interpreting
+    and calculating a confidence interval, and more on the t-distribution and
+    the t-test.
+-   **Practice**: Example 1, the effect of a drug on sleep (one-sample t-test:
+    the test of significance, confidence intervals, p-value, conclusion);
+    Example 2, travel time between treatment and control (two-sample t-test,
+    equal variances); Example 3, the causal effect of treatment on school
+    enrolment.
+-   **Extra materials for self-study**: the four steps of a t-test, from
+    hypothesis formulation to conclusion, with examples.
+-   **t-scores**: critical values of the t-distribution for 1 to 150 degrees of
+    freedom.
+-   Homework on two published field experiments and the key concepts
+    checklist.
+
+## Data used
+
+-   `sleep` (Student's sleep data) from base R, for Example 1.
+-   A one-variable example dataset from the data-to-viz project, downloaded at
+    render time.
+-   Simulated populations and samples for the travel-time and enrolment
+    examples.
+
+## Where the course goes next
+
+← [Week 4 · Cause and effect in the RCT. Hypothesis testing. t-tests](week-04.qmd) · → [Week 6 · Simple and multiple regression. Bias. Linearity](week-06.qmd)

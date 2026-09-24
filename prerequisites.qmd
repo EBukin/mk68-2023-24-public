@@ -1,0 +1,24 @@
+---
+title: "Week 00. Prerequisites for part on quantitative research methods"
+subtitle: "What to refresh before weeks 1 to 3, with pre-recorded lectures and Khan Academy units"
+---
+
+<!--
+The content below is materials/mk68-00-part-1-prerequisites.qmd, the source of
+the PDF handout shared on Ilias. It lives in materials/, whose _metadata.yml
+turns every document into a revealjs deck, so it is included here as an
+ordinary site page instead. Quarto merges an included file's front matter into
+this one, which is why the source declares no format of its own; render it
+with `quarto render materials/mk68-00-part-1-prerequisites.qmd --to pdf` to
+reproduce the handout.
+-->
+
+::: {.callout-note appearance="simple"}
+This is the handout distributed to both cohorts. Download it as a PDF:
+[2024/25 version](/ilias-2024-25/mk68-00-part-1-prerequisites.pdf) ·
+[2023/24 version](/ilias-2023-24/mk68-00-part-1-prerequisites.pdf).
+The reading list that accompanied it in 2024/25 is on the
+[reading list](resources.qmd) page.
+:::
+
+{{< include materials/mk68-00-part-1-prerequisites.qmd >}}

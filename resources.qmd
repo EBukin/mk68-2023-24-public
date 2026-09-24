@@ -1,0 +1,77 @@
+---
+title: "Reading list and references"
+subtitle: "The handbooks the lectures follow, the additional literature sheet, and every work cited in the slides"
+bibliography: references.bib
+nocite: |
+  @Diez2022, @Fiszbein2009, @Kuchenbecker2017, @wilke2019fundamentals,
+  @Miguel2004, @Hamory2021, @wooldridge2020introductory, @Todaro2014,
+  @roser2013global, @Matejka2017, @Duflo2008, @Dowdy2004, @Cairo2016,
+  @Angrist2014, @Thompson2012, @Gertler2016, @Carter2017, @weisberg2005a,
+  @taff2007compensated, @Ritter2020, @palmquist1989, @Neyman1933, @Molina1974,
+  @Lovelock1971, @lakner2015global, @Heckman1995, @Gertler2004, @Gerbrandy1972,
+  @feng2012alternative, @Deaton2009, @Burtless1995, @Angrist2010, @Angrist2009
+---
+
+## Before the course
+
+-   📄 **[Prerequisites](/prerequisites.html)**: the
+    concepts each of the first three weeks assumes, with links to pre-recorded
+    Ilias lectures and Khan Academy units. Also as PDF for
+    [2024/25](/ilias-2024-25/mk68-00-part-1-prerequisites.pdf) and
+    [2023/24](/ilias-2023-24/mk68-00-part-1-prerequisites.pdf).
+
+## Key handbooks
+
+This is the content of the additional literature sheet distributed to the
+2024/25 cohort
+([mk68-additional-literature.pdf](/ilias-2024-25/mk68-additional-literature.pdf)).
+
+**Statistics**
+
+-   📖 **OpenIntro Statistics**, David Diez, Mine Çetinkaya-Rundel and
+    Christopher Barr, 2019. [openintro.org/book/os](https://www.openintro.org/book/os/)
+    (free PDF). The chapters used:
+    -   1.3 Sampling principles and strategies
+    -   1.4 Experiments
+    -   Chapter 2 Summarizing data
+    -   3.1 Defining probability, in particular 3.1.2 Law of large numbers
+    -   3.4 Random variables
+    -   3.5 Continuous distributions
+    -   4.1 Normal distribution
+    -   Chapter 7 Inference for numerical data
+    -   Chapter 8 Introduction to linear regression
+
+**Econometrics**
+
+-   📖 **Mastering 'Metrics: the path from cause to effect**, Joshua D. Angrist
+    and Jörn-Steffen Pischke, Princeton University Press, 2015.
+    [Find it in the JLU library](https://justfind.hds.hebis.de/Record/HEB35797798X).
+    Only:
+    -   Chapter 1 Randomized Trials
+    -   Chapter 2 Regression
+
+**Notable additions**
+
+-   📖 **Fundamentals of Data Visualization**, Claus O. Wilke, 2019, at
+    [clauswilke.com/dataviz](https://clauswilke.com/dataviz): more about
+    visualising distributions. Pay attention to Part I, From data to
+    visualization, Chapters 6 to 9.
+-   📖 More on income and inequality from Our World in Data:
+    [What is the Gini coefficient](https://ourworldindata.org/what-is-the-gini-coefficient)
+    and
+    [the history of global economic inequality](https://ourworldindata.org/the-history-of-global-economic-inequality).
+
+## Videos referred to in the slides
+
+-   📺 [Randomized Trials: The Ideal Weapon](https://youtu.be/eGRd8jBdNYg) and
+    📺 [Selection Bias](https://youtu.be/6YrIDhaUQOE), from Josh Angrist's
+    *Mastering Econometrics* series (Weeks 5 and 6).
+-   📺 [Regression in Excel](https://youtu.be/9wX1a1J4WOI) (Week 7).
+
+## Works cited in the slides
+
+Every reference cited across the slide sources, from
+[`references.bib`](https://github.com/EBukin/mk68-2023-24-public/blob/main/references.bib).
+
+::: {#refs}
+:::
